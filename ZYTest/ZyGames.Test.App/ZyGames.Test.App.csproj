@@ -106,11 +106,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\GitHub\Scut\Source\Framework\ZyGames.Framework.Common\ZyGames.Framework.Common4.5.csproj">
+    <ProjectReference Include="..\..\..\Scut\Source\Framework\ZyGames.Framework.Common\ZyGames.Framework.Common4.5.csproj">
       <Project>{e87a5049-85a1-436b-a5ed-2bc0a4e45bdb}</Project>
       <Name>ZyGames.Framework.Common4.5</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\GitHub\Scut\Source\Framework\ZyGames.Framework\ZyGames.Framework4.5.csproj">
+    <ProjectReference Include="..\..\..\Scut\Source\Framework\ZyGames.Framework\ZyGames.Framework4.5.csproj">
       <Project>{416e2e00-4064-4d7a-87a2-a649ff120274}</Project>
       <Name>ZyGames.Framework4.5</Name>
     </ProjectReference>

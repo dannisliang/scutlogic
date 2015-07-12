@@ -60,8 +60,31 @@ namespace GameServer.CsScript.Action
             return false;
         }
 
+        bool authoriyCheck()
+        {
+            var cache = new ShareCacheStruct<Authority>();
+            var auth = cache.Find((o)=>{
+                    return  (o.name==requestPack.name && o.pwd == requestPack.pwd);
+            });
+
+            if(null == auth)
+                return false;
+
+            return 0 != (auth.level&getCmdLevel(requestPack.param));
+        }
+
+        int getCmdLevel(string cmd)
+        {
+            return 0xfffffff;
+        }
+
         public override bool TakeAction()
         {
+            if(false == authoriyCheck())
+            {
+                ConsoleLog.showErrorInfo(0,"authoriy not enought");
+            }
+
             Request2000Pack.E_ACTION_TYPE t = requestPack.theActionType;
             switch (t)
             {

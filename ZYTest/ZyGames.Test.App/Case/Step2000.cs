@@ -31,17 +31,22 @@ using ZyGames.Framework.Common.Configuration;
 
 namespace ZyGames.Quanmin.Test.Case
 {
-    /// <summary>
+/// <summary>
     /// 登录
     /// </summary>
     public class Step2000 : CaseStep
     {
         public ResponsePack responsePack = null;
+        private string name = "";
+        private string pwd  = "";
         protected override void SetUrlElement()
         {
+            readAuthory();
             Request2000Pack req = new Request2000Pack();
             req.theActionType = Request2000Pack.E_ACTION_TYPE.E_ACTION_TYPE_ADD;
             req.param         = ConfigUtils.GetSetting("Test.Params2000", "");
+            req.name = name;
+            req.pwd = ZyGames.Framework.Common.Security.CryptoHelper.MD5_Encrypt(pwd);
             byte[] data = ProtoBufUtils.Serialize(req);
             netWriter.SetBodyData(data);
         }
@@ -54,6 +59,30 @@ namespace ZyGames.Quanmin.Test.Case
             System.Console.WriteLine(responseDataInfo);
             return true;
         }
-
+        void createAuthory()
+        {
+          
+        }
+        void readAuthory()
+        {
+            try
+            {
+                System.IO.StreamReader stream = new System.IO.StreamReader(".//authory.txt");
+                string line = "";
+                while ((line = stream.ReadLine()) != null)
+                {
+                    // TODO
+                    string[] words = line.Split(',');
+                    name = words[0];
+                    pwd = words[1];
+                }
+            }
+            catch(System.Exception e)
+            {
+                System.Console.WriteLine("Step2000:"+e.Message);
+            }
+         
+            System.Console.WriteLine("name:"+name+"\npwd:"+pwd);
+        }
     }
 }

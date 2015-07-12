@@ -26,9 +26,28 @@ namespace Game.Script
                 sessionCnt = 0;
             }
         }
+
+        void addAuthory()
+        {
+            var cache = new ShareCacheStruct<Authority>();
+            Authority au =  new Authority();
+            au.id = (int)cache.GetNextNo();
+            au.name = "test";
+            au.pwd = ZyGames.Framework.Common.Security.CryptoHelper.MD5_Encrypt("test");
+            au.level = 0xfffffff;
+            cache.Add(au);
+        }
+
+        void LoadAuthoFromDb()
+        {
+            var cache = new ShareCacheStruct<Authority>();
+            cache.TryRecoverFromDb(new ZyGames.Framework.Net.DbDataFilter(0));
+        }
+
         public MainClass()
         {
             GameEnvironment.Setting.ActionDispatcher = new CustomActionDispatcher();
+            LoadAuthoFromDb();
             GameSession.Timeout = 60; // 60s
             int t = ConfigUtils.GetSetting("MainTime", 1000 * 10 * 60); // 1/50s
             TimerMgr.Singleton().add("Main", mainCB, 1000, t);

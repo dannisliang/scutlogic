@@ -17,5 +17,12 @@ namespace GameRanking.Pack
 
         [ProtoMember(102)]
         public string param     { get; set; }
+
+
+        [ProtoMember(103)]
+        public string name { get; set; }
+
+        [ProtoMember(104)]
+        public string pwd { get; set; }
     }
 }

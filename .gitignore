@@ -5,9 +5,11 @@ Log/
 log/
 Debug/
 Release/
+ScriptRuntimeDomain/
 *~
 *.config
 *.[ao]
 *.rar
 *.zip
 *.txt
+*.pdb

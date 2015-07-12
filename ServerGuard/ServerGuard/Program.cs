@@ -115,7 +115,19 @@ namespace ServerGuard
             static string getSeerverURL()
             {
                 // read form local config.
-                return "www.baidu.com";
+                string url = "";
+                try
+                {
+                    System.IO.StreamReader stream = new System.IO.StreamReader(".//url.txt");
+                    url = stream.ReadLine();
+                }
+                catch (System.Exception e)
+                {
+                    System.Console.WriteLine("url:" + e.Message);
+                }
+
+                System.Console.WriteLine("url:"+url);
+                return url;
             }
             static public string HttpPost(string Url, string postDataStr)
             {
