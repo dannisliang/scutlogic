@@ -1,5 +1,5 @@
 #
-# 运行时生成
+# runtime data
 #
 bin/
 temp/
@@ -10,7 +10,7 @@ Debug/
 Release/
 ScriptRuntimeDomain/
 #
-# 编译生成的dll
+# compaire dll
 #
 GameRanking.Pack.dll
 GameServer.exe
@@ -20,7 +20,7 @@ ZyGames.Framework.Game.dll
 ZyGames.Framework.dll
 
 #
-# 中间文件和私有信息存放
+# personal/runtime data
 #
 *~
 *.[ao]
@@ -29,3 +29,4 @@ ZyGames.Framework.dll
 *.zip
 *.txt
 *.config
+*.suo
