@@ -1,0 +1,13 @@
+bin/
+temp/
+obj/
+Log/
+log/
+Debug/
+Release/
+*~
+*.config
+*.[ao]
+*.rar
+*.zip
+*.txt

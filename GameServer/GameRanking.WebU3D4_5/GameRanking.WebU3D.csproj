@@ -1,0 +1,201 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7FF2B7AF-8EDF-4E1C-976F-CBE8AC00BEE9}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GameServer</RootNamespace>
+    <AssemblyName>GameServer</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>.\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>.\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>.\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython, Version=2.7.0.40, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\IronPython.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython.Modules, Version=2.7.0.40, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\IronPython.Modules.dll</HintPath>
+    </Reference>
+    <Reference Include="KopiLua">
+      <HintPath>.\KopiLua.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Dynamic, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\Microsoft.Dynamic.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\Microsoft.Scripting.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil">
+      <HintPath>.\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.7.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>.\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="NLua">
+      <HintPath>.\NLua.dll</HintPath>
+    </Reference>
+    <Reference Include="protobuf-net, Version=2.0.0.668, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\protobuf-net.dll</HintPath>
+    </Reference>
+    <Reference Include="ScutSecurity">
+      <HintPath>.\ScutSecurity.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Common">
+      <HintPath>.\ServiceStack.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Interfaces">
+      <HintPath>.\ServiceStack.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Redis">
+      <HintPath>.\ServiceStack.Redis.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Text">
+      <HintPath>.\ServiceStack.Text.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Script\CsScript\Action\Action1000.cs" />
+    <Compile Include="Script\CsScript\Action\Action1001.cs" />
+    <Compile Include="Script\CsScript\Action\Action1002.cs" />
+    <Compile Include="Script\CsScript\Action\Action1003.cs" />
+    <Compile Include="Script\CsScript\Action\Action1004.cs" />
+    <Compile Include="Script\CsScript\Action\Action1005.cs" />
+    <Compile Include="Script\CsScript\Action\Action1006.cs" />
+    <Compile Include="Script\CsScript\Action\Action1007.cs" />
+    <Compile Include="Script\CsScript\Action\Action1008.cs" />
+    <Compile Include="Script\CsScript\Action\Action1009.cs" />
+    <Compile Include="Script\CsScript\Action\Action1010.cs" />
+    <Compile Include="Script\CsScript\Action\Action1011.cs" />
+    <Compile Include="Script\CsScript\Action\Action1012.cs" />
+    <Compile Include="Script\CsScript\Action\Action2000.cs" />
+    <Compile Include="Script\CsScript\Action\Action2500.cs" />
+    <Compile Include="Script\CsScript\Action\Action2501.cs" />
+    <Compile Include="Script\CsScript\Action\Action2502.cs" />
+    <Compile Include="Script\CsScript\Action\Action3000.cs" />
+    <Compile Include="Script\CsScript\Action\Action4000.cs" />
+    <Compile Include="Script\CsScript\Action\Action80000.cs" />
+    <Compile Include="Script\CsScript\Action\BaseAction.cs" />
+    <Compile Include="Script\CsScript\logic\GameConfigHappyPoint.cs" />
+    <Compile Include="Script\CsScript\logic\GameConfigItems.cs" />
+    <Compile Include="Script\CsScript\logic\GameConfigRankingReward.cs" />
+    <Compile Include="Script\CsScript\logic\GameConfigValue.cs" />
+    <Compile Include="Script\CsScript\logic\RankingClear.cs" />
+    <Compile Include="Script\CsScript\logic\CustomActionDispatcher.cs" />
+    <Compile Include="Script\CsScript\logic\ExchangeCodeMgr.cs" />
+    <Compile Include="Script\CsScript\logic\GameConfigExchangeCode.cs" />
+    <Compile Include="Script\CsScript\logic\GameConfigMgr.cs" />
+    <Compile Include="Script\CsScript\logic\IP.cs" />
+    <Compile Include="Script\CsScript\Locale\SimplifiedLanguage.cs" />
+    <Compile Include="Script\CsScript\logic\RankingScore.cs" />
+    <Compile Include="Script\CsScript\logic\RankingTotal.cs" />
+    <Compile Include="Script\CsScript\logic\RealItemCntUpdate.cs" />
+    <Compile Include="Script\CsScript\MainClass.cs" />
+    <Compile Include="Script\Model\BlackList.cs" />
+    <Compile Include="Script\Model\CompensationAllServer.cs" />
+    <Compile Include="Script\Model\CustomMemoryStruct.cs" />
+    <Compile Include="Script\Model\DataLog.cs" />
+    <Compile Include="Script\Model\ExchangeCode.cs" />
+    <Compile Include="Script\Model\GuestUser.cs" />
+    <Compile Include="Script\Model\HappyModeData.cs" />
+    <Compile Include="Script\Model\HistoryRanking.cs" />
+    <Compile Include="Script\Model\Pay.cs" />
+    <Compile Include="Script\Model\realItemInfo.cs" />
+    <Compile Include="Script\Model\RealUserInfo.cs" />
+    <Compile Include="Script\Model\PayUserInfo.cs" />
+    <Compile Include="Script\Model\ShareRealItemCnt.cs" />
+    <Compile Include="Script\Model\TestUpdate.cs" />
+    <Compile Include="Script\Model\The3rdUserId.cs" />
+    <Compile Include="Script\Model\UserAnalysis.cs" />
+    <Compile Include="Script\Model\UserRanking.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="GameServer.exe.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="NLog.config" />
+    <None Include="Script\CsScript\Action\计算机.lnk" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\GitHub\Scut\Source\Framework\ZyGames.Framework.Common\ZyGames.Framework.Common4.5.csproj">
+      <Project>{e87a5049-85a1-436b-a5ed-2bc0a4e45bdb}</Project>
+      <Name>ZyGames.Framework.Common4.5</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\GitHub\Scut\Source\Framework\ZyGames.Framework\ZyGames.Framework4.5.csproj">
+      <Project>{416e2e00-4064-4d7a-87a2-a649ff120274}</Project>
+      <Name>ZyGames.Framework4.5</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\GitHub\Scut\Source\Middleware\ZyGames.Framework.Game\ZyGames.Framework.Game4.5.csproj">
+      <Project>{de7024b7-7168-4262-a250-6a21b932ec3b}</Project>
+      <Name>ZyGames.Framework.Game4.5</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\GameRanking.Pack\GameRanking.Pack\GameRanking.Pack.csproj">
+      <Project>{8e34df75-e34a-48f1-ab77-36d5cb0f1e1c}</Project>
+      <Name>GameRanking.Pack</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NSNSTools\NSNSTools.csproj">
+      <Project>{d659805b-2763-4b97-80c0-255e0e265b15}</Project>
+      <Name>NSNSTools</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
