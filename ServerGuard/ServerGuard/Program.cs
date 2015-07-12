@@ -101,9 +101,9 @@ namespace ServerGuard
             static void sendMsg(string sendStr,long tmpID)
             {
                 //修改为您的apikey
-                string apikey = "0cfe0e23f83bf7cc2b93777e1edaf925";
+                string apikey = dic["appKey"];
                 //修改为您要发送的手机号
-                string mobile = "15210842209";
+                string mobile = dic["phoneNum"];
                 //调用模板接口发短信
                 long tpl_id = tmpID; //使用模板1，对应的模板内容为：您的验证码是#code#【#company#】
                 //注意：参数必须进行Uri.EscapeDataString编码。以免&#%=等特殊符号无法正常提交
@@ -112,22 +112,33 @@ namespace ServerGuard
 
             }
 
-            static string getSeerverURL()
+            static Dictionary<string, string> dic = new Dictionary<string, string>(); 
+
+            static void parseLine(string line)
+            {
+                string[] words = line.Split(',');
+                dic.Add(words[0], words[1]);
+                System.Console.WriteLine(words[0]+":"+words[1]);
+            }
+
+            static void InitConfig()
             {
                 // read form local config.
-                string url = "";
+                string line = "";
                 try
                 {
                     System.IO.StreamReader stream = new System.IO.StreamReader(".//url.txt");
-                    url = stream.ReadLine();
+                    while(null != (line=stream.ReadLine()))
+                    {
+                        parseLine(line);
+                    }
+
                 }
                 catch (System.Exception e)
                 {
                     System.Console.WriteLine("url:" + e.Message);
                 }
 
-                System.Console.WriteLine("url:"+url);
-                return url;
             }
             static public string HttpPost(string Url, string postDataStr)
             {
@@ -195,7 +206,7 @@ namespace ServerGuard
                     if (sendMsgNum > breakCnt) break;
                     try
                     {
-                        string ret = HttpPost(getSeerverURL(), "hello Guard");
+                        string ret = HttpPost(dic["url"], "hello Guard");
                         if(ret != "guard ok")
                         {
                             if(ret == "")
@@ -241,6 +252,8 @@ namespace ServerGuard
 
             public static void Main(string[] args)
             {
+                InitConfig();
+
                 Thread dot = new Thread(dotCntPrint);
                 dot.Start();
                 Thread sub = new Thread(threadCb);

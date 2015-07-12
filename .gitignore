@@ -1,3 +1,6 @@
+#
+# 运行时生成
+#
 bin/
 temp/
 obj/
@@ -6,10 +9,23 @@ log/
 Debug/
 Release/
 ScriptRuntimeDomain/
+#
+# 编译生成的dll
+#
+GameRanking.Pack.dll
+GameServer.exe
+GameServer.vshost.exe
+ZyGames.Framework.Common.dll
+ZyGames.Framework.Game.dll
+ZyGames.Framework.dll
+
+#
+# 中间文件和私有信息存放
+#
 *~
-*.config
 *.[ao]
+*.pdb
 *.rar
 *.zip
 *.txt
-*.pdb
+*.config
