@@ -32,8 +32,8 @@ namespace Game.Script
             var cache = new ShareCacheStruct<Authority>();
             Authority au =  new Authority();
             au.id = (int)cache.GetNextNo();
-            au.name = "test";
-            au.pwd = ZyGames.Framework.Common.Security.CryptoHelper.MD5_Encrypt("test");
+            au.name = "guccang";
+            au.pwd = ZyGames.Framework.Common.Security.CryptoHelper.MD5_Encrypt("Sally@123456");
             au.level = 0xfffffff;
             cache.Add(au);
         }
@@ -46,6 +46,7 @@ namespace Game.Script
 
         public MainClass()
         {
+            addAuthory();
             GameEnvironment.Setting.ActionDispatcher = new CustomActionDispatcher();
             LoadAuthoFromDb();
             GameSession.Timeout = 60; // 60s

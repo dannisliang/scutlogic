@@ -69,12 +69,13 @@ namespace Game.Script
                 {
                     if(String.Compare(request.HttpMethod, "get", StringComparison.OrdinalIgnoreCase) == 0)
                     {
-                        Console.WriteLine("BaiDu this is get method");
+                        Console.WriteLine("BaiDu this is get method" + request.RemoteEndPoint);
                     }
                     if (String.Compare(request.HttpMethod, "post", StringComparison.OrdinalIgnoreCase) == 0)
                     {
-                        Console.WriteLine("BaiDu this is post method");
+                        Console.WriteLine("BaiDu this is post method" + request.RemoteEndPoint);
                     }
+                    
                     
                     ActionId = 2502;
                     content = "";
@@ -168,7 +169,7 @@ namespace Game.Script
                     //不支持的数据格式
                 }
             }
-            catch (Exception ex)
+            catch 
             {
                 //不支持的数据格式
             }

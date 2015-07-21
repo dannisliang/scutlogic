@@ -34,6 +34,7 @@ using ZyGames.Framework.Data;
 using System.Collections.Generic;
 using ZyGames.Framework.Common.Log;
 using Game.NSNS;
+using ZyGames.Framework.Model;
 
 namespace GameServer.CsScript.Action
 {
@@ -60,18 +61,18 @@ namespace GameServer.CsScript.Action
             return false;
         }
 
-        bool authoriyCheck()
-        {
-            var cache = new ShareCacheStruct<Authority>();
-            var auth = cache.Find((o)=>{
-                    return  (o.name==requestPack.name && o.pwd == requestPack.pwd);
-            });
-
-            if(null == auth)
-                return false;
-
-            return 0 != (auth.level&getCmdLevel(requestPack.param));
-        }
+       bool authoriyCheck()
+       {
+           var cache = new ShareCacheStruct<Authority>();
+           var auth = cache.Find((o)=>{
+                   return  (o.name==requestPack.name && o.pwd == requestPack.pwd);
+           });
+     
+           if(null == auth)
+               return false;
+     
+           return 0 != (auth.level&getCmdLevel(requestPack.param));
+       }
 
         int getCmdLevel(string cmd)
         {
@@ -141,6 +142,7 @@ namespace GameServer.CsScript.Action
                 UserRanking ur = urCache.FindKey(id);
                 if (ur != null) urCache.Delete(ur); // delete form cache and redis.
             }
+            RankingFactorNew.Singleton().Refresh<UserRanking>(typeof(RankingScore).ToString());
         }
 
         bool addProductOnServer(PayOrder payData)
@@ -192,6 +194,347 @@ namespace GameServer.CsScript.Action
             else
             {
                 ConsoleLog.showNotifyInfo("doAdd_enterCnt failed hmd is null" + parm );
+            }
+        }
+
+        CacheDictionary<int,RefleshCacheInfo> copy(CacheDictionary<int,RefleshCacheInfo> cacheDIC)
+        {
+            return null;
+        }
+
+        static T clone<T>(T t) where T : new()
+        {
+            string json = JsonHelper.GetJson<T>(t);
+            return (T)JsonHelper.ParseFromJson<T>(json);
+        }
+
+        static HappyModeData copyHMD(HappyModeData hmd)
+        {
+            var cache = new PersonalCacheStruct<HappyModeData>();
+            HappyModeData d = new HappyModeData();
+
+            d.the3rdUserId   = (int)cache.GetNextNo();
+            d.EnterNum       = hmd.EnterNum;
+            d.HappyPoint     = hmd.HappyPoint;
+            d.HappyReliveNum = hmd.HappyReliveNum;
+            d.PreRefleshTime = hmd.PreRefleshTime;
+
+            d.realItemBuyCntInRefleshTime   = clone<CacheDictionary<int, RefleshCacheInfo>>(hmd.realItemBuyCntInRefleshTime);
+            d.ActionEnterHappyPoint         = clone<CacheDictionary<int, UserActionInfo>>(hmd.ActionEnterHappyPoint);
+            d.RealItemInfoLst               = clone<CacheList<persionRealItemInfo>>(hmd.RealItemInfoLst);
+            d.PayInfoDic                    = clone<CacheDictionary<string, PayOrderPersion>>(hmd.PayInfoDic);
+            return d;
+        }
+
+        static bool  addHappyDataMap(HappyModeData hmd,int newId)
+        {
+            var happMapCache = new PersonalCacheStruct<The3rdUserIDMap>();
+            var map = happMapCache.FindKey("888");
+            string type = "YYS_CP360";
+            uint id = utils.KeyInt2Uint(hmd.the3rdUserId);
+            int mapID = newId;
+            if (hmd.the3rdUserId > 0)
+                mapID = hmd.the3rdUserId;
+            string mapKey = Action1005.getMapKey(type, id.ToString());
+            if (map.the3rdMap.ContainsKey(mapKey))
+            {
+                return false;
+            }
+            map.ModifyLocked(() => {
+                map.the3rdMap.Add(mapKey, mapID);
+            });
+            if (hmd.the3rdUserId > 0)
+                return false;
+            return true;
+        }
+
+        static void doFrom_Model_person<T>(object parm,string key="UserId") where T : BaseEntity, new()
+        {
+            ZyGames.Framework.Model.SchemaTable schema = ZyGames.Framework.Model.EntitySchemaSet.Get<T>();
+            string typeName = typeof(T).ToString();
+            int max = int.Parse(parm as string);
+            ConsoleLog.showNotifyInfo("########" +  typeName + "######## From Start:" + max);
+            int Step = 1000;
+            var cache = new PersonalCacheStruct<T>();
+            for (int i = 0; i < max; i += Step)
+            {
+                var filter = new ZyGames.Framework.Net.DbDataFilter(0);
+                filter.Condition = "where "+key+" >=@Key1 and "+ key +" <@Key2";
+                filter.Parameters.Add("Key1", i);
+                filter.Parameters.Add("Key2", i + Step);
+                cache.TryRecoverFromDb(filter);
+                ConsoleLog.showNotifyInfo(typeName+":" + i + " load");
+            }
+            ConsoleLog.showNotifyInfo("########" + typeName + "######## From End");
+        }
+
+        static void doFrom_Model_share<T>(object parm,string key="UserID") where T : ShareEntity , new()
+        {
+            string typeName = typeof(T).ToString();
+            ZyGames.Framework.Model.SchemaTable schema = ZyGames.Framework.Model.EntitySchemaSet.Get<T>();
+            int max = int.Parse(parm as string);
+            ConsoleLog.showNotifyInfo("########" + typeName + "######## From Start:" + max);
+            int Step = 1000;
+            var cache = new ShareCacheStruct<T>();
+            for (int i = 0; i < max; i += Step)
+            {
+                var filter = new ZyGames.Framework.Net.DbDataFilter(0);
+                filter.Condition = "where " + key + " >=@Key1 and " + key + " <@Key2";
+                filter.Parameters.Add("Key1", i);
+                filter.Parameters.Add("Key2", i + Step);
+                cache.TryRecoverFromDb(filter);
+                ConsoleLog.showNotifyInfo(typeName+ ":" + i + " load");
+            }
+            ConsoleLog.showNotifyInfo("########" + typeName + "######## From End");
+        }
+        static void doFrom_UserRankingTotal(object parm)
+        {
+            ZyGames.Framework.Model.SchemaTable schema = ZyGames.Framework.Model.EntitySchemaSet.Get<UserRankingTotal>();
+            int max = int.Parse(parm as string);
+            ConsoleLog.showNotifyInfo("########" + typeof(UserRankingTotal).ToString() + "######## From Start:" + max);
+            int Step = 1000;
+            var cache = new ShareCacheStruct<UserRankingTotal>();
+            for (int i = 0; i < max; i += Step)
+            {
+                var filter = new ZyGames.Framework.Net.DbDataFilter(0);
+                filter.Condition = "where UserID>=@Key1 and UserID<@Key2";
+                filter.Parameters.Add("Key1", i);
+                filter.Parameters.Add("Key2", i + Step);
+                cache.TryRecoverFromDb(filter);
+                ConsoleLog.showNotifyInfo("UserRanking:    " + i + "     load");
+            }
+            ConsoleLog.showNotifyInfo("########" + typeof(UserRankingTotal).ToString() + "######## From End");
+        }
+        static void doFrom_UserRanking(object parm)
+        {
+            ZyGames.Framework.Model.SchemaTable schema = ZyGames.Framework.Model.EntitySchemaSet.Get<UserRanking>();
+            int max = int.Parse(parm as string);
+            ConsoleLog.showNotifyInfo("########" + typeof(UserRanking).ToString() + "######## From Start:" + max);
+            int Step = 1000;
+            var cache = new ShareCacheStruct<UserRanking>();
+            for (int i = 0; i < max; i += Step)
+            {
+                var filter = new ZyGames.Framework.Net.DbDataFilter(0);
+                filter.Condition = "where UserID>=@Key1 and UserID<@Key2";
+                filter.Parameters.Add("Key1", i);
+                filter.Parameters.Add("Key2", i + Step);
+                cache.TryRecoverFromDb(filter);
+                ConsoleLog.showNotifyInfo("UserRanking:    " + i + "     load");
+            }
+            ConsoleLog.showNotifyInfo("########" + typeof(UserRanking).ToString() + "######## From End");
+        }
+        static void doFrom_GameUser(object parm)
+        {
+            ZyGames.Framework.Model.SchemaTable schema = ZyGames.Framework.Model.EntitySchemaSet.Get<GameUser>();
+            int max = int.Parse(parm as string);
+            ConsoleLog.showNotifyInfo("########" + typeof(GameUser).ToString() + "######## From Start:" + max);
+            int Step = 1000;
+            var cache = new PersonalCacheStruct<GameUser>();
+            for (int i = 0; i < max; i += Step)
+            {
+                var filter = new ZyGames.Framework.Net.DbDataFilter(0);
+                filter.Condition = "where UserId>=@Key1 and UserId<@Key2";
+                filter.Parameters.Add("Key1", i);
+                filter.Parameters.Add("Key2", i + Step);
+                cache.TryRecoverFromDb(filter);
+                ConsoleLog.showNotifyInfo("gameUser:    "+ i + "     load");
+            }
+            ConsoleLog.showNotifyInfo("########" + typeof(GameUser).ToString() + "######## From End");
+        }
+
+        static void th()
+        {
+            //doFrom_Model_person<HappyModeData>("200000", "the3rdUserId");
+            //doFrom_Model_person<The3rdUserIDMap>("20000", "Index");
+            return;
+            var mapCache = new PersonalCacheStruct<The3rdUserIDMap>();
+            var mapValue = mapCache.FindKey("888");
+            mapCache.Delete(mapValue);
+            The3rdUserIDMap t = new The3rdUserIDMap();
+            t.Index = 888;
+            mapCache.Add(t);
+
+            var cache = new PersonalCacheStruct<HappyModeData>();
+            // load all
+            cache.LoadFrom(null);
+            int num = 0;
+            cache.Foreach((string s1, string s2, HappyModeData hmd) =>
+            {
+                num++;
+                return true;
+            });
+            ConsoleLog.showNotifyInfo("num of HappyModeData cache:" + num);
+
+            List<int> delID = new List<int>();
+            List<HappyModeData> cacheLst = new List<HappyModeData>();
+            cache.Foreach((string s1, string s2, HappyModeData hmd) =>
+            {
+                if (hmd.the3rdUserId > 2000 || hmd.the3rdUserId<0)
+                {
+                    var newhmd = copyHMD(hmd);
+                    if (addHappyDataMap(hmd, newhmd.the3rdUserId))
+                    {
+                        delID.Add(hmd.the3rdUserId);
+                        cacheLst.Add(newhmd);
+                    }
+                    else
+                    {
+                        ConsoleLog.showErrorInfo(0, "add map error:" + hmd.the3rdUserId);
+                    }
+                }
+                else
+                {
+                    delID.Add(hmd.the3rdUserId);
+                }
+                return true;
+            });
+
+            foreach (var v in delID)
+            {
+                var del = cache.FindKey(v.ToString());
+                if (null != del)
+                {
+                    cache.Delete(del);
+                    ConsoleLog.showErrorInfo(0, "doAdd_HappyDataFormat del:" + del.the3rdUserId);
+                }
+                else
+                {
+                    ConsoleLog.showErrorInfo(0, "doAdd_HappyDataFormat error:" + del.the3rdUserId);
+                    TraceLog.WriteError("doAdd_HappyDataFormat error:" + del.the3rdUserId);
+                }
+            }
+
+            foreach (var v in cacheLst)
+            {
+                cache.Add(v);
+                ConsoleLog.showNotifyInfo("doAdd_HappyDataFormat add:" + v.the3rdUserId);
+            }
+
+            // del PayUserInfoEx
+            var payUserCache = new PersonalCacheStruct<PayUserInfoEx>();
+            payUserCache.LoadFrom(null);
+            List<int> payLst = new List<int>();
+            payUserCache.Foreach((string s1, string s2, PayUserInfoEx pu) =>
+            {
+                payLst.Add(pu.UserId);
+                return true;
+            });
+
+            return;
+            foreach (var v in payLst)
+            {
+                var pu = payUserCache.FindKey(v.ToString());
+                if (null != pu)
+                    payUserCache.Delete(pu);
+            }
+        }
+
+        void test()
+        {
+            HappyModeData hmd = new HappyModeData();
+            PayOrderPersion pop = new PayOrderPersion();
+            pop.Index = 1;
+            pop.UserId = 2;
+            pop.Identify = "1";
+            pop.typeUser = "1"; // 360Pay..maybe
+            pop.ProductId = "1";
+            pop.num = 1;
+            pop.the3rdUsrID = 1;// utils.KeyUInt2Int(requestPack.the3rdUserId);
+            pop.strThe3rdOrderId = "1";
+            pop.ServerOrderId = "1";
+            pop.the3rdOrderId = "1";
+            hmd.PayInfoDic.Add("1", pop);
+            HappyModeData d = new HappyModeData();
+
+            persionRealItemInfo prii = new persionRealItemInfo();
+            prii.Index = 1;
+            hmd.RealItemInfoLst.Add(prii);
+
+            UserActionInfo uai = new UserActionInfo();
+            uai.index = 1;
+            hmd.ActionEnterHappyPoint.Add(1, uai);
+
+            RefleshCacheInfo rci = new RefleshCacheInfo();
+            rci.itemId = 1;
+            hmd.realItemBuyCntInRefleshTime.Add(1, rci);
+
+
+            d.realItemBuyCntInRefleshTime = clone<CacheDictionary<int, RefleshCacheInfo>>(hmd.realItemBuyCntInRefleshTime);
+            d.ActionEnterHappyPoint = clone<CacheDictionary<int, UserActionInfo>>(hmd.ActionEnterHappyPoint);
+            d.RealItemInfoLst = clone<CacheList<persionRealItemInfo>>(hmd.RealItemInfoLst);
+            d.PayInfoDic = clone<CacheDictionary<string, PayOrderPersion>>(hmd.PayInfoDic);
+        }
+        void doAdd_HappyDataFormat(string parm)
+        {
+            System.Threading.Thread thread = new System.Threading.Thread(th);
+            thread.Start();
+        }
+
+        static void checkMap()
+        {
+            var cache = new PersonalCacheStruct<The3rdUserIDMap>();
+            var theData = cache.FindKey("888");
+            if (theData == null) return;
+
+            var happyDataCache = new PersonalCacheStruct<HappyModeData>();
+
+            List<string> delKey = new List<string>();
+            theData.the3rdMap.Foreach((string key,int val) => {
+                if (happyDataCache.FindKey(val.ToString()) == null)
+                {
+                    delKey.Add(key);
+                }
+                return true;
+            });
+
+            foreach(var k in delKey)
+            {
+                if(theData.the3rdMap.ContainsKey(k))
+                {
+                    theData.the3rdMap.Remove(k);
+                    ConsoleLog.showErrorInfo(0,"map del:"+k);
+                }
+            }
+
+            var payCache = new PersonalCacheStruct<PayUserInfoEx>();
+            payCache.LoadFrom(null);
+
+            List<int> delPUILst = new List<int>();
+            payCache.Foreach((string s1,string s2,PayUserInfoEx pui)=> {
+                delPUILst.Add(pui.UserId);
+                return true;
+            });
+
+            foreach(var v in delPUILst)
+            {
+                var pui = payCache.FindKey(v.ToString());
+                if(null != pui)
+                    payCache.Delete(pui);
+                ConsoleLog.showErrorInfo(0,"del pui:"+v);
+            }
+        }
+        void doAdd_checkMap()
+        {
+            System.Threading.Thread thread = new System.Threading.Thread(checkMap);
+            thread.Start();
+        }
+        void doAdd_HappyDataMap(string parm)
+        {
+            doAdd_checkMap();
+            int id = int.Parse(parm);
+
+            var cache = new PersonalCacheStruct<The3rdUserIDMap>();
+            var theData = cache.FindKey("888");
+            if (theData == null) return;
+
+            foreach(var k in theData.the3rdMap.Keys)
+            {
+                if(theData.the3rdMap[k] == id)
+                {
+                    theData.the3rdMap.Remove(k);
+                    ConsoleLog.showErrorInfo(0,"map del:"+k+":"+id);
+                    break;
+                }
             }
         }
 
@@ -295,7 +638,9 @@ namespace GameServer.CsScript.Action
                 Action1005.returnJson rj = new Action1005.returnJson();
                 rj.id = the3rdID.ToString();
                 rj.name = pui.the3rdUsrName;
-                pui.InfoExt = JsonHelper.GetJson<Action1005.returnJson>(rj);
+                int id = Action1005.getHappyIndex(pui.typeUser, the3rdID.ToString());
+                pui.the3rdUsrID = (uint)id;
+                pui.InfoExt = (the3rdID + "," + "hello" + "," + GameConfigMgr.Instance().getString("360UrlCb", "http://www.youyisigame.com:8036/Service.aspx/Pay360") + "," + id); 
                 cache.Add(pui);
             }
         }
@@ -405,6 +750,14 @@ namespace GameServer.CsScript.Action
             else if("reCreateHappy"==cmd)
             {
                 doAdd_reCreateHappy(parm);
+            }
+            else if("happyDataFormat" == cmd)
+            {
+                doAdd_HappyDataFormat(parm);
+            }
+            else if ("happyDataMap" == cmd)
+            {
+                doAdd_HappyDataMap(parm);
             }
         }
 

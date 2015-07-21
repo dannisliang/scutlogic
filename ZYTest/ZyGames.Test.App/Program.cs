@@ -43,6 +43,7 @@ namespace ZyGames.Test.App
                 var setting = new TaskSetting();
                 ScriptEngines.AddReferencedAssembly("ZyGames.Test.dll");
                 ScriptEngines.AddReferencedAssembly("GameRanking.Pack.dll");
+                ScriptEngines.AddReferencedAssembly("Protocol.dll");
                 ScriptEngines.Initialize();
 
                 Console.WriteLine("===============================");

@@ -79,10 +79,7 @@ namespace GameServer.CsScript.Action
                 }
                 else
                 {
-                    buffer = BufferUtils.MergeBytes(
-                            BufferUtils.GetBytes(contentBytes.Length),
-                            contentBytes
-                        );
+                    buffer = BufferUtils.GetBytes(contentBytes);
                 }
             }
             //需要对字节数据加密处理，这里跳过

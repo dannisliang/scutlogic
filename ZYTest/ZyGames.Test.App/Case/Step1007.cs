@@ -63,7 +63,8 @@ namespace ZyGames.Quanmin.Test.Case
         {
             int id = -357016106;
             Request1007Pack requestPack = new Request1007Pack();
-            requestPack.the3rdUserID = 2;// KeyInt2Uint(id);
+            requestPack.the3rdUserID = 5228;// KeyInt2Uint(id);
+            requestPack.dateType = 1;
             byte[] data = ProtoBufUtils.Serialize(requestPack);
             System.Console.WriteLine(id+":"+requestPack.the3rdUserID + ":" + KeyUInt2Int(requestPack.the3rdUserID));
             netWriter.SetBodyData(data);
@@ -76,7 +77,11 @@ namespace ZyGames.Quanmin.Test.Case
            responseDataInfo = indentify + " acction success: " + responsePack.errorCode;
            responseDataInfo += "\nenterNum:"+responsePack.enterNum;
            responseDataInfo += "\nhappyPoint:"+responsePack.happyPoint;
-          
+           responseDataInfo += "\n realdInfo:";
+           foreach (var v in responsePack.realItemsIds)
+           {
+               responseDataInfo +=  v.id + " ";
+           }
            System.Console.WriteLine(responseDataInfo);
             return true;
         }

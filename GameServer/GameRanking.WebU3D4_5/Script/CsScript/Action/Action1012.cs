@@ -161,7 +161,7 @@ namespace GameServer.CsScript.Action
                      ConsoleLog.showErrorInfo(0,"is null"+(null==hd).ToString()+":"+(null==sric).ToString());
                 }
             }
-            ConsoleLog.showErrorInfo(0, "responsePack cnt:"+responsePack.Data.Count);
+            //ConsoleLog.showErrorInfo(0, "responsePack cnt:"+responsePack.Data.Count);
             responsePack.errorCode = 0;
             return true;
         }

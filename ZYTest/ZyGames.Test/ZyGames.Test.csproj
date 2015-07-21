@@ -81,6 +81,10 @@
       <Project>{8e34df75-e34a-48f1-ab77-36d5cb0f1e1c}</Project>
       <Name>GameRanking.Pack</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Protocol\Protocol.csproj">
+      <Project>{870498ae-e9e9-4221-82ca-b96d44d67922}</Project>
+      <Name>Protocol</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

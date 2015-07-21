@@ -43,7 +43,8 @@ namespace ZyGames.Quanmin.Test.Case
             Request1005Pack requestPack = new Request1005Pack();
             requestPack.token = "06433cd6e21d45f79a95c8e2ac9027c1-9d56aacb28bda0b9457bf9079bc715d9-20141222181929-ce629633cfaaf2bb1681719fc9b1f1ac-3b2927c8419cda02063bb7180deeb67a-f7ee2d74e5adcb026d457c2f7caee153";
             requestPack.typeUser = "YYS_CP360";
-            requestPack.UserID = 222222;
+            requestPack.version = "1.08";
+            requestPack.UserID = 1160518;
             byte[] data = ProtoBufUtils.Serialize(requestPack);
             netWriter.SetBodyData(data);
         }

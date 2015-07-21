@@ -198,7 +198,7 @@ namespace GameServer.CsScript.Action
                 return (int)ErrorCodeEx.timeout_serviceError;
             }
 
-            ConsoleLog.showErrorInfo(0, "result:" + returnValue);
+            //ConsoleLog.showErrorInfo(0, "result:" + returnValue);
             //获取返回数据
             if (result.ResultCode != 1)
             {
@@ -208,7 +208,7 @@ namespace GameServer.CsScript.Action
             string calcSign = Utility.Encrypt_MD5_UTF8(appID + result.ResultCode.ToString() + HttpUtility.UrlDecode(result.Content) + secretkey);
             if( result.Sign != calcSign)
             {
-                ConsoleLog.showErrorInfo(0, "sign:" + sign + "\ncalcSing:"+calcSign);
+                //ConsoleLog.showErrorInfo(0, "sign:" + sign + "\ncalcSing:"+calcSign);
                 return (int)ErrorCodeEx.check_singError;
             }
             //成功
@@ -236,7 +236,7 @@ namespace GameServer.CsScript.Action
         }
         public override bool TakeAction()
         {
-            ConsoleLog.showNotifyInfo("baiDu callBack . Action2502 call" + urlParams);
+            //ConsoleLog.showNotifyInfo("baiDu callBack . Action2502 call" + urlParams);
             //1.获取请求参数 提供两种获取参数方式
 
             #region 1.Request方式获取请求参数
@@ -247,7 +247,7 @@ namespace GameServer.CsScript.Action
             #endregion
 
             #region 2.读取POST流方式获取请求参数
-            ConsoleLog.showNotifyInfo("action2502 urlParms"+urlParams);
+            //ConsoleLog.showNotifyInfo("action2502 urlParms"+urlParams);
             var postData = urlParams; // parse at customActionDispatcher.
            // using (var br = new System.IO.BinaryReader(this.Request.InputStream))
             //{
@@ -293,7 +293,7 @@ namespace GameServer.CsScript.Action
                               "\ncooperatorOrderSerial" + cooperatorOrderSerial+
                               "\ncontent" + content +
                               "\nsecretkey" + secretkey ;
-                ConsoleLog.showNotifyInfo(info);
+                //ConsoleLog.showNotifyInfo(info);
                 return true;
             }
 
@@ -324,14 +324,14 @@ namespace GameServer.CsScript.Action
             }
             );
 
-            ConsoleLog.showNotifyInfo("action 2502 ok");
-            // 5 验证。
-            int checkResult = check(cooperatorOrderSerial);
-            if(checkResult != 0)
-            {
-                ConsoleLog.showErrorInfo(0,checkResult+" action 2502 check error");
-                return true;
-            }
+        //    ConsoleLog.showNotifyInfo("action 2502 ok");
+        //    // 5 验证。
+        //    int checkResult = check(cooperatorOrderSerial);
+        //    if(checkResult != 0)
+        //    {
+        //        ConsoleLog.showErrorInfo(0,checkResult+" action 2502 check error");
+        //        return true;
+        //    }
 
             // 6.执行业务逻辑处理,发放道具
             do
@@ -344,7 +344,7 @@ namespace GameServer.CsScript.Action
                     server_orderid = cooperatorOrderSerial;
                     order_id = orderSerial;
                     string info = "item info:"+server_orderid + "#uid:"+uid+"#order_id"+order_id;
-                    ConsoleLog.showErrorInfo(0,info);
+                    //ConsoleLog.showErrorInfo(0,info);
                     bool hasGet = ProcessHMD(server_orderid, true, "ok");
                     processCache(server_orderid, true, "ok", hasGet);
                     //var merchandiseName = item.MerchandiseName;
@@ -369,7 +369,7 @@ namespace GameServer.CsScript.Action
         bool addProductOnServer(PayOrderPersion payData, HappyModeData hmd)
         {
             string hd = GameConfigMgr.Instance().getProductInfo(payData.ProductId, payData.ServerOrderId);
-            ConsoleLog.showNotifyInfo(hd);
+            //ConsoleLog.showNotifyInfo(hd);
             string[] itemInfos = hd.Split(',');
             bool add = false;
             for(int i=0; i<itemInfos.Length; ++i)
@@ -424,8 +424,8 @@ namespace GameServer.CsScript.Action
                 if (false == hmd.PayInfoDic.ContainsKey(server_orderid))
                 {
                     // errorcode
-                    ConsoleLog.showErrorInfo(0, "PayLog ProcessHMD hmd not find :" + orderId);
-                    TraceLog.WriteError("PayLog ProcessHMD hmd not find :" + orderId);
+                    ConsoleLog.showErrorInfo(0, "PayLog ProcessHMD server_orderid not find :" + server_orderid + "/nbaidu orderID"+order_id);
+                    TraceLog.WriteError("PayLog ProcessHMD server_orderid not find :" + server_orderid + "baidu orderID" + order_id);
                     return false;
                 }
                 else
@@ -464,7 +464,7 @@ namespace GameServer.CsScript.Action
             });
             if (null == payData)
             {
-                ConsoleLog.showErrorInfo(0, "PayLog not find order:" + orderId);
+                //ConsoleLog.showErrorInfo(0, "PayLog not find order:" + orderId);
                 TraceLog.WriteError("PayLog not find order:" + orderId);
                 return false;
             }

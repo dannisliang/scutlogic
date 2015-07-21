@@ -31,18 +31,27 @@ using ZyGames.Framework.Common.Configuration;
 
 namespace ZyGames.Quanmin.Test.Case
 {
+
+
+    /*
+     * Class:   Step1000
+     * Desc:    上传排行榜数据
+     * Author：	guccang
+     * Date：	2015-07-21 15:54:00
+     */
     /// <summary>
-    /// 登录
+    /// Step1000 Document
     /// </summary>
+    
     public class Step1000 : CaseStep
     {
         public ResponsePack responsePack = null;
         protected override void SetUrlElement()
         {
           Request1000Pack req = new Request1000Pack();
-          req.UserName = "self";
-          req.Score = 100;//RandomUtils.GetRandom(1, 10);
-          req.UserID = 1;// RandomUtils.GetRandom(1, 1000);
+          req.UserName = "Computer_self"+indentify;
+          req.Score =  RandomUtils.GetRandom(1, 1000);
+          req.UserID = -10;// RandomUtils.GetRandom(1, 1000);
           req.version = "1.08";
           //System.Console.WriteLine("UserID: " + req.UserID);
           req.Identify = req.UserName;
@@ -54,9 +63,9 @@ namespace ZyGames.Quanmin.Test.Case
         protected override bool DecodePacket(MessageStructure reader, MessageHead head)
         {
              responsePack = ProtoBufUtils.Deserialize<ResponsePack>(netReader.Buffer);
-             string responseDataInfo = "";
-             responseDataInfo = indentify + " acction success: " + responsePack.UserID + ":" + responsePack.ErrorInfo;
-             System.Console.WriteLine(responseDataInfo);
+           //  string responseDataInfo = "";
+           //  responseDataInfo = indentify + " acction success: " + responsePack.UserID + ":" + responsePack.ErrorInfo;
+           //  System.Console.WriteLine(responseDataInfo);
             return true;
         }
 

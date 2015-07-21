@@ -138,7 +138,7 @@ namespace GameServer.Model
 
 
     [Serializable, ProtoContract]
-    public class PayOrderPersion : CacheItemChangeEvent
+    public class PayOrderPersion : EntityChangeEvent
     {
         public enum PayStatus
         {

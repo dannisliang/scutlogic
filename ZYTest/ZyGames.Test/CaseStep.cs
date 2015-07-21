@@ -64,7 +64,7 @@ namespace ZyGames.Test
             if (instance.isCustom)
             {
 
-                GameRanking.Pack.MessagePack headPack = new GameRanking.Pack.MessagePack()
+                GameRanking.Pack.RequestPackHead headPack = new GameRanking.Pack.RequestPackHead()
                 {
                     MsgId = 1,
                     ActionId = int.Parse(stepName),

@@ -15,5 +15,8 @@ namespace GameRanking.Pack
 
         [ProtoMember(103)]
         public int UserID { get; set; }
+
+        [ProtoMember(104)]
+        public string version { get; set; }
     }
 }

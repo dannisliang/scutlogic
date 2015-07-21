@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 using ProtoBuf;
 using ZyGames.Framework.Model;
-using System.Collections.Generic;
 
 namespace GameServer.Model
 {

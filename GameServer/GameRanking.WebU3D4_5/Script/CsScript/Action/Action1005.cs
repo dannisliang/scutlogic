@@ -48,7 +48,8 @@ namespace GameServer.CsScript.Action
     {
         private Request1005Pack requestPack;
         private Response1005Pack responsePack;
-        private int theUserId = -1;
+        static private int theUserId = -1;
+        static private string version = "1.09";
 
         enum ErrorCodeEx
         {
@@ -143,9 +144,16 @@ namespace GameServer.CsScript.Action
     //       return key;
     //   }
 
-        string getReturnInfo(string id, string name, string url)
+        public static string getReturnInfo(string id, string name, string url)
         {
-            return (id + "," + name + "," + url + "," + theUserId);
+            if (version == "1.08")
+            {
+                return (id + "," + name + "," + url);
+            }
+            else
+            {
+                return (id + "," + name + "," + url + "," + theUserId);
+            }
         }
 
         PayUserInfoEx getPUI(string theExInfo, int the3rdUsrID)
@@ -203,7 +211,7 @@ namespace GameServer.CsScript.Action
             {
                 responsePack.typeUser = requestPack.typeUser;
                 responsePack.result = getReturnInfo(jr);
-                responsePack.the3rdUserId = uint.Parse(jr.id);
+                responsePack.the3rdUserId = (uint)happyIndex;
                 responsePack.errorCode = (byte)Response1005Pack.EnumErrorCode.ok;
             }
         }
@@ -297,6 +305,7 @@ namespace GameServer.CsScript.Action
                   gu.CompensationDate = gu.CreateTime;
                   gu.NickName = "";
                   gu.Identify = requestPack.identify;
+                  gu.version = "1.09";
                   persionCache.Add(gu);
                   //
                   theUserId = gu.UserId;
@@ -305,6 +314,8 @@ namespace GameServer.CsScript.Action
             {
                 theUserId = requestPack.UserID;
             }
+          version = requestPack.version;
+          ConsoleLog.showErrorInfo(0, "acton1005:userid:"+requestPack.UserID+"#version:"+requestPack.version);
 
           if (requestPack.typeUser == "YYS_CP360")
             {
@@ -322,7 +333,7 @@ namespace GameServer.CsScript.Action
         }
 
 
-        string getReturnInfo(returnJson jr)
+        public static string getReturnInfo(returnJson jr)
         {
             string url = GameConfigMgr.Instance().getString("360UrlCb", "http://www.youyisigame.com:8036/Service.aspx/Pay360");
             string info = getReturnInfo(jr.id,jr.name,url);

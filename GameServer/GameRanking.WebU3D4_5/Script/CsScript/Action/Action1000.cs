@@ -73,10 +73,6 @@ namespace GameServer.CsScript.Action
             if (requestPack.UserID <= 0)
             {
                  gu.UserId = (int)persionCache.GetNextNo();
-                 gu.CreateTime = System.DateTime.Now;
-                 gu.CompensationDate = gu.CreateTime;
-                 gu.NickName = requestPack.UserName.Trim();
-                 gu.Identify = requestPack.Identify;
                  persionCache.Add(gu);
             }
             else
@@ -84,17 +80,18 @@ namespace GameServer.CsScript.Action
                 if (checkDataOk)
                 {
                     GameUser findGU = persionCache.FindKey(requestPack.UserID.ToString());
-                    if (null == findGU)
+                    if (null == findGU) // maybe create by happyPoint
                     {
-                        return false;
+                        persionCache.Add(gu);
                     }
-                    if (requestPack.Score > findGU.Score)
+                    else if (requestPack.Score > findGU.Score)
                     {
                         findGU.ModifyLocked(() =>
                         {
                             findGU.NickName = gu.NickName;
-                            findGU.Score = gu.Score;
-                            findGU.state = gu.state;
+                            findGU.Score    = gu.Score;
+                            findGU.state    = gu.state;
+                            findGU.version  = gu.version;
                         });
                     }
                 }

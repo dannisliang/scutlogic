@@ -15,7 +15,6 @@ namespace GameServer.CsScript.Action
     {
 
         RequestLog80000Pack requestPack;
-        ResponsePack responsePack;
 
         public Action80000(ActionGetter actionGetter)
             : base(80000, actionGetter)
@@ -42,36 +41,54 @@ namespace GameServer.CsScript.Action
 
         public override bool TakeAction()
         {
-            try
-            {
-                var UA = new UserAnalysis();
-                foreach (logData d in requestPack.items)
-                {
-                    UA.DeviceId = d.DeviceID;
-                    UA.Channel = d.Channel;
-                    UA.SimType = d.SimType;
-                    UA.ActionType = (UserAnalysis.E_ActionType)d.ActionType;
-                    UA.ProductionId = d.ProductionId;
-                    UA.ActionTime = System.DateTime.Now;
-                    //DataSyncQueueManager.SendToDb(UA);
-                    Console.WriteLine("{0}GameSession:{1}", DateTime.Now.ToString("HH:mm:ss"), GameSession.Count);
-                }
-                responsePack = new ResponsePack();
-                responsePack.ActionId = 80000;
-                responsePack.ErrorCode = 101;
-                responsePack.ErrorInfo = "Success";
-                return true;
-            }
-            catch (Exception ex)
-            {
-                TraceLog.WriteError("TakeAction:{0} error:{1}", actionId, ex);
-                return false;
-            }
+
+            var cache = new ShareCacheStruct<testUpdate>();
+            var tu = new testUpdate();
+            tu.index = (int)cache.GetNextNo();
+            tu.itemID = 0;
+
+            tu.ModifyLocked(() => {
+                tu.itemID = 1;
+            });
+
+            tu = cache.FindKey(tu.index);
+
+            tu = new testUpdate();
+            tu.index = (int)cache.GetNextNo();
+            tu.itemID = 100;
+            cache.Add(tu);
+            tu = cache.FindKey(tu.index);
+        //   try
+        //   {
+        //       var UA = new UserAnalysis();
+        //       foreach (logData d in requestPack.items)
+        //       {
+        //           UA.DeviceId = d.DeviceID;
+        //           UA.Channel = d.Channel;
+        //           UA.SimType = d.SimType;
+        //           UA.ActionType = (UserAnalysis.E_ActionType)d.ActionType;
+        //           UA.ProductionId = d.ProductionId;
+        //           UA.ActionTime = System.DateTime.Now;
+        //           //DataSyncQueueManager.SendToDb(UA);
+        //           Console.WriteLine("{0}GameSession:{1}", DateTime.Now.ToString("HH:mm:ss"), GameSession.Count);
+        //       }
+        //       responsePack = new ResponsePack();
+        //       responsePack.ActionId = 80000;
+        //       responsePack.ErrorCode = 101;
+        //       responsePack.ErrorInfo = "Success";
+        //       return true;
+        //   }
+        //   catch (Exception ex)
+        //   {
+        //       TraceLog.WriteError("TakeAction:{0} error:{1}", actionId, ex);
+        //       return false;
+        //   }
+            return true;
         }
 
         protected override byte[] BuildResponsePack()
         {
-            return ProtoBufUtils.Serialize(responsePack);
+            return new byte[0];
         }
     }
 }

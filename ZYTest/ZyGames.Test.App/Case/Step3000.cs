@@ -25,60 +25,47 @@ THE SOFTWARE.
 using ZyGames.Framework.Common;
 using ZyGames.Framework.RPC.IO;
 using ZyGames.Test;
-using GameRanking.Pack;
 using ZyGames.Framework.Common.Serialization;
-using System.Collections.Generic;
+using ZyGames.Framework.Common.Configuration;
+using Game.YYS.Protocol;
 
 namespace ZyGames.Quanmin.Test.Case
 {
     /// <summary>
     /// 登录
     /// </summary>
-    public class Step1002 : CaseStep
+    public class Step3000 : CaseStep
     {
-        static int index = 0;
-        Response1002Pack responsePack = null;
-        List<string> version;
-        
+        public Action3000Response responsePack = null;
         protected override void SetUrlElement()
         {
-            version = new List<string>();
-            version.Add("1.01");
-            version.Add("1.02");
-            version.Add("1.03");
-            version.Add("1.04");
-            version.Add("1.05");
-            version.Add("1.06");
-            version.Add("1.07");
-            int index = RandomUtils.GetRandom(0, 2) ;
-            Request1002Pack req = new Request1002Pack();
-            req.Version = "1.09";// version[index];
-           // req.Ip = "123.57.73.204";
+            Action3000Request req = new Action3000Request();
+            req.type = 1;
             byte[] data = ProtoBufUtils.Serialize(req);
             netWriter.SetBodyData(data);
-
         }
 
         protected override bool DecodePacket(MessageStructure reader, MessageHead head)
         {
-            responsePack = ProtoBufUtils.Deserialize<Response1002Pack>(netReader.Buffer);
-              string responseDataInfo = "";
-              responseDataInfo = System.DateTime.Now.ToString() + " acction success 1002:" + netReader.Buffer.Length + "\nInfo###########\n";
-              foreach(var d in responsePack.Datas)
-              {
-                  responseDataInfo += d.type +  "->";
-                  if (d.ext == null) responseDataInfo = "ffffxxx=====" + responseDataInfo;
-                  if (d.ext != null)
-                  {
-                      foreach (var v in d.ext)
-                      {
-                          responseDataInfo += v + ",";
-                      }
-                  }
-                
-                    responseDataInfo += "\n";
-                }
+            try
+            {
+                responsePack = ProtoBufUtils.Deserialize<Action3000Response>(netReader.Buffer);
+                string responseDataInfo = "";
+                responseDataInfo = "acction success: " + responsePack.ErrorCode;
+                // responseDataInfo += "\nint:"+responsePack.int_test;
+                // responseDataInfo += "\nfloat:"+responsePack.float_test;
+                // responseDataInfo += "\nuint:" + responsePack.uint_test;
+                // responseDataInfo += "\nlist_int:" + responsePack.list_int_test[0];
+                // responseDataInfo += "\nlist_class:" + responsePack.list_class_test[0].data;
+                // responseDataInfo += "\ndic_int:" + responsePack.dic_int_test[0];
+                // responseDataInfo += "\ndic_class:" + responsePack.dic_class_test[0].data;
                 System.Console.WriteLine(responseDataInfo);
+            }
+            catch (System.Exception e)
+            {
+                System.Console.WriteLine(e.Message);
+            }
+     
             return true;
         }
 

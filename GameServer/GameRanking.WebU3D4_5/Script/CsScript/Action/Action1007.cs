@@ -82,20 +82,9 @@ namespace GameServer.CsScript.Action
         }
         public override bool TakeAction()
         {
+            ConsoleLog.showErrorInfo(0, "action 1007 the3rdUserID:" + requestPack.the3rdUserID);
             // 存入数据库
             var cache = new PersonalCacheStruct<HappyModeData>();
-            
-            // todo test
-            // test -1
-            HappyModeData testHMD = new HappyModeData();
-            testHMD.the3rdUserId = -1;// (int)cache.GetNextNo();
-            testHMD.HappyPoint = 888;
-            cache.Add(testHMD);
-
-            testHMD = cache.FindKey("-1");
-            // test
-
-            
             int keyid = utils.KeyUInt2Int(requestPack.the3rdUserID);
             HappyModeData hmd = cache.FindKey(keyid.ToString());
             int happyPointMaxEnterNum = GameConfigMgr.Instance().getInt("happyPointMaxEnterNum", 3);

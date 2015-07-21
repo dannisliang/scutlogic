@@ -44,9 +44,9 @@ namespace ZyGames.Quanmin.Test.Case
         {
            
             Request1003Pack req = new Request1003Pack();
-            req.code = "D3VIEHTN3";
-            req.type = 12;
-            req.index = 0;
+            req.code = "UY2SXTNKY";
+            req.type = 56;
+            req.index = 61;
             // req.Ip = "123.57.73.204";
             byte[] data = ProtoBufUtils.Serialize(req);
             netWriter.SetBodyData(data);

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>FileComment</Title>
+      <Shortcut>guccangFC</Shortcut>
+      <Description>FileComment 语句的代码段</Description>
+      <Author>guccang</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+        <SnippetType>SurroundsWith</SnippetType>
+      </SnippetTypes>
+    </Header>
+	
+    <Snippet>
+      <Declarations>
+	    <Literal>
+          <ID>Name</ID>
+          <ToolTip>文件名</ToolTip>
+          <Default>fileName</Default>
+        </Literal>
+		
+        <Literal>
+          <ID>License</ID>
+          <ToolTip>授权</ToolTip>
+          <Default>MIT</Default>
+        </Literal>
+
+        <Literal>
+          <ID>Author</ID>
+          <ToolTip>作者</ToolTip>
+          <Default>guccang</Default>
+        </Literal>
+
+        <Literal>
+          <ID>Date</ID>
+          <ToolTip>日期</ToolTip>
+          <Default>2015-7-21 11:11:11</Default>
+        </Literal>
+		
+		<Literal>
+          <ID>Desc</ID>
+          <ToolTip>描述</ToolTip>
+          <Default>添加文件描述</Default>
+        </Literal>
+		
+		<Literal>
+          <ID>URL</ID>
+          <ToolTip>url</ToolTip>
+          <Default>http://guccang.github.io</Default>
+        </Literal>
+
+		<Literal>
+          <ID>Email</ID>
+          <ToolTip>Email</ToolTip>
+          <Default>guccang@126.com</Default>
+        </Literal>
+		
+
+      </Declarations>
+
+      <Code Language="csharp">
+        <![CDATA[
+		/****************************************************************************
+			File:		$Name$
+			Desc:		$Desc$
+			Date:		$Date$
+			License:	$License$
+			Author:		$Author$
+			URL:		$URL$
+			Email:		$Email$
+	    ****************************************************************************/
+		$selected$ $end$]]>
+      </Code>
+
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

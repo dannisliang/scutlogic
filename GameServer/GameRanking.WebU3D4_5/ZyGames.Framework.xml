@@ -222,6 +222,12 @@
             <param name="match"></param>
             <param name="isReplace"></param>
         </member>
+        <member name="M:ZyGames.Framework.Cache.Generic.BaseCacheStruct`1.SetLoadSuccess(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="key"></param>
+        </member>
         <member name="M:ZyGames.Framework.Cache.Generic.BaseCacheStruct`1.TryLoadItem(System.String,System.Boolean)">
             <summary>
             加载指定Key数据
@@ -1372,14 +1378,6 @@
             </summary>
             <param name="redisKey"></param>
             <param name="itemSet"></param>
-            <returns></returns>
-        </member>
-        <member name="M:ZyGames.Framework.Cache.Generic.CacheFactory.AddOrUpdateEntity(ZyGames.Framework.Model.AbstractEntity,System.Int32)">
-            <summary>
-            
-            </summary>
-            <param name="entity"></param>
-            <param name="periodTime"></param>
             <returns></returns>
         </member>
         <member name="M:ZyGames.Framework.Cache.Generic.CacheFactory.AddOrUpdateEntity(ZyGames.Framework.Model.AbstractEntity,ZyGames.Framework.Cache.Generic.CacheItemSet@,System.Int32)">
@@ -3258,6 +3256,12 @@
             <param name="period"></param>
             <returns></returns>
         </member>
+        <member name="M:ZyGames.Framework.Cache.Generic.PersonalCacheStruct`1.CheckMutilKeyAndLoad(System.String)">
+            <summary>
+            是否有多个键且未加载成功状态
+            </summary>
+            <param name="personalId"></param>
+        </member>
         <member name="M:ZyGames.Framework.Cache.Generic.PersonalCacheStruct`1.UpdateSelf(System.String)">
             <summary>
             更新自已的数据
@@ -4764,7 +4768,7 @@
         </member>
         <member name="P:ZyGames.Framework.Config.CacheSection.ShareExpirePeriod">
             <summary>
-            Personal cache expire period
+            cache expire period
             </summary>
         </member>
         <member name="T:ZyGames.Framework.Data.CommandFilter">

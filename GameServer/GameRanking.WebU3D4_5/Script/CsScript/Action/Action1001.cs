@@ -102,7 +102,7 @@ namespace GameServer.CsScript.Action
                 pos = ~pos;
                 if (pos + 1 > 99999) pos = 99998;
             }
-            if (pos >= 99999) pos = 99998;
+            if (pos + 1>= 99999) pos = 99998;
             return pos;
         }
 
@@ -136,7 +136,7 @@ namespace GameServer.CsScript.Action
             }
 
             selfPos = formatPos(selfPos);
-            responsePack.ItemsExScore.Add(new RankData() { pos = selfPos, UserName = "self", Score = selfURT.Total, UserID = selfURT.UserID });
+            responsePack.ItemsExScore.Add(new RankData() { pos = selfPos, UserName = selfPos+","+selfURT.Total, Score = selfURT.Total, UserID = selfURT.UserID });
 
             int maxSend = GameConfigMgr.Instance().getInt("rank_send_num_total", 10);
             var personCache = new PersonalCacheStruct<GameUser>();
@@ -186,9 +186,10 @@ namespace GameServer.CsScript.Action
             responsePack.lowScore = l;
             responsePack.totalPlayer = rankingList.Count;
             responsePack.youPos = pos+1;
+            RankData self = null;
             if(requestPack.UserID>0)
             {
-                RankData self = new RankData() { pos = responsePack.youPos, UserName = "self", Score = selfScore, UserID = requestPack.UserID };
+                self = new RankData() { pos = responsePack.youPos, UserName = "self", Score = selfScore, UserID = requestPack.UserID };
                 responsePack.Items.Add(self);
             }
 
@@ -197,13 +198,22 @@ namespace GameServer.CsScript.Action
             for (int i = 0; i < sendS.Length; ++i)
             {
                 int index = int.Parse(sendS[i])-1;
-                if (index > rankingList.Count - 1) continue;
-                RankData rd = new RankData();
-                if (requestPack.UserID == rd.UserID)
+                if (index<0 || index > rankingList.Count - 1) continue;
+                if (requestPack.UserID == rankingList[index].UserID)
                 {
-                    responsePack.Items.Remove(rd);
+                    if (index+1 < responsePack.youPos)
+                        responsePack.youPos = index + 1;
+                    foreach(var v in responsePack.Items)
+                    {
+                        if(v.UserID == requestPack.UserID)
+                        {
+                            v.pos = index + 1;
+                            break;
+                        }
+                    }
+                    continue;
                 }
-
+                RankData rd = new RankData();
                 rd.Score = rankingList[index].Score;
                 rd.UserName = rankingList[index].UserName;
                 rd.UserID = rankingList[index].UserID;
@@ -326,24 +336,29 @@ namespace GameServer.CsScript.Action
 
         public override bool TakeAction()
         {
-
-            // todo : remove must be ztj
-            var cache = new ShareCacheStruct<testUpdate>();
-            var ur = cache.FindKey(1);
-            if(null == ur)
-            {
-                ur = new testUpdate();
-                ur.index = 1;
-                cache.Add(ur);
-            }
-            ur.ModifyLocked(() => {
-                ur.itemID = requestPack.PageSize;
-            });
-            ur = cache.FindKey(1);
-
             RankingFactorNew.Singleton().Loop<UserRankingTotal>(typeof(RankingTotal).ToString(), cbFuncRankingTotal);
-            RankingFactorNew.Singleton().Loop<UserRanking>(typeof(RankingScore).ToString(), cbFuncDuang);
-       
+
+            var cache = new PersonalCacheStruct<GameUser>();
+            GameUser p = null;
+            if(requestPack.UserID>0)
+            {
+                p = cache.FindKey(requestPack.UserID.ToString());
+            }
+            if(p==null)
+            {
+                RankingFactorNew.Singleton().Loop<UserRanking>(typeof(RankingScore).ToString(), cbFuncDuang);
+            }
+            else
+            {
+                if(p.version == "1.09")
+                {
+                    RankingFactorNew.Singleton().Loop<UserRanking>(typeof(RankingScore).ToString(), cbFuncDuang);
+                }
+                else
+                {
+                    RankingFactorNew.Singleton().Loop<UserRanking>(typeof(RankingScore).ToString(), cbFunc8self8);
+                }
+            }
            return true;
         }
 

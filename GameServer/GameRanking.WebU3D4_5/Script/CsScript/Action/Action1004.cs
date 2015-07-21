@@ -95,8 +95,22 @@ namespace GameServer.CsScript.Action
             return true;
         }
      
+        void bugForVersion()
+         {
+             int userID = requestPack.UserID;
+             var userCache = new PersonalCacheStruct<GameUser>();
+             var gu = userCache.FindKey(userID.ToString());
+             if (null != gu)
+             {
+                 gu.ModifyLocked(() =>
+                 {
+                     gu.version = requestPack.version;
+                 });
+             }
+         }
         public override bool TakeAction()
         {
+            bugForVersion();
             responsePack.status = requestPack.status+1;
             responsePack.actionID = requestPack.actionID;
             responsePack.errorCode = (byte)Response1004Pack.EnumErrorCode.ok;
