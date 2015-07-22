@@ -37,7 +37,17 @@ using System.Web;
 
 namespace GameServer.CsScript.Action
 {
-    // login
+
+    /*
+     * Class:   Action3000
+     * Desc:   	新协议测试
+     * Author：	guccang
+     * Date：	2015-7-21 11:11:11
+     */
+    /// <summary>
+    /// Action3000 新协议测试
+    /// </summary>
+    
     public class Action3000 : BaseAction
     {
         Action3000Response responsePack;

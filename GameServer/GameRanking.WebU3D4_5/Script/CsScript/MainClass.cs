@@ -11,6 +11,7 @@ using Game.NSNS;
 
 namespace Game.Script
 {
+
     public class MainClass : GameHttpHost
     {
         static int cnt = 0;
@@ -100,6 +101,17 @@ namespace Game.Script
         {
             base.OnRequested(actionGetter, response);
         }
-
+        public override void Stop()
+        {
+            OnServiceStop();
+            try
+            {
+                EntitySyncManger.Dispose();
+            }
+            catch
+            {
+            }
+            base.Stop();
+        }
     }
 }

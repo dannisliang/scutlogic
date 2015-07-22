@@ -4,7 +4,7 @@ using ProtoBuf;
 namespace Game.YYS.Protocol
 {
     [ProtoContract]
-    public class RequestPackHead
+    public class MessagePack
     {
         [ProtoMember(1)]
         public int MsgId { get; set; }

@@ -43,6 +43,7 @@ namespace ZyGames.Quanmin.Test.Case
             req.PageIndex = 76367;// RandomUtils.GetRandom(1, 10000);
             req.PageSize  = 1;
             req.UserID = 111111;
+            req.version = "1.09";
             byte[] data = ProtoBufUtils.Serialize(req);
             netWriter.SetBodyData(data);
         }
@@ -50,25 +51,25 @@ namespace ZyGames.Quanmin.Test.Case
         protected override bool DecodePacket(MessageStructure reader, MessageHead head)
         {
             responsePack = ProtoBufUtils.Deserialize<Response1001Pack>(netReader.Buffer);
-         //  string responseDataInfo = "";
-         //  responseDataInfo = indentify + " acction success: item.count:" + responsePack.Items.Count;
-         //  foreach(var d in responsePack.Items)
-         //  {
-         //      //break;
-         //      responseDataInfo += "\nuserid:" + d.UserID;
-         //      responseDataInfo += " UserName:" + d.UserName;
-         //      responseDataInfo += " pos:" + d.pos;
-         //      responseDataInfo += " Score:" + d.Score;
-         //  }
-         //  responseDataInfo += "\nExScore:" + responsePack.ItemsExScore.Count;
-         //  foreach (var d in responsePack.ItemsExScore)
-         //  {
-         //      responseDataInfo += "\nuserid:" + d.UserID;
-         //      responseDataInfo += " UserName:" + d.UserName;
-         //      responseDataInfo += " pos:" + d.pos;
-         //      responseDataInfo += " Score:" + d.Score;
-         //  }
-         //  System.Console.WriteLine(responseDataInfo);
+             string responseDataInfo = "";
+             responseDataInfo = indentify + " acction success: item.count:" + responsePack.Items.Count;
+             foreach(var d in responsePack.Items)
+             {
+                 //break;
+                 responseDataInfo += "\nuserid:" + d.UserID;
+                 responseDataInfo += " UserName:" + d.UserName;
+                 responseDataInfo += " pos:" + d.pos;
+                 responseDataInfo += " Score:" + d.Score;
+             }
+             responseDataInfo += "\nExScore:" + responsePack.ItemsExScore.Count;
+             foreach (var d in responsePack.ItemsExScore)
+             {
+                 responseDataInfo += "\nuserid:" + d.UserID;
+                 responseDataInfo += " UserName:" + d.UserName;
+                 responseDataInfo += " pos:" + d.pos;
+                 responseDataInfo += " Score:" + d.Score;
+             }
+             System.Console.WriteLine(responseDataInfo);
             return true;
         }
 

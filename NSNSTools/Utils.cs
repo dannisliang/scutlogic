@@ -66,6 +66,40 @@ namespace Game.NSNS
     }
     public class utils
     {
+        static public  uint BytesToLong(byte a, byte b, byte c, byte d)
+        {
+            return ((uint)a << 24) | ((uint)b << 16) | ((uint)c << 8) | d;
+        }
+
+        static public uint getIpUnit(string s)
+        {
+            string[] ipbyte = s.Split('.');
+            if (ipbyte.Length != 4)
+            {
+
+            }
+            else
+            {
+                byte a, b, c, d;
+                a = byte.Parse(ipbyte[0]);
+                b = byte.Parse(ipbyte[1]);
+                c = byte.Parse(ipbyte[2]);
+                d = byte.Parse(ipbyte[3]);
+                return BytesToLong(a, b, c, d);
+            }
+            return 0;
+        }
+
+        static public string getIp(uint serverHost)
+        {
+            Byte a, b, c, d;
+            a = (byte)(serverHost & 0xff000000);
+            b = (byte)(serverHost & 0x00ff0000);
+            c = (byte)(serverHost & 0x0000ff00);
+            d = (byte)(serverHost & 0x000000ff);
+            string ip = a + "." + b + "." + c + "." + d;
+            return ip;
+        }
         static public uint KeyInt2Uint(int id)
         {
             if(id < 0)
