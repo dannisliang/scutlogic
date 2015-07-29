@@ -82,9 +82,9 @@ namespace GameServer.CsScript.Action
         }
         public override bool TakeAction()
         {
-            ConsoleLog.showErrorInfo(0, "action 1007 the3rdUserID:" + requestPack.the3rdUserID);
             // 存入数据库
             var cache = new PersonalCacheStruct<HappyModeData>();
+            ConsoleLog.showErrorInfo(0, "index:" + cache.GetNextNo());
             int keyid = utils.KeyUInt2Int(requestPack.the3rdUserID);
             HappyModeData hmd = cache.FindKey(keyid.ToString());
             int happyPointMaxEnterNum = GameConfigMgr.Instance().getInt("happyPointMaxEnterNum", 3);
@@ -93,7 +93,6 @@ namespace GameServer.CsScript.Action
                 responsePack.errorCode = (byte)Response1007Pack.EnumErrorCode.not_findHMD;
                 return true;
             }
-            ConsoleLog.showErrorInfo(0, "hmd:" + hmd.the3rdUserId + "req:" + requestPack.the3rdUserID);
 
             doRefleshEnterTimer(hmd); // 刷新enterNum
             responsePack.errorCode      = (byte)Response1007Pack.EnumErrorCode.ok;

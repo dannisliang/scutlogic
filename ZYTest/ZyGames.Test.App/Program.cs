@@ -34,41 +34,19 @@ using ZyGames.Test.Net;
 
 namespace ZyGames.Test.App
 {
+  
     class Program
     {
         static void Main(string[] args)
         {
             try
             {
-                var setting = new TaskSetting();
+                autoTest tasks = new autoTest();
                 ScriptEngines.AddReferencedAssembly("ZyGames.Test.dll");
                 ScriptEngines.AddReferencedAssembly("GameRanking.Pack.dll");
                 ScriptEngines.AddReferencedAssembly("Protocol.dll");
                 ScriptEngines.Initialize();
-
-                Console.WriteLine("===============================");
-                Console.WriteLine("Stress Test");
-                Console.WriteLine("Option:");
-                Console.WriteLine("\tPress \"Esc\" is exits!");
-                Console.WriteLine("===============================");
-                Console.WriteLine("Press any key start run");
-                if (Console.ReadKey().Key == ConsoleKey.Escape)
-                {
-                    return;
-                }
-                Console.WriteLine("Running...");
-                while (true)
-                {
-                    string result = ThreadManager.RunTest(setting);
-                    Console.WriteLine(result);
-                    TraceLog.ReleaseWrite(result);
-                    Console.WriteLine("Press any key to continue.");
-                    if (Console.ReadKey().Key == ConsoleKey.Escape)
-                    {
-                        break;
-                    }
-                    Console.WriteLine("Running...");
-                }
+                tasks.RunTasks();
             }
             catch (Exception ex)
             {

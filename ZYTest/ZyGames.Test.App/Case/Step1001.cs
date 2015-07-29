@@ -69,7 +69,8 @@ namespace ZyGames.Quanmin.Test.Case
                  responseDataInfo += " pos:" + d.pos;
                  responseDataInfo += " Score:" + d.Score;
              }
-             System.Console.WriteLine(responseDataInfo);
+             //System.Console.WriteLine(responseDataInfo);
+             DecodePacketInfo = responseDataInfo;
             return true;
         }
 

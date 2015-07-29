@@ -95,6 +95,7 @@
     <Compile Include="Script\CsScript\Action\BaseAction.cs" />
     <Compile Include="Script\CsScript\logic\GameConfig\GameConfigHappyPoint.cs" />
     <Compile Include="Script\CsScript\logic\GameConfig\GameConfigItems.cs" />
+    <Compile Include="Script\CsScript\logic\GameConfig\GameConfigOthers.cs" />
     <Compile Include="Script\CsScript\logic\GameConfig\GameConfigRankingReward.cs" />
     <Compile Include="Script\CsScript\logic\GameConfig\GameConfigValue.cs" />
     <Compile Include="Script\CsScript\logic\LoadBalance\LoadBalance.cs" />

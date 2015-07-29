@@ -60,7 +60,11 @@ namespace ZyGames.Quanmin.Test.Case
             int GuideID = reader.ReadInt();
             if (GuideID == 1005)
             {
-                SetChildStep("1005");
+                System.Collections.Generic.Dictionary<string,string> dic = new System.Collections.Generic.Dictionary<string,string>();
+                dic.Add("Name01", "value01");
+                dic.Add("Name02", "value02");
+                dic.Add("Name03", "value03");
+                SetChildStep("1005",createParms("1005",dic));
             }
             return true;
         }

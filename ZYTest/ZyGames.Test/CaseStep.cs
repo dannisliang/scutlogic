@@ -81,6 +81,8 @@ namespace ZyGames.Test
         protected ThreadSession _session;
         protected StepTimer _stepTimer;
         private Dictionary<string, string> _params;
+        public int childStepId { get; set; }
+        public string _parm { get; set; }
 
         protected CaseStep()
         {
@@ -88,6 +90,7 @@ namespace ZyGames.Test
             Action = "";
             _params = new Dictionary<string, string>();
             Runtimes = 1;
+            childStepId = -1;
         }
 
         public string Action { get; private set; }
@@ -107,6 +110,8 @@ namespace ZyGames.Test
         /// </summary>
         public CaseStep ChildStep { get; private set; }
 
+        public string DecodePacketInfo { get; set; }
+
         protected void SetRequestParam(string key, object value)
         {
             _params[key] = value.ToString();
@@ -120,6 +125,18 @@ namespace ZyGames.Test
             SetRequestParam("Sid", _session.Context.SessionId);
             SetRequestParam("Uid", _session.Context.UserId);
             SetRequestParam("ActionId", Action);
+
+            if (string.IsNullOrEmpty(_parm)) return;
+
+            string[] parmsSplits = _parm.Split('=');
+            string key = parmsSplits[0];
+            string val = parmsSplits[1];
+            string[] valSplits = val.Split(',');
+            for (int i = 0; i < valSplits.Length; ++i)
+            {
+                string[] words = valSplits[i].Split(':');
+                SetRequestParam(words[0], words[1]);
+            }
         }
 
 
@@ -262,7 +279,17 @@ namespace ZyGames.Test
             _session.Proxy.CheckConnect();
         }
 
-        protected void SetChildStep(string stepName)
+        static public string createParms(string actionID,Dictionary<string,string> iPams)
+        {
+            string ret = "Parms"+actionID+"=";
+            foreach(var key in iPams.Keys)
+            {
+                ret += key + ":" + iPams[key];
+            }
+            return ret;
+        }
+
+        protected void SetChildStep(string stepName,string parms="")
         {
             CaseStep caseStep = null;
             if (!string.IsNullOrEmpty(stepName))
@@ -270,9 +297,10 @@ namespace ZyGames.Test
                 caseStep = Create(_session.Setting.CaseStepTypeFormat, stepName,indentify);
                 if (caseStep == null) throw new Exception(string.Format(_session.Setting.CaseStepTypeFormat, stepName) + " isn't found.");
                 caseStep.Runtimes = 1;
+                caseStep._parm = parms;
                 caseStep.Init(_session);
             }
-            ChildStep = caseStep;
+            ChildStep        = caseStep;
         }
 
         protected abstract void SetUrlElement();

@@ -78,8 +78,12 @@ namespace ZyGames.Test
             UserId = _testUserId;
             UserPwd = _testUserPwd;
             CaseStepList = new List<string>(_testSteps);
+            Parms = new List<string>();
+            child = -1;
         }
 
+        public int child {get;set;}
+        public List<string> Parms { get; set; }
         public string CaseStepTypeFormat { get; set; }
 
         public string EncodePwdKey { get; set; }
@@ -112,7 +116,7 @@ namespace ZyGames.Test
         /// </summary>
         public TimeSpan WaitTimeout { get; set; }
 
-        public List<string> CaseStepList { get; private set; }
+        public List<string> CaseStepList { get;  set; }
 
     }
 }

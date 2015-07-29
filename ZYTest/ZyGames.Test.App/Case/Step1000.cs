@@ -63,10 +63,26 @@ namespace ZyGames.Quanmin.Test.Case
         protected override bool DecodePacket(MessageStructure reader, MessageHead head)
         {
              responsePack = ProtoBufUtils.Deserialize<ResponsePack>(netReader.Buffer);
-           //  string responseDataInfo = "";
-           //  responseDataInfo = indentify + " acction success: " + responsePack.UserID + ":" + responsePack.ErrorInfo;
-           //  System.Console.WriteLine(responseDataInfo);
-            return true;
+             string responseDataInfo = "";
+             responseDataInfo = indentify + " acction success: " + responsePack.UserID + ":" + responsePack.ErrorInfo;
+             //System.Console.WriteLine(responseDataInfo);
+             DecodePacketInfo = responseDataInfo;
+            if(childStepId>0)
+            {
+                System.Collections.Generic.Dictionary<string,string> dic = new System.Collections.Generic.Dictionary<string,string>();
+                /*
+                req.PageIndex = 76367;// RandomUtils.GetRandom(1, 10000);
+                req.PageSize = 1;
+                req.UserID = 111111;
+                req.version = "1.09";
+                **/
+                dic.Add("PageIndex","1234");
+                dic.Add("PageSize","1");
+                dic.Add("UserID", "111111");
+                dic.Add("version", "1.09");
+                SetChildStep(childStepId.ToString(), createParms(childStepId.ToString(), dic));
+            }
+             return true;
         }
 
     }

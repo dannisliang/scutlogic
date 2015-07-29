@@ -39,7 +39,7 @@ namespace ZyGames.Quanmin.Test.Case
         static int index = 0;
         Response1002Pack responsePack = null;
         List<string> version;
-        
+
         protected override void SetUrlElement()
         {
             version = new List<string>();

@@ -63,7 +63,7 @@ namespace ZyGames.Quanmin.Test.Case
         {
             int id = -357016106;
             Request1012Pack requestPack = new Request1012Pack();
-            requestPack.the3rdUserID = 162;// KeyInt2Uint(id);
+            requestPack.the3rdUserID = 5228;// KeyInt2Uint(id);
             byte[] data = ProtoBufUtils.Serialize(requestPack);
             //System.Console.WriteLine(id + ":" + requestPack.the3rdUserID + ":" + KeyUInt2Int(requestPack.the3rdUserID));
             netWriter.SetBodyData(data);
@@ -72,13 +72,13 @@ namespace ZyGames.Quanmin.Test.Case
         protected override bool DecodePacket(MessageStructure reader, MessageHead head)
         {
             responsePack = ProtoBufUtils.Deserialize<Response1012Pack>(netReader.Buffer);
-          // string responseDataInfo = "";
-          // responseDataInfo = indentify + " acction success: " + responsePack.errorCode;
-          // foreach(var v in responsePack.Data)
-          // {
-          //     responseDataInfo += v.name +  " ";
-          // }
-          // System.Console.WriteLine(responseDataInfo);
+            string responseDataInfo = "";
+            responseDataInfo = indentify + " acction success: " + responsePack.errorCode;
+            foreach(var v in responsePack.Data)
+            {
+                responseDataInfo += v.name +  " ";
+            }
+            System.Console.WriteLine(responseDataInfo);
             return true;
         }
 

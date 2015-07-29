@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutoTest.cs" />
     <Compile Include="CaseContext.cs" />
     <Compile Include="CaseStep.cs" />
     <Compile Include="CustomHeadFormater.cs" />

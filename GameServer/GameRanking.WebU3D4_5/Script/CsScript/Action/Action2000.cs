@@ -390,6 +390,10 @@ namespace GameServer.CsScript.Action
             thread.Start();
         }
 
+        static void checkMapRepeat()
+        {
+        }
+
         static void checkMap()
         {
             var cache = new PersonalCacheStruct<The3rdUserIDMap>();
@@ -437,6 +441,101 @@ namespace GameServer.CsScript.Action
         {
             System.Threading.Thread thread = new System.Threading.Thread(checkMap);
             thread.Start();
+        }
+
+        void doAdd_HMD(string parm)
+        {
+            var happyCache = new PersonalCacheStruct<HappyModeData>();
+            var hmd = new HappyModeData();
+            hmd.the3rdUserId = int.Parse(parm);
+            int maxEnterNum = GameConfigMgr.Instance().getInt("happyPointMaxEnterNum", 3);
+            hmd.EnterNum = maxEnterNum;
+            happyCache.Add(hmd);
+        }
+        void doAdd_RemoveMap(string parm)
+        {
+            string[] strs = parm.Split(',');
+            string opt      = strs[0];
+            string type     = strs[1];
+            string the3rdID = strs[2];
+            string key = Action1005.getMapKey(type, the3rdID);
+
+            var cache = new PersonalCacheStruct<The3rdUserIDMap>();
+            var Da = cache.FindKey("888");
+            
+            if(opt=="del")
+            {
+                if(Da.the3rdMap.ContainsKey(key))
+                {
+                    Da.the3rdMap.Remove(key);
+                    ConsoleLog.showErrorInfo(0, "del map key:" + key);
+                }
+                else
+                {
+                    ConsoleLog.showErrorInfo(0, "del not find map key:" + key);
+                }
+            }
+            else if(opt=="add")
+            {
+                if (Da.the3rdMap.ContainsKey(key))
+                {
+                    ConsoleLog.showErrorInfo(0, "add map key had find:" + key);
+                }
+                else
+                {
+                    int happyID = int.Parse(strs[3]);
+                    Da.the3rdMap.Add(key, happyID);
+                    ConsoleLog.showErrorInfo(0, "add map key add :" + key);
+                }
+            }
+            else if(opt=="addNew")
+            {
+                if (Da.the3rdMap.ContainsKey(key))
+                {
+                    ConsoleLog.showErrorInfo(0, "addNew map key had find:" + key);
+                }
+                else
+                {
+                    int happyID = Action1005.getHappyIndex(type, the3rdID);
+                    Da.the3rdMap.Add(key, happyID);
+                    ConsoleLog.showErrorInfo(0, "addNew map key add :" + key+":"+the3rdID);
+                }
+            }
+           
+        }
+
+        void doAdd_HappyDataAddItem(string parm)
+        {
+            string[] stringS = parm.Split(',');
+            int UserID = int.Parse(stringS[0]);
+            int the3rdUserID = int.Parse(stringS[1]);
+            int itemId = int.Parse(stringS[2]);
+
+            var cache = new PersonalCacheStruct<HappyModeData>();
+            var hmd = cache.FindKey(stringS[1]);
+            if (null == hmd) return;
+
+            persionRealItemInfo rii = new persionRealItemInfo();
+            rii.Index = hmd.RealItemInfoLst.Count;
+            rii.UserId = UserID;
+            rii.the3rdUserId = the3rdUserID;
+            rii.Identify = "GM_ADD";
+            rii.happyPoint = hmd.HappyPoint;
+            rii.needHappyPoint = 0;
+            rii.realItemID = itemId;
+            hmd.RealItemInfoLst.Add(rii);
+
+            // save to db for ....
+            var shareRealItemCache = new ShareCacheStruct<shareRealItemInfo>();
+            shareRealItemInfo shareRII = new shareRealItemInfo();
+            shareRII.Index = (int)shareRealItemCache.GetNextNo();
+            shareRII.UserId = UserID;
+            shareRII.the3rdUserId = the3rdUserID;
+            shareRII.Identify = "GM_ADD";
+            shareRII.happyPoint = hmd.HappyPoint;
+            shareRII.needHappyPoint = 0;
+            shareRII.realItemID = itemId;
+            shareRealItemCache.Add(shareRII);
         }
         void doAdd_HappyDataMap(string parm)
         {
@@ -678,6 +777,18 @@ namespace GameServer.CsScript.Action
             else if ("happyDataMap" == cmd)
             {
                 doAdd_HappyDataMap(parm);
+            }
+            else if ("happyDataAddItem" == cmd)
+            {
+                doAdd_HappyDataAddItem(parm);
+            }
+            else if("optMapKey"==cmd)
+            {
+                doAdd_RemoveMap(parm);
+            }
+            else if("addHMD"==cmd)
+            {
+                doAdd_HMD(parm);
             }
         }
 

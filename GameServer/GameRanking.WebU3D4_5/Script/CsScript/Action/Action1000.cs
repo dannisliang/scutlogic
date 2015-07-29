@@ -146,6 +146,7 @@ namespace GameServer.CsScript.Action
             gu.version   = version;
             gu.state     = checkDataError;
             gu.NickName  = requestPack.UserName;
+            gu.Identify  = Identify;
 
             bool checkDataOk = 0 == checkDataError;
             // update GameUser

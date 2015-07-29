@@ -105,6 +105,7 @@ namespace GameServer.CsScript.Action
                  gu.ModifyLocked(() =>
                  {
                      gu.version = requestPack.version;
+                     gu.Identify = requestPack.identify;
                  });
              }
          }
