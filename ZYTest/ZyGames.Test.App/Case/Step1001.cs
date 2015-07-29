@@ -37,13 +37,22 @@ namespace ZyGames.Quanmin.Test.Case
     {
         static int index = 0;
         Response1001Pack responsePack = null;
+        Request1001Pack req = null;
         protected override void SetUrlElement()
         {
-            Request1001Pack req = new Request1001Pack();
+            req = new Request1001Pack();
             req.PageIndex = 76367;// RandomUtils.GetRandom(1, 10000);
             req.PageSize  = 1;
             req.UserID = 111111;
             req.version = "1.09";
+            System.Console.WriteLine("Step1001");
+            if (isUseConfigData())
+            {
+                req.PageIndex = GetParamsData("PageIndex", req.PageIndex);
+                req.PageSize = GetParamsData("PageSize", req.PageSize);
+                req.UserID = GetParamsData("UserID", req.UserID);
+                req.version = GetParamsData("version", req.version);
+            }
             byte[] data = ProtoBufUtils.Serialize(req);
             netWriter.SetBodyData(data);
         }
@@ -52,24 +61,8 @@ namespace ZyGames.Quanmin.Test.Case
         {
             responsePack = ProtoBufUtils.Deserialize<Response1001Pack>(netReader.Buffer);
              string responseDataInfo = "";
-             responseDataInfo = indentify + " acction success: item.count:" + responsePack.Items.Count;
-             foreach(var d in responsePack.Items)
-             {
-                 //break;
-                 responseDataInfo += "\nuserid:" + d.UserID;
-                 responseDataInfo += " UserName:" + d.UserName;
-                 responseDataInfo += " pos:" + d.pos;
-                 responseDataInfo += " Score:" + d.Score;
-             }
-             responseDataInfo += "\nExScore:" + responsePack.ItemsExScore.Count;
-             foreach (var d in responsePack.ItemsExScore)
-             {
-                 responseDataInfo += "\nuserid:" + d.UserID;
-                 responseDataInfo += " UserName:" + d.UserName;
-                 responseDataInfo += " pos:" + d.pos;
-                 responseDataInfo += " Score:" + d.Score;
-             }
-             //System.Console.WriteLine(responseDataInfo);
+             responseDataInfo  = "request :"+Game.NSNS.JsonHelper.prettyJson<Request1001Pack>(req) + "\n";
+             responseDataInfo += "response:" + Game.NSNS.JsonHelper.prettyJson<Response1001Pack>(responsePack) + "\n";
              DecodePacketInfo = responseDataInfo;
             return true;
         }

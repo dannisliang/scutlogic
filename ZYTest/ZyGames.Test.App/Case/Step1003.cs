@@ -38,16 +38,20 @@ namespace ZyGames.Quanmin.Test.Case
     {
         static int index = 0;
         Response1003Pack responsePack = null;
-        List<string> version;
-
+        Request1003Pack req = null;
         protected override void SetUrlElement()
         {
            
-            Request1003Pack req = new Request1003Pack();
+            req = new Request1003Pack();
             req.code = "UY2SXTNKY";
             req.type = 56;
             req.index = 61;
-            // req.Ip = "123.57.73.204";
+            if(isUseConfigData())
+            {
+                req.code  = GetParamsData("code", req.code);
+                req.type  = (byte)GetParamsData("type", (int)req.type);
+                req.index = GetParamsData("index", req.index);
+            }
             byte[] data = ProtoBufUtils.Serialize(req);
             netWriter.SetBodyData(data);
 
@@ -57,11 +61,9 @@ namespace ZyGames.Quanmin.Test.Case
         {
             responsePack = ProtoBufUtils.Deserialize<Response1003Pack>(netReader.Buffer);
             string responseDataInfo = "";
-            responseDataInfo += "result:"+responsePack.result;
-            responseDataInfo += "code:"+responsePack.code;
-            responseDataInfo += "type:"+responsePack.result;
-            responseDataInfo += "index:"+responsePack.Index;
-            System.Console.WriteLine(responseDataInfo);
+            responseDataInfo = "request :" + Game.NSNS.JsonHelper.prettyJson<Request1003Pack>(req) + "\n";
+            responseDataInfo += "response:" + Game.NSNS.JsonHelper.prettyJson<Response1003Pack>(responsePack) + "\n";
+            DecodePacketInfo = responseDataInfo;
             return true;
         }
 

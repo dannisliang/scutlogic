@@ -81,8 +81,70 @@ namespace ZyGames.Test
         protected ThreadSession _session;
         protected StepTimer _stepTimer;
         private Dictionary<string, string> _params;
-        public int childStepId { get; set; }
+        protected string GetParamsData(string key,string defaultKey)
+        {
+
+            if (_params.ContainsKey(key))
+                return _params[key];
+            else
+                return defaultKey;
+        }
+        protected int GetParamsData(string key, int defaultKey)
+        {
+
+            if (_params.ContainsKey(key))
+                return _params[key].ToInt();
+            else
+                return defaultKey;
+        }
+        protected float GetParamsData(string key, float defaultKey)
+        {
+
+            if (_params.ContainsKey(key))
+                return _params[key].ToFloat();
+            else
+                return defaultKey;
+        }
+        protected uint GetParamsData(string key, uint defaultKey)
+        {
+
+            if (_params.ContainsKey(key))
+                return _params[key].ToUInt32();
+            else
+                return defaultKey;
+        }
+        public string childStepInfo { get; set; }
+        public Dictionary<int, int> childDic { get; set; }
+        public int getChild(int id)
+        {
+            if (childDic.ContainsKey(id))
+                return childDic[id];
+            return -1;
+        }
+
         public string _parm { get; set; }
+        public Dictionary<int, Dictionary<string,string>> _childParm { get; set; }
+
+        public bool isUseConfigData()
+        {  
+            return !string.IsNullOrEmpty(_parm);
+        }
+        public bool hasChildConfigData(int id)
+        {
+            return _childParm.ContainsKey(id);
+        }
+        public string getChildConfigData(int id,string name,string defaultVal)
+        {
+            if (_childParm.ContainsKey(id))
+            {
+                var idParmsDic = _childParm[id];
+                if (idParmsDic.ContainsKey(name))
+                {
+                    return idParmsDic[name];
+                }
+            }
+            return defaultVal;
+        }
 
         protected CaseStep()
         {
@@ -90,7 +152,8 @@ namespace ZyGames.Test
             Action = "";
             _params = new Dictionary<string, string>();
             Runtimes = 1;
-            childStepId = -1;
+            childDic = new Dictionary<int, int>();
+            childStepInfo = "";
         }
 
         public string Action { get; private set; }
@@ -126,17 +189,32 @@ namespace ZyGames.Test
             SetRequestParam("Uid", _session.Context.UserId);
             SetRequestParam("ActionId", Action);
 
-            if (string.IsNullOrEmpty(_parm)) return;
-
-            string[] parmsSplits = _parm.Split('=');
-            string key = parmsSplits[0];
-            string val = parmsSplits[1];
-            string[] valSplits = val.Split(',');
-            for (int i = 0; i < valSplits.Length; ++i)
+            if (!string.IsNullOrEmpty(_parm))
             {
-                string[] words = valSplits[i].Split(':');
-                SetRequestParam(words[0], words[1]);
+                string[] parmsSplits = _parm.Split('=');
+                string key = parmsSplits[0];
+                string val = parmsSplits[1];
+                string[] valSplits = val.Split('&');
+                for (int i = 0; i < valSplits.Length; ++i)
+                {
+                    if (valSplits[i] == "") continue;
+                    string[] words = valSplits[i].Split(':');
+                    SetRequestParam(words[0], words[1]);
+                }
             }
+
+            if(!string.IsNullOrEmpty(childStepInfo))
+            {
+                string[] valSplits = childStepInfo.Split('&');
+                for (int i = 0; i < valSplits.Length; ++i)
+                {
+                    if (valSplits[i] == "") continue;
+                    string[] words = valSplits[i].Split(':');
+                    childDic.Add(words[0].ToInt(), words[1].ToInt());
+                }
+            }
+
+           
         }
 
 
@@ -284,12 +362,12 @@ namespace ZyGames.Test
             string ret = "Parms"+actionID+"=";
             foreach(var key in iPams.Keys)
             {
-                ret += key + ":" + iPams[key];
+                ret += key + ":" + iPams[key]+"&";
             }
             return ret;
         }
 
-        protected void SetChildStep(string stepName,string parms="")
+        protected void SetChildStep(string stepName,string parms,string childInfo)
         {
             CaseStep caseStep = null;
             if (!string.IsNullOrEmpty(stepName))
@@ -298,6 +376,7 @@ namespace ZyGames.Test
                 if (caseStep == null) throw new Exception(string.Format(_session.Setting.CaseStepTypeFormat, stepName) + " isn't found.");
                 caseStep.Runtimes = 1;
                 caseStep._parm = parms;
+                caseStep.childStepInfo = childInfo;
                 caseStep.Init(_session);
             }
             ChildStep        = caseStep;

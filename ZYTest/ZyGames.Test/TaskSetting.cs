@@ -79,10 +79,12 @@ namespace ZyGames.Test
             UserPwd = _testUserPwd;
             CaseStepList = new List<string>(_testSteps);
             Parms = new List<string>();
-            child = -1;
+            childInfo = "";
         }
 
-        public int child {get;set;}
+        public string TaskName = "";
+        public string TaskDes  = "";
+        public string childInfo {get;set;}
         public List<string> Parms { get; set; }
         public string CaseStepTypeFormat { get; set; }
 

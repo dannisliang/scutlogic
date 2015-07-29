@@ -59,12 +59,17 @@ namespace ZyGames.Quanmin.Test.Case
             }
         }
         Response1012Pack responsePack;
+        Request1012Pack req;
         protected override void SetUrlElement()
         {
             int id = -357016106;
-            Request1012Pack requestPack = new Request1012Pack();
-            requestPack.the3rdUserID = 5228;// KeyInt2Uint(id);
-            byte[] data = ProtoBufUtils.Serialize(requestPack);
+             req = new Request1012Pack();
+            req.the3rdUserID = 5228;// KeyInt2Uint(id);
+            byte[] data = ProtoBufUtils.Serialize(req);
+            if(isUseConfigData())
+            {
+                req.the3rdUserID = GetParamsData("the3rdUserID",req.the3rdUserID);
+            }
             //System.Console.WriteLine(id + ":" + requestPack.the3rdUserID + ":" + KeyUInt2Int(requestPack.the3rdUserID));
             netWriter.SetBodyData(data);
         }
@@ -73,12 +78,9 @@ namespace ZyGames.Quanmin.Test.Case
         {
             responsePack = ProtoBufUtils.Deserialize<Response1012Pack>(netReader.Buffer);
             string responseDataInfo = "";
-            responseDataInfo = indentify + " acction success: " + responsePack.errorCode;
-            foreach(var v in responsePack.Data)
-            {
-                responseDataInfo += v.name +  " ";
-            }
-            System.Console.WriteLine(responseDataInfo);
+            responseDataInfo = "request :" + Game.NSNS.JsonHelper.prettyJson<Request1012Pack>(req) + "\n";
+            responseDataInfo += "response:" + Game.NSNS.JsonHelper.prettyJson<Response1012Pack>(responsePack) + "\n";
+            DecodePacketInfo = responseDataInfo;
             return true;
         }
 

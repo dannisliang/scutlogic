@@ -34,42 +34,36 @@ namespace ZyGames.Quanmin.Test.Case
     /// <summary>
     /// 创角
     /// </summary>
-    public class Step1007 : CaseStep
+    public class Step1008 : CaseStep
     {
-        static public uint KeyInt2Uint(int id)
-        {
-            if (id < 0)
-            {
-                return (uint)((uint)int.MaxValue - id);
-            }
-            else
-            {
-                return (uint)id;
-            }
-        }
-        static public int KeyUInt2Int(uint id)
-        {
-            if (id > int.MaxValue)
-            {
-                return -((int)(id - int.MaxValue));
-            }
-            else
-            {
-                return (int)id;
-            }
-        }
-        Response1007Pack responsePack;
-        Request1007Pack req; 
+        Response1008Pack responsePack;
+        Request1008Pack req;
         protected override void SetUrlElement()
         {
             int id = -357016106;
-            req = new Request1007Pack();
-            req.the3rdUserID = 5228;// KeyInt2Uint(id);
-            req.dateType = 1;
-            if(isUseConfigData())
+            req = new Request1008Pack();
+            req.UserID = 1;
+            req.identify = "";
+            req.version = "1.09";
+            req.the3rdUserID = 1;
+            req.happyPoint = 1;
+            req.Rate = 1;
+            req.Distance = 1;
+            req.index = 1;
+            req.strThe3rdUserID = "";
+            req.typeUser = "YYS_CP360";
+            if (isUseConfigData())
             {
+                req.UserID = GetParamsData("UserID", req.UserID);
+                req.identify = GetParamsData("identify", req.identify);
+                req.version = GetParamsData("version", req.version);
                 req.the3rdUserID = GetParamsData("the3rdUserID", req.the3rdUserID);
-                req.dateType = (byte)GetParamsData("dateType", (int)req.dateType);
+                req.happyPoint = GetParamsData("happyPoint", req.happyPoint);
+                req.Rate = GetParamsData("Rate", req.Rate);
+                req.index = GetParamsData("index", req.index);
+                req.strThe3rdUserID = GetParamsData("strThe3rdUserID", req.strThe3rdUserID);
+                req.typeUser = GetParamsData("typeUser", req.typeUser);
+                req.Distance = GetParamsData("Distance", req.Distance);
             }
             byte[] data = ProtoBufUtils.Serialize(req);
             netWriter.SetBodyData(data);
@@ -77,10 +71,10 @@ namespace ZyGames.Quanmin.Test.Case
 
         protected override bool DecodePacket(MessageStructure reader, MessageHead head)
         {
-            responsePack = ProtoBufUtils.Deserialize<Response1007Pack>(netReader.Buffer);
+            responsePack = ProtoBufUtils.Deserialize<Response1008Pack>(netReader.Buffer);
             string responseDataInfo = "";
-            responseDataInfo = "request :" + Game.NSNS.JsonHelper.prettyJson<Request1007Pack>(req) + "\n";
-            responseDataInfo += "response:" + Game.NSNS.JsonHelper.prettyJson<Response1007Pack>(responsePack) + "\n";
+            responseDataInfo = "request :" + Game.NSNS.JsonHelper.prettyJson<Request1008Pack>(req) + "\n";
+            responseDataInfo += "response:" + Game.NSNS.JsonHelper.prettyJson<Response1008Pack>(responsePack) + "\n";
             DecodePacketInfo = responseDataInfo;
             return true;
         }

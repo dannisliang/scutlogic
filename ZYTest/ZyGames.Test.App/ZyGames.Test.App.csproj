@@ -91,6 +91,8 @@
     <Compile Include="Case\Step1007.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Case\Step1008.cs" />
+    <Compile Include="Case\Step1010.cs" />
     <Compile Include="Case\Step1012.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
@@ -98,9 +100,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Case\Step3000.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Case\Step8000.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Program.cs" />
@@ -123,6 +122,10 @@
     <ProjectReference Include="..\..\GameRanking.Pack\GameRanking.Pack\GameRanking.Pack.csproj">
       <Project>{8e34df75-e34a-48f1-ab77-36d5cb0f1e1c}</Project>
       <Name>GameRanking.Pack</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NSNSTools\NSNSTools.csproj">
+      <Project>{d659805b-2763-4b97-80c0-255e0e265b15}</Project>
+      <Name>NSNSTools</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Protocol\Protocol.csproj">
       <Project>{870498ae-e9e9-4221-82ca-b96d44d67922}</Project>

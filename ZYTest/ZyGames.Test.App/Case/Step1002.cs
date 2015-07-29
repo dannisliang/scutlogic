@@ -39,21 +39,17 @@ namespace ZyGames.Quanmin.Test.Case
         static int index = 0;
         Response1002Pack responsePack = null;
         List<string> version;
-
+        Request1002Pack req = null;
         protected override void SetUrlElement()
         {
-            version = new List<string>();
-            version.Add("1.01");
-            version.Add("1.02");
-            version.Add("1.03");
-            version.Add("1.04");
-            version.Add("1.05");
-            version.Add("1.06");
-            version.Add("1.07");
+            System.Console.WriteLine("Step1002");
             int index = RandomUtils.GetRandom(0, 2) ;
-            Request1002Pack req = new Request1002Pack();
-            req.Version = "1.09";// version[index];
-           // req.Ip = "123.57.73.204";
+            req = new Request1002Pack();
+            req.Version = "1.09";
+            if(isUseConfigData())
+            {
+                req.Version = GetParamsData("Version", req.Version);
+            }
             byte[] data = ProtoBufUtils.Serialize(req);
             netWriter.SetBodyData(data);
 
@@ -62,23 +58,10 @@ namespace ZyGames.Quanmin.Test.Case
         protected override bool DecodePacket(MessageStructure reader, MessageHead head)
         {
             responsePack = ProtoBufUtils.Deserialize<Response1002Pack>(netReader.Buffer);
-              string responseDataInfo = "";
-              responseDataInfo = System.DateTime.Now.ToString() + " acction success 1002:" + netReader.Buffer.Length + "\nInfo###########\n";
-              foreach(var d in responsePack.Datas)
-              {
-                  responseDataInfo += d.type +  "->";
-                  if (d.ext == null) responseDataInfo = "ffffxxx=====" + responseDataInfo;
-                  if (d.ext != null)
-                  {
-                      foreach (var v in d.ext)
-                      {
-                          responseDataInfo += v + ",";
-                      }
-                  }
-                
-                    responseDataInfo += "\n";
-                }
-                System.Console.WriteLine(responseDataInfo);
+            string responseDataInfo = "";
+            responseDataInfo = "request :" + Game.NSNS.JsonHelper.prettyJson<Request1002Pack>(req) + "\n";
+            responseDataInfo += "response:" + Game.NSNS.JsonHelper.prettyJson<Response1002Pack>(responsePack) + "\n";
+            DecodePacketInfo = responseDataInfo;
             return true;
         }
 

@@ -166,6 +166,7 @@ namespace GameServer.CsScript.Action
             responsePack.ErrorCode = 0;
             responsePack.ErrorInfo = "save success";
             responsePack.ActionId = actionId;
+            responsePack.UserID = gu.UserId;
             return true;
         }
        

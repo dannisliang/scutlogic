@@ -25,6 +25,9 @@ THE SOFTWARE.
 using ZyGames.Framework.Common;
 using ZyGames.Framework.RPC.IO;
 using ZyGames.Test;
+using GameRanking.Pack;
+using ZyGames.Framework.Common.Serialization;
+using ZyGames.Framework.Common.Configuration;
 
 namespace ZyGames.Quanmin.Test.Case
 {
@@ -33,39 +36,35 @@ namespace ZyGames.Quanmin.Test.Case
     /// </summary>
     public class Step1004 : CaseStep
     {
+        Response1004Pack responsePack = null;
+        Request1004Pack req;
         protected override void SetUrlElement()
         {
-            _session.Context.PassportId = "Z" + (_session.Setting.PassprotId + _session.Id);
-            string pwd = EncodePassword(_session.Setting.UserPwd);
-            SetRequestParam("MobileType", 1);
-            SetRequestParam("Pid", _session.Context.PassportId);
-            SetRequestParam("Pwd", pwd);
-            SetRequestParam("DeviceID", "0a-0s-0f-04");
-            SetRequestParam("GameType", _session.Setting.GameId);
-            SetRequestParam("ServerID", _session.Setting.ServerId);
-            SetRequestParam("ScreenX", "500");
-            SetRequestParam("ScreenY", "400");
-            SetRequestParam("RetailID", "0000");
-            SetRequestParam("RetailUser", "");
-            SetRequestParam("ClientAppVersion", "1");
-
+            req = new Request1004Pack();
+            req.UserID = 111;
+            req.identify = "123211";
+            req.version = "1.09";
+            req.status = 0;
+            req.actionID = 0;
+            if (isUseConfigData())
+            {
+                req.UserID = GetParamsData("UserID", req.UserID);
+                req.identify = GetParamsData("identify", req.identify);
+                req.version = GetParamsData("version", req.version);
+                req.status = GetParamsData("status", req.status);
+                req.actionID = (byte)GetParamsData("actionID", (int)req.actionID);
+            }
+            byte[] data = ProtoBufUtils.Serialize(req);
+            netWriter.SetBodyData(data);
         }
 
         protected override bool DecodePacket(MessageStructure reader, MessageHead head)
         {
-            _session.Context.SessionId = reader.ReadString();
-            _session.Context.UserId = reader.ReadString().ToInt();
-            int UserType = reader.ReadInt();
-            string LoginTime = reader.ReadString();
-            int GuideID = reader.ReadInt();
-            if (GuideID == 1005)
-            {
-                System.Collections.Generic.Dictionary<string,string> dic = new System.Collections.Generic.Dictionary<string,string>();
-                dic.Add("Name01", "value01");
-                dic.Add("Name02", "value02");
-                dic.Add("Name03", "value03");
-                SetChildStep("1005",createParms("1005",dic));
-            }
+            responsePack = ProtoBufUtils.Deserialize<Response1004Pack>(netReader.Buffer);
+            string responseDataInfo = "";
+            responseDataInfo = "request :" + Game.NSNS.JsonHelper.prettyJson<Request1004Pack>(req) + "\n";
+            responseDataInfo += "response:" + Game.NSNS.JsonHelper.prettyJson<Response1004Pack>(responsePack) + "\n";
+            DecodePacketInfo = responseDataInfo;
             return true;
         }
 

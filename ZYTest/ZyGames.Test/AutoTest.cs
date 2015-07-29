@@ -90,12 +90,12 @@ namespace ZyGames.Test
                     string val = worlds[1];
                     switch (key)
                     {
-                        case "taskName":    atd.taskName = val; break;
-                        case "taskDes":     atd.taskDes = val; break;
+                        case "taskName":    atd.taskName = val; atd.setting.TaskName = val; break;
+                        case "taskDes":     atd.taskDes = val;atd.setting.TaskDes=val; break;
                         case "dely":        atd.dely = int.Parse(val); break;
                         case "ThreadNum":   atd.setting.ThreadNum = int.Parse(val); break;
                         case "RunTimes":    atd.setting.Runtimes = int.Parse(val); break;
-                        case "child":       atd.setting.child = int.Parse(val); break;
+                        case "child":       atd.setting.childInfo = val; break;
                         case "case":        atd.setting.CaseStepList = new List<string>(val.Split(',')); break;
                         default:            atd.setting.Parms.Add(line); break;
                     }
@@ -126,22 +126,35 @@ namespace ZyGames.Test
 
         void doRun(string fileName)
         {
-            List<autoTaskData> tasks = getTasks(fileName);
-            string result = "";
-            foreach (var v in tasks)
+            try
             {
-                string beginDes = v.taskName + " run.....\n";
-                Console.WriteLine(beginDes);
-                result += beginDes;
-                result += ThreadManager.RunTest(v.setting);
-                string endDes = v.taskName + " End\n\n";
-                Console.WriteLine(endDes);
-                result += endDes;
-                Console.WriteLine("sleep" + v.dely);
-                Thread.Sleep(v.dely);
+                List<autoTaskData> tasks = getTasks(fileName);
+                string result = "";
+                foreach (var v in tasks)
+                {
+                    result += ThreadManager.RunTest(v.setting);
+                    Console.WriteLine("sleep" + v.dely);
+                    Thread.Sleep(v.dely);
+                }
+                Console.WriteLine(result);
+                //TraceLog.ReleaseWrite(result);
+                write(fileName, result);
             }
-            Console.WriteLine(result);
-            TraceLog.ReleaseWrite(result);
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message+":"+fileName);
+            }
+          
+        }
+
+        void write(string name, string info)
+        {
+            name = name.Substring(name.LastIndexOf("\\") + 1);
+            name = name.Remove(name.LastIndexOf('.'));
+            string fileName = ".//AutoTask//log//" + name + "-" +DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff") + ".txt";
+            StreamWriter sw = new StreamWriter(fileName);
+            sw.Write(info);
+            sw.Close();
         }
         void run()
         {

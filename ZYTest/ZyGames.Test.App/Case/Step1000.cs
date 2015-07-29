@@ -46,16 +46,24 @@ namespace ZyGames.Quanmin.Test.Case
     public class Step1000 : CaseStep
     {
         public ResponsePack responsePack = null;
+        Request1000Pack req = null;
         protected override void SetUrlElement()
         {
-          Request1000Pack req = new Request1000Pack();
-          req.UserName = "Computer_self"+indentify;
-          req.Score =  RandomUtils.GetRandom(1, 1000);
+          req = new Request1000Pack();
+          req.UserName = "Computer_self" + indentify;
+          req.Score = RandomUtils.GetRandom(1, 1000);
           req.UserID = -10;// RandomUtils.GetRandom(1, 1000);
           req.version = "1.08";
           //System.Console.WriteLine("UserID: " + req.UserID);
           req.Identify = req.UserName;
-
+          if(isUseConfigData())
+          {
+              req.UserName  = GetParamsData("UserName", req.UserName);
+              req.Score     = GetParamsData("Score", req.Score);
+              req.UserID    = GetParamsData("UserID",req.UserID);
+              req.version   = GetParamsData("version", req.version);
+              req.Identify  = GetParamsData("Identify", req.Identify);
+          }
           byte[] data = ProtoBufUtils.Serialize(req);
           netWriter.SetBodyData(data);
         }
@@ -64,24 +72,23 @@ namespace ZyGames.Quanmin.Test.Case
         {
              responsePack = ProtoBufUtils.Deserialize<ResponsePack>(netReader.Buffer);
              string responseDataInfo = "";
-             responseDataInfo = indentify + " acction success: " + responsePack.UserID + ":" + responsePack.ErrorInfo;
-             //System.Console.WriteLine(responseDataInfo);
+             responseDataInfo  = "request :" + Game.NSNS.JsonHelper.prettyJson<Request1000Pack>(req) + "\n";
+             responseDataInfo += "response:" + Game.NSNS.JsonHelper.prettyJson<ResponsePack>(responsePack) + "\n";
              DecodePacketInfo = responseDataInfo;
-            if(childStepId>0)
-            {
+             int childStepId = getChild(1000);
+             if(childStepId>0)
+             {
                 System.Collections.Generic.Dictionary<string,string> dic = new System.Collections.Generic.Dictionary<string,string>();
-                /*
-                req.PageIndex = 76367;// RandomUtils.GetRandom(1, 10000);
-                req.PageSize = 1;
-                req.UserID = 111111;
-                req.version = "1.09";
-                **/
-                dic.Add("PageIndex","1234");
-                dic.Add("PageSize","1");
-                dic.Add("UserID", "111111");
+                dic.Add("PageIndex", "1234");
+                dic.Add("PageSize", "1");
+                dic.Add("UserID", responsePack.UserID.ToString());
                 dic.Add("version", "1.09");
-                SetChildStep(childStepId.ToString(), createParms(childStepId.ToString(), dic));
-            }
+                dic["PageIndex"] = getChildConfigData(childStepId, "PageIndex", dic["PageIndex"]);
+                dic["PageSize"] = getChildConfigData(childStepId, "PageSize", dic["PageSize"]);
+                dic["UserID"] = getChildConfigData(childStepId, "UserID", dic["UserID"]);
+                dic["version"] = getChildConfigData(childStepId, "version", dic["version"]);
+                SetChildStep(childStepId.ToString(), createParms(childStepId.ToString(), dic),childStepInfo);
+             }
              return true;
         }
 

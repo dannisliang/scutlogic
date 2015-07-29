@@ -164,6 +164,27 @@ namespace Game.NSNS
                 return szJson;
             }
         }
+        public static string prettyJson<T>(T obj)
+        {
+            string json = GetJson<T>(obj);
+            if(json.Length>128)
+            {
+                if(json.Contains("},")||json.Contains("],"))
+                {
+                    json = json.Replace("},", "\n");
+                    json = json.Replace("],", "\n");
+                }
+                else
+                {
+                    json = json.Replace(",", "\n");
+                }
+                json=json.Replace("{", "");
+                json=json.Replace("}", "");
+                json = json.Replace("[", "");
+                json = json.Replace("]", "");
+            }
+            return json;
+        }
         /// <summary>
         /// 获取Json的Model
         /// </summary>

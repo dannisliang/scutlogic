@@ -38,14 +38,22 @@ namespace ZyGames.Quanmin.Test.Case
     {
 
         Response1005Pack responsePack;
+        Request1005Pack req;
         protected override void SetUrlElement()
         {
-            Request1005Pack requestPack = new Request1005Pack();
-            requestPack.token = "06433cd6e21d45f79a95c8e2ac9027c1-9d56aacb28bda0b9457bf9079bc715d9-20141222181929-ce629633cfaaf2bb1681719fc9b1f1ac-3b2927c8419cda02063bb7180deeb67a-f7ee2d74e5adcb026d457c2f7caee153";
-            requestPack.typeUser = "YYS_CP360";
-            requestPack.version = "1.08";
-            requestPack.UserID = 1160518;
-            byte[] data = ProtoBufUtils.Serialize(requestPack);
+            req = new Request1005Pack();
+            req.token = "06433cd6e21d45f79a95c8e2ac9027c1-9d56aacb28bda0b9457bf9079bc715d9-20141222181929-ce629633cfaaf2bb1681719fc9b1f1ac-3b2927c8419cda02063bb7180deeb67a-f7ee2d74e5adcb026d457c2f7caee153";
+            req.typeUser = "YYS_CP360";
+            req.version = "1.08";
+            req.UserID = 1160518;
+            if(isUseConfigData())
+            {
+                req.token = GetParamsData("token",req.token);
+                req.typeUser = GetParamsData("typeUser",req.typeUser);
+                req.version = GetParamsData("version", req.version);
+                req.UserID = GetParamsData("UserID", req.UserID);
+            }
+            byte[] data = ProtoBufUtils.Serialize(req);
             netWriter.SetBodyData(data);
         }
 
@@ -53,9 +61,25 @@ namespace ZyGames.Quanmin.Test.Case
         {
             responsePack = ProtoBufUtils.Deserialize<Response1005Pack>(netReader.Buffer);
             string responseDataInfo = "";
-            responseDataInfo = indentify + " acction success: " + responsePack.result + "3rdID:" + responsePack.the3rdUserId;
-;
-             System.Console.WriteLine(responseDataInfo);
+            responseDataInfo = "request :" + Game.NSNS.JsonHelper.prettyJson<Request1005Pack>(req) + "\n";
+            responseDataInfo += "response:" + Game.NSNS.JsonHelper.prettyJson<Response1005Pack>(responsePack) + "\n";
+            DecodePacketInfo = responseDataInfo;
+            int childStepId = getChild(1005);
+            if (childStepId > 0)
+            {
+                System.Collections.Generic.Dictionary<string, string> dic = new System.Collections.Generic.Dictionary<string, string>();
+                dic.Add("the3rdUserID", responsePack.the3rdUserId.ToString());
+                dic.Add("actionID", "0");
+                dic.Add("num", "1");
+                dic.Add("strThe3rdUserID", dic["the3rdUserID"]);
+                dic.Add("typeUser", req.typeUser);
+                dic["the3rdUserID"] = getChildConfigData(childStepId, "the3rdUserID", dic["the3rdUserID"]);
+                dic["actionID"] = getChildConfigData(childStepId, "actionID", dic["actionID"]);
+                dic["num"] = getChildConfigData(childStepId, "num", dic["num"]);
+                dic["strThe3rdUserID"] = getChildConfigData(childStepId, "strThe3rdUserID", dic["strThe3rdUserID"]);
+                dic["typeUser"] = getChildConfigData(childStepId, "typeUser", dic["typeUser"]);
+                SetChildStep(childStepId.ToString(), createParms(childStepId.ToString(), dic), childStepInfo);
+            }
             return true;
         }
 

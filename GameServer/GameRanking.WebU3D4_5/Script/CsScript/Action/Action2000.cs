@@ -659,7 +659,7 @@ namespace GameServer.CsScript.Action
                 rj.name = pui.the3rdUsrName;
                 int id = Action1005.getHappyIndex(pui.typeUser, the3rdID.ToString());
                 pui.the3rdUsrID = (uint)id;
-                pui.InfoExt = (the3rdID + "," + "hello" + "," + GameConfigMgr.Instance().getString("360UrlCb", "http://www.youyisigame.com:8036/Service.aspx/Pay360") + "," + id); 
+                pui.InfoExt = JsonHelper.GetJson<Action1005.returnJson>(rj);
                 cache.Add(pui);
             }
         }

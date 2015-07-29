@@ -37,6 +37,7 @@ namespace ZyGames.Quanmin.Test.Case
     public class Step3000 : CaseStep
     {
         public Action3000Response responsePack = null;
+        Action3000Request req;
         protected override void SetUrlElement()
         {
             Action3000Request req = new Action3000Request();
@@ -51,15 +52,9 @@ namespace ZyGames.Quanmin.Test.Case
             {
                 responsePack = ProtoBufUtils.Deserialize<Action3000Response>(netReader.Buffer);
                 string responseDataInfo = "";
-                responseDataInfo = "acction success: " + responsePack.ErrorCode;
-                // responseDataInfo += "\nint:"+responsePack.int_test;
-                // responseDataInfo += "\nfloat:"+responsePack.float_test;
-                // responseDataInfo += "\nuint:" + responsePack.uint_test;
-                // responseDataInfo += "\nlist_int:" + responsePack.list_int_test[0];
-                // responseDataInfo += "\nlist_class:" + responsePack.list_class_test[0].data;
-                // responseDataInfo += "\ndic_int:" + responsePack.dic_int_test[0];
-                // responseDataInfo += "\ndic_class:" + responsePack.dic_class_test[0].data;
-                System.Console.WriteLine(responseDataInfo);
+                responseDataInfo = "request :" + Game.NSNS.JsonHelper.prettyJson<Action3000Request>(req) + "\n";
+                responseDataInfo += "response:" + Game.NSNS.JsonHelper.prettyJson<Action3000Response>(responsePack) + "\n";
+                DecodePacketInfo = responseDataInfo;
             }
             catch (System.Exception e)
             {

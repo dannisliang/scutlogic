@@ -37,16 +37,21 @@ namespace ZyGames.Quanmin.Test.Case
     public class Step2000 : CaseStep
     {
         public ResponsePack responsePack = null;
+        Request2000Pack req;
         private string name = "";
         private string pwd  = "";
         protected override void SetUrlElement()
         {
             readAuthory();
-            Request2000Pack req = new Request2000Pack();
+            req = new Request2000Pack();
             req.theActionType = Request2000Pack.E_ACTION_TYPE.E_ACTION_TYPE_ADD;
             req.param         = ConfigUtils.GetSetting("Test.Params2000", "");
             req.name = name;
             req.pwd = ZyGames.Framework.Common.Security.CryptoHelper.MD5_Encrypt(pwd);
+            if(isUseConfigData())
+            {
+                req.param = GetParamsData("param", req.param);
+            }
             byte[] data = ProtoBufUtils.Serialize(req);
             netWriter.SetBodyData(data);
         }
@@ -55,8 +60,30 @@ namespace ZyGames.Quanmin.Test.Case
         {
             responsePack = ProtoBufUtils.Deserialize<ResponsePack>(netReader.Buffer);
             string responseDataInfo = "";
-            responseDataInfo = indentify + " acction success: " + responsePack.ActionId + ":" + responsePack.ErrorInfo;
-            System.Console.WriteLine(responseDataInfo);
+            responseDataInfo = "request :" + Game.NSNS.JsonHelper.prettyJson<Request2000Pack>(req) + "\n";
+            responseDataInfo += "response:" + Game.NSNS.JsonHelper.prettyJson<ResponsePack>(responsePack) + "\n";
+            DecodePacketInfo = responseDataInfo;
+            int childStepId = getChild(2000);
+            System.Console.WriteLine("childStepID:"+childStepId);
+            if (childStepId > 0)
+            {
+                System.Collections.Generic.Dictionary<string, string> dic = new System.Collections.Generic.Dictionary<string, string>();
+                /*
+                   req.token = GetParamsData("token",req.token);
+                          req.typeUser = GetParamsData("typeUser",req.typeUser);
+                          req.version = GetParamsData("version", req.version);
+                          req.UserID = GetParamsData("UserID", req.UserID);
+                 */
+                dic.Add("token", "1234");
+                dic.Add("typeUser", "1");
+                dic.Add("UserID", responsePack.UserID.ToString());
+                dic.Add("version", "1.09");
+                dic["token"]    = getChildConfigData(childStepId, "token", dic["token"]);
+                dic["typeUser"] = getChildConfigData(childStepId, "typeUser", dic["typeUser"]);
+                dic["UserID"]   = getChildConfigData(childStepId, "UserID", dic["UserID"]);
+                dic["version"]  = getChildConfigData(childStepId, "version", dic["version"]);
+                SetChildStep(childStepId.ToString(), createParms(childStepId.ToString(), dic), childStepInfo);
+            }
             return true;
         }
         void createAuthory()
