@@ -65,8 +65,8 @@ namespace ZyGames.Quanmin.Test.Case
         {
             responsePack = ProtoBufUtils.Deserialize<Response1010Pack>(netReader.Buffer);
             string responseDataInfo = "";
-            responseDataInfo = "request :" + Game.NSNS.JsonHelper.prettyJson<Request1010Pack>(req) + "\n";
-            responseDataInfo += "response:" + Game.NSNS.JsonHelper.prettyJson<Response1010Pack>(responsePack) + "\n";
+            responseDataInfo = "request :" + Game.Utils.JsonHelper.prettyJson<Request1010Pack>(req) + "\n";
+            responseDataInfo += "response:" + Game.Utils.JsonHelper.prettyJson<Response1010Pack>(responsePack) + "\n";
             DecodePacketInfo = responseDataInfo;
             int childStepId = getChild(1010);
             System.Console.WriteLine("childStepID:" + childStepId);
@@ -84,20 +84,7 @@ namespace ZyGames.Quanmin.Test.Case
                 req.strThe3rdUserID = GetParamsData("strThe3rdUserID", req.strThe3rdUserID);
                 req.typeUser = GetParamsData("typeUser", req.typeUser);
                  */
-                dic.Add("UserID",req.UserID.ToString());
-                dic.Add("identify", req.identify);
-                dic.Add("version", req.version);
-                dic.Add("the3rdUserID", req.the3rdUserID.ToString());
-                dic.Add("index", responsePack.index.ToString());
-                dic.Add("strThe3rdUserID", dic["the3rdUserID"]);
-                dic.Add("typeUser", req.typeUser);
-                dic.Add("happyPoint", "1");
-                dic.Add("Rate", "1");
-                dic.Add("Distance", "1");
-                dic["happyPoint"] = getChildConfigData(childStepId, "happyPoint", dic["happyPoint"]);
-                dic["Rate"] = getChildConfigData(childStepId, "Rate", dic["Rate"]);
-                dic["Distance"] = getChildConfigData(childStepId, "Distance", dic["Distance"]);
-                SetChildStep(childStepId.ToString(), createParms(childStepId.ToString(), dic), childStepInfo);
+                //SetChildStep(childStepId.ToString(), createParms(childStepId.ToString(), dic), childStepInfo);
             }
             return true;
         }

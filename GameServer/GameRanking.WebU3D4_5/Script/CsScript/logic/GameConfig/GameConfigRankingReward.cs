@@ -104,10 +104,10 @@ namespace Game.Script
                 _lst.Add(rd);
             }
             _lst.Sort(new comp());
-            rewardData rrrddd = get(1);
-            rrrddd = get(4);
-            rrrddd = get(2000);
-            rrrddd = get(3000);
+            rewardData rrrddd = get(0);
+            rrrddd = get(1);
+            rrrddd = get(2);
+            rrrddd = get(3);
             rrrddd = get(10000);
             rrrddd = get(100000);
             stream.Close();

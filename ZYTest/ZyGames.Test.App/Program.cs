@@ -45,7 +45,7 @@ namespace ZyGames.Test.App
                 ScriptEngines.AddReferencedAssembly("ZyGames.Test.dll");
                 ScriptEngines.AddReferencedAssembly("GameRanking.Pack.dll");
                 ScriptEngines.AddReferencedAssembly("Protocol.dll");
-                ScriptEngines.AddReferencedAssembly("NSNSTools.dll");
+                ScriptEngines.AddReferencedAssembly("Utils.dll");
                 ScriptEngines.Initialize();
                 tasks.RunTasks();
             }

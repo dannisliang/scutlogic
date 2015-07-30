@@ -113,7 +113,6 @@ namespace ZyGames.Test
             else
                 return defaultKey;
         }
-        public string childStepInfo { get; set; }
         public Dictionary<int, int> childDic { get; set; }
         public int getChild(int id)
         {
@@ -122,27 +121,16 @@ namespace ZyGames.Test
             return -1;
         }
 
-        public string _parm { get; set; }
-        public Dictionary<int, Dictionary<string,string>> _childParm { get; set; }
-
         public bool isUseConfigData()
-        {  
-            return !string.IsNullOrEmpty(_parm);
+        {
+            return false;
         }
         public bool hasChildConfigData(int id)
         {
-            return _childParm.ContainsKey(id);
+            return false;
         }
         public string getChildConfigData(int id,string name,string defaultVal)
         {
-            if (_childParm.ContainsKey(id))
-            {
-                var idParmsDic = _childParm[id];
-                if (idParmsDic.ContainsKey(name))
-                {
-                    return idParmsDic[name];
-                }
-            }
             return defaultVal;
         }
 
@@ -153,7 +141,6 @@ namespace ZyGames.Test
             _params = new Dictionary<string, string>();
             Runtimes = 1;
             childDic = new Dictionary<int, int>();
-            childStepInfo = "";
         }
 
         public string Action { get; private set; }
@@ -189,30 +176,7 @@ namespace ZyGames.Test
             SetRequestParam("Uid", _session.Context.UserId);
             SetRequestParam("ActionId", Action);
 
-            if (!string.IsNullOrEmpty(_parm))
-            {
-                string[] parmsSplits = _parm.Split('=');
-                string key = parmsSplits[0];
-                string val = parmsSplits[1];
-                string[] valSplits = val.Split('&');
-                for (int i = 0; i < valSplits.Length; ++i)
-                {
-                    if (valSplits[i] == "") continue;
-                    string[] words = valSplits[i].Split(':');
-                    SetRequestParam(words[0], words[1]);
-                }
-            }
 
-            if(!string.IsNullOrEmpty(childStepInfo))
-            {
-                string[] valSplits = childStepInfo.Split('&');
-                for (int i = 0; i < valSplits.Length; ++i)
-                {
-                    if (valSplits[i] == "") continue;
-                    string[] words = valSplits[i].Split(':');
-                    childDic.Add(words[0].ToInt(), words[1].ToInt());
-                }
-            }
 
            
         }
@@ -375,8 +339,6 @@ namespace ZyGames.Test
                 caseStep = Create(_session.Setting.CaseStepTypeFormat, stepName,indentify);
                 if (caseStep == null) throw new Exception(string.Format(_session.Setting.CaseStepTypeFormat, stepName) + " isn't found.");
                 caseStep.Runtimes = 1;
-                caseStep._parm = parms;
-                caseStep.childStepInfo = childInfo;
                 caseStep.Init(_session);
             }
             ChildStep        = caseStep;

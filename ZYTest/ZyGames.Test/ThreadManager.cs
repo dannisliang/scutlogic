@@ -83,33 +83,6 @@ namespace ZyGames.Test
             StepTimer st = new StepTimer();
             st.Reset();
             st.StartTime();
-            string parmsKey = "Parms"+stepName;
-            string theParms = setting.Parms.Find((string s) =>
-            {
-                 return (s.Contains(parmsKey));
-            });
-            string childParmsKey = "ParmsChild"+stepName;
-            List<string> childParmsLst = setting.Parms.FindAll((string s) => {
-                return (s.Contains(childParmsKey));
-            });
-            Dictionary<int, Dictionary<string, string>> childDics = new Dictionary<int, Dictionary<string, string>>();
-            foreach(var v in childParmsLst)
-            {
-                string[] world = v.Split('=');
-                string key = world[0];
-                string val = world[1];
-                int id = key.Split('_')[1].ToInt();
-                childDics.Add(id, new Dictionary<string, string>());
-
-                string []valDic = val.Split('&');
-                for(int i=0; i<valDic.Length; ++i)
-                {
-                    string[] valsubSplit = valDic[i].Split(':');
-                    string name = valsubSplit[0];
-                    string nameVal = valsubSplit[1];
-                    childDics[id].Add(name, nameVal);
-                }
-            }
             for (int i = 0; i < taskList.Length; i++)
             {
                 ++cnt;
@@ -118,9 +91,6 @@ namespace ZyGames.Test
                 if (caseStep != null)
                 {
                     caseStep.Runtimes = runtimes;
-                    caseStep._parm = null==theParms ? "" : theParms;
-                    caseStep.childStepInfo = setting.childInfo;
-                    caseStep._childParm = childDics;
                     caseStep.Init(session);
                     caseList[i] = caseStep;
                     //Console.WriteLine("Task.Factory.StartNew:" + cnt);

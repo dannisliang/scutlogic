@@ -123,13 +123,13 @@
       <Project>{8e34df75-e34a-48f1-ab77-36d5cb0f1e1c}</Project>
       <Name>GameRanking.Pack</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\NSNSTools\NSNSTools.csproj">
-      <Project>{d659805b-2763-4b97-80c0-255e0e265b15}</Project>
-      <Name>NSNSTools</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Protocol\Protocol.csproj">
       <Project>{870498ae-e9e9-4221-82ca-b96d44d67922}</Project>
       <Name>Protocol</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Utils\Utils.csproj">
+      <Project>{8c23c254-a92a-41d5-89a0-f298d5ed678f}</Project>
+      <Name>Utils</Name>
     </ProjectReference>
     <ProjectReference Include="..\ZyGames.Test\ZyGames.Test.csproj">
       <Project>{39F6D350-5C58-435B-BAAA-C25A001FD26A}</Project>

@@ -25,7 +25,7 @@ THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using ZyGames.Framework.Common.Configuration;
-
+using System.Collections.Generic;
 namespace ZyGames.Test
 {
     public class TaskSetting
@@ -80,7 +80,13 @@ namespace ZyGames.Test
             CaseStepList = new List<string>(_testSteps);
             Parms = new List<string>();
             childInfo = "";
+            StepParms = new Dictionary<string, Dictionary<string, string>>();
+            ChildStepParms = new Dictionary<string,Dictionary<string, string>>();
         }
+
+        public Dictionary<int, int> childStepDic;
+        public Dictionary<string, Dictionary<string, string>> StepParms;
+        public Dictionary<string, Dictionary<string, string>> ChildStepParms;
 
         public string TaskName = "";
         public string TaskDes  = "";

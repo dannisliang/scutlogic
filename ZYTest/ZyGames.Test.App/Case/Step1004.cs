@@ -62,8 +62,8 @@ namespace ZyGames.Quanmin.Test.Case
         {
             responsePack = ProtoBufUtils.Deserialize<Response1004Pack>(netReader.Buffer);
             string responseDataInfo = "";
-            responseDataInfo = "request :" + Game.NSNS.JsonHelper.prettyJson<Request1004Pack>(req) + "\n";
-            responseDataInfo += "response:" + Game.NSNS.JsonHelper.prettyJson<Response1004Pack>(responsePack) + "\n";
+            responseDataInfo = "request :" + Game.Utils.JsonHelper.prettyJson<Request1004Pack>(req) + "\n";
+            responseDataInfo += "response:" + Game.Utils.JsonHelper.prettyJson<Response1004Pack>(responsePack) + "\n";
             DecodePacketInfo = responseDataInfo;
             return true;
         }

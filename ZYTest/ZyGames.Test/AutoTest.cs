@@ -60,6 +60,86 @@ namespace ZyGames.Test
             }
         }
 
+        void parseTaskName(string val,autoTaskData atd)
+        {
+            atd.taskName = val;
+            atd.setting.TaskName = val;
+        }
+
+        void parseTaskDes(string val,autoTaskData atd)
+        {
+            atd.taskDes = val;
+            atd.setting.TaskDes = val;
+        }
+
+        void parseDely(string val,autoTaskData atd)
+        {
+            atd.dely = int.Parse(val);
+        }
+
+        void parseThreadNum(string val,autoTaskData atd)
+        {
+            atd.setting.ThreadNum = int.Parse(val); 
+        }
+
+        void parseRunTimes(string val,autoTaskData atd)
+        {
+            atd.setting.Runtimes = int.Parse(val);
+        }
+
+        void parseChild(string val,autoTaskData atd)
+        {
+            atd.setting.childInfo = val; 
+        }
+
+        void parseCase(string val,autoTaskData atd)
+        {
+            atd.setting.CaseStepList = new List<string>(val.Split(','));
+
+        }
+
+        void parseParms(string line,autoTaskData atd)
+        {
+            atd.setting.Parms.Add(line);
+            string[] parmsSplits = line.Split('=');
+            string key = parmsSplits[0];
+            string val = parmsSplits[1];
+            string[] valSplits = val.Split('&');
+            Dictionary<string, string> data = new Dictionary<string, string>();
+            for (int i = 0; i < valSplits.Length; ++i)
+            {
+                if (valSplits[i] == "") continue;
+                string[] words = valSplits[i].Split(':');
+                data.Add(words[0], words[1]);
+            }
+            if(line.Contains("ParmsChild"))
+            {
+                string[] keyworld = key.Split('_');
+                int parentID = int.Parse(keyworld[1]);
+                int childID  = int.Parse(keyworld[2]);
+            }
+            else if(line.Contains("Parms"))
+            {
+            }
+        }
+        void ParseLine(string line,autoTaskData atd)
+        {
+            string[] worlds = line.Split('=');
+            string key = worlds[0];
+            string val = worlds[1];
+            switch (key)
+            {
+                case "taskName": parseTaskName(val,atd); break;
+                case "taskDes":  parseTaskDes(val, atd); break;
+                case "dely":     parseDely(val,atd); break;
+                case "ThreadNum": parseThreadNum(val, atd); break;
+                case "RunTimes": parseRunTimes(val, atd); break;
+                case "child": parseChild(val,atd); break;
+                case "case": parseCase(val, atd); break;
+                default: parseParms(line, atd); break;
+            }
+        }
+
         List<autoTaskData> getTasks(string str)
         {
                 string begin = "[begin]";
@@ -85,21 +165,7 @@ namespace ZyGames.Test
                     {
                         continue;
                     }
-                    string[] worlds = line.Split('=');
-                    string key = worlds[0];
-                    string val = worlds[1];
-                    switch (key)
-                    {
-                        case "taskName":    atd.taskName = val; atd.setting.TaskName = val; break;
-                        case "taskDes":     atd.taskDes = val;atd.setting.TaskDes=val; break;
-                        case "dely":        atd.dely = int.Parse(val); break;
-                        case "ThreadNum":   atd.setting.ThreadNum = int.Parse(val); break;
-                        case "RunTimes":    atd.setting.Runtimes = int.Parse(val); break;
-                        case "child":       atd.setting.childInfo = val; break;
-                        case "case":        atd.setting.CaseStepList = new List<string>(val.Split(',')); break;
-                        default:            atd.setting.Parms.Add(line); break;
-                    }
-
+                    ParseLine(line,atd);
                 }
                 stream.Close();
                 return atdLST;
@@ -137,8 +203,7 @@ namespace ZyGames.Test
                     Thread.Sleep(v.dely);
                 }
                 Console.WriteLine(result);
-                //TraceLog.ReleaseWrite(result);
-                write(fileName, result);
+                writeLog(fileName, result);
             }
             catch (Exception e)
             {
@@ -147,7 +212,7 @@ namespace ZyGames.Test
           
         }
 
-        void write(string name, string info)
+        void writeLog(string name, string info)
         {
             name = name.Substring(name.LastIndexOf("\\") + 1);
             name = name.Remove(name.LastIndexOf('.'));
@@ -156,10 +221,14 @@ namespace ZyGames.Test
             sw.Write(info);
             sw.Close();
         }
-        void run()
+        void run(string parm)
         {
-            Console.Write("input task filename :");
-            string fileName = Console.ReadLine();
+            string fileName = parm;
+            if(string.IsNullOrEmpty(parm))
+            {
+                Console.Write("input task filename :");
+                fileName = Console.ReadLine();
+            }
             fileName = FilePath + fileName + ".txt";
             doRun(fileName);
         }
@@ -170,17 +239,24 @@ namespace ZyGames.Test
 
         public void RunTasks()
         {
-            //try
+            try
             {
                 while (true)
                 {
                     Menu();
                     Console.Write("input cmd:");
                     string cmd = Console.ReadLine();
+                    string[] parsCmd = cmd.Split(' ');
+                    string parm = "";
+                    if (parsCmd.Length == 2)
+                    {
+                        cmd  = parsCmd[0];
+                        parm = parsCmd[1];
+                    }
                     switch (cmd)
                     {
                         case "meun": Menu(); break;
-                        case "run": run(); break;
+                        case "run": run(parm); break;
                         case "run all": runAll(); break;
                         case "clear": clear(); break;
                         case "exit": break;
@@ -192,9 +268,9 @@ namespace ZyGames.Test
                     }
                 }
             }
-            //catch (Exception e)
+            catch (Exception e)
             {
-               // Console.WriteLine("Exception:" + e.Message);
+                Console.WriteLine("Exception:" + e.Message);
             }
             Console.WriteLine("Press any Key to Exit");
             Console.ReadKey();

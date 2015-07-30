@@ -174,7 +174,7 @@ namespace Game.Script
 
         static int getScore(int index)
         {
-            GameConfigRankingReward.rewardData rd = GameConfigMgr.Instance().getRankReward(index);
+            GameConfigRankingReward.rewardData rd = GameConfigMgr.Instance().getRankReward(index+1);
             if(rd!=null)
             {
                 return rd.Score;

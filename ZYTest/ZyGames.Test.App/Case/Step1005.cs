@@ -61,24 +61,13 @@ namespace ZyGames.Quanmin.Test.Case
         {
             responsePack = ProtoBufUtils.Deserialize<Response1005Pack>(netReader.Buffer);
             string responseDataInfo = "";
-            responseDataInfo = "request :" + Game.NSNS.JsonHelper.prettyJson<Request1005Pack>(req) + "\n";
-            responseDataInfo += "response:" + Game.NSNS.JsonHelper.prettyJson<Response1005Pack>(responsePack) + "\n";
+            responseDataInfo = "request :" + Game.Utils.JsonHelper.prettyJson<Request1005Pack>(req) + "\n";
+            responseDataInfo += "response:" + Game.Utils.JsonHelper.prettyJson<Response1005Pack>(responsePack) + "\n";
             DecodePacketInfo = responseDataInfo;
             int childStepId = getChild(1005);
             if (childStepId > 0)
             {
-                System.Collections.Generic.Dictionary<string, string> dic = new System.Collections.Generic.Dictionary<string, string>();
-                dic.Add("the3rdUserID", responsePack.the3rdUserId.ToString());
-                dic.Add("actionID", "0");
-                dic.Add("num", "1");
-                dic.Add("strThe3rdUserID", dic["the3rdUserID"]);
-                dic.Add("typeUser", req.typeUser);
-                dic["the3rdUserID"] = getChildConfigData(childStepId, "the3rdUserID", dic["the3rdUserID"]);
-                dic["actionID"] = getChildConfigData(childStepId, "actionID", dic["actionID"]);
-                dic["num"] = getChildConfigData(childStepId, "num", dic["num"]);
-                dic["strThe3rdUserID"] = getChildConfigData(childStepId, "strThe3rdUserID", dic["strThe3rdUserID"]);
-                dic["typeUser"] = getChildConfigData(childStepId, "typeUser", dic["typeUser"]);
-                SetChildStep(childStepId.ToString(), createParms(childStepId.ToString(), dic), childStepInfo);
+                //SetChildStep(childStepId.ToString(), createParms(childStepId.ToString(), dic), childStepInfo);
             }
             return true;
         }

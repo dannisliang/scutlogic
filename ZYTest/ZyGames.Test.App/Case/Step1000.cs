@@ -72,22 +72,14 @@ namespace ZyGames.Quanmin.Test.Case
         {
              responsePack = ProtoBufUtils.Deserialize<ResponsePack>(netReader.Buffer);
              string responseDataInfo = "";
-             responseDataInfo  = "request :" + Game.NSNS.JsonHelper.prettyJson<Request1000Pack>(req) + "\n";
-             responseDataInfo += "response:" + Game.NSNS.JsonHelper.prettyJson<ResponsePack>(responsePack) + "\n";
+             responseDataInfo  = "request :" + Game.Utils.JsonHelper.prettyJson<Request1000Pack>(req) + "\n";
+             responseDataInfo += "response:" + Game.Utils.JsonHelper.prettyJson<ResponsePack>(responsePack) + "\n";
              DecodePacketInfo = responseDataInfo;
              int childStepId = getChild(1000);
              if(childStepId>0)
              {
                 System.Collections.Generic.Dictionary<string,string> dic = new System.Collections.Generic.Dictionary<string,string>();
-                dic.Add("PageIndex", "1234");
-                dic.Add("PageSize", "1");
-                dic.Add("UserID", responsePack.UserID.ToString());
-                dic.Add("version", "1.09");
-                dic["PageIndex"] = getChildConfigData(childStepId, "PageIndex", dic["PageIndex"]);
-                dic["PageSize"] = getChildConfigData(childStepId, "PageSize", dic["PageSize"]);
-                dic["UserID"] = getChildConfigData(childStepId, "UserID", dic["UserID"]);
-                dic["version"] = getChildConfigData(childStepId, "version", dic["version"]);
-                SetChildStep(childStepId.ToString(), createParms(childStepId.ToString(), dic),childStepInfo);
+                //SetChildStep(childStepId.ToString(), createParms(childStepId.ToString(), dic),childStepInfo);
              }
              return true;
         }
