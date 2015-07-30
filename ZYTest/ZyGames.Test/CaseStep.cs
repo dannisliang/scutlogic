@@ -36,6 +36,7 @@ using ZyGames.Framework.RPC.IO;
 using ZyGames.Framework.Script;
 using ZyGames.Test.Net;
 using ZyGames.Framework.Common.Serialization;
+using System.Reflection;
 
 namespace ZyGames.Test
 {
@@ -60,7 +61,6 @@ namespace ZyGames.Test
             instance.netWriter = new NetWriter();
             instance.netReader = new NetReader(new CustomHeadFormater());
             instance.indentify = index;
-
             if (instance.isCustom)
             {
 
@@ -77,42 +77,10 @@ namespace ZyGames.Test
             }
             return instance;
         }
-
         protected ThreadSession _session;
         protected StepTimer _stepTimer;
-        private Dictionary<string, string> _params;
-        protected string GetParamsData(string key,string defaultKey)
-        {
+        private Dictionary<string, string> _caseStepParms;
 
-            if (_params.ContainsKey(key))
-                return _params[key];
-            else
-                return defaultKey;
-        }
-        protected int GetParamsData(string key, int defaultKey)
-        {
-
-            if (_params.ContainsKey(key))
-                return _params[key].ToInt();
-            else
-                return defaultKey;
-        }
-        protected float GetParamsData(string key, float defaultKey)
-        {
-
-            if (_params.ContainsKey(key))
-                return _params[key].ToFloat();
-            else
-                return defaultKey;
-        }
-        protected uint GetParamsData(string key, uint defaultKey)
-        {
-
-            if (_params.ContainsKey(key))
-                return _params[key].ToUInt32();
-            else
-                return defaultKey;
-        }
         public Dictionary<int, int> childDic { get; set; }
         public int getChild(int id)
         {
@@ -123,22 +91,13 @@ namespace ZyGames.Test
 
         public bool isUseConfigData()
         {
-            return false;
+            return true;
         }
-        public bool hasChildConfigData(int id)
-        {
-            return false;
-        }
-        public string getChildConfigData(int id,string name,string defaultVal)
-        {
-            return defaultVal;
-        }
-
         protected CaseStep()
         {
             _stepTimer = new StepTimer();
             Action = "";
-            _params = new Dictionary<string, string>();
+            _caseStepParms = new Dictionary<string, string>();
             Runtimes = 1;
             childDic = new Dictionary<int, int>();
         }
@@ -164,23 +123,74 @@ namespace ZyGames.Test
 
         protected void SetRequestParam(string key, object value)
         {
-            _params[key] = value.ToString();
+            _caseStepParms[key] = value.ToString();
         }
 
-        internal protected virtual void Init(ThreadSession session)
+        internal protected virtual void Init(ThreadSession session,TaskSetting setting,Dictionary<string,string> parentData=null)
         {
             _session = session;
+            _setting = setting;
             int msgId = _stepTimer.Runtimes + 1;
             SetRequestParam("MsgId", msgId);
             SetRequestParam("Sid", _session.Context.SessionId);
             SetRequestParam("Uid", _session.Context.UserId);
             SetRequestParam("ActionId", Action);
-
-
-
-           
+            foreach(var v in setting.childStepDic)
+            {
+                childDic.Add(v.Key, v.Value);
+            }
+            if(setting.StepParms.ContainsKey(Action))
+            {
+                foreach(var v in setting.StepParms[Action])
+                {
+                    SetRequestParam(v.Key, v.Value);
+                }
+            }
+            if(parentData!=null) // parent's data will override the config/init data.
+            {
+                foreach(var v in parentData)
+                {
+                    SetRequestParam(v.Key, v.Value);
+                }
+            }
         }
 
+        public void setConfigData(object obj)
+        {
+            Type t = obj.GetType();
+            foreach(PropertyInfo pi in t.GetProperties())
+            {
+                string name = pi.Name;
+                if(_caseStepParms.ContainsKey(name))
+                {
+                    string d = _caseStepParms[name];
+                    if(pi.PropertyType == typeof(int))
+                    {
+                        pi.SetValue(obj, int.Parse(d));
+                    }
+                    else if(pi.PropertyType == typeof(float))
+                    {
+                        pi.SetValue(obj, float.Parse(d));
+                    }
+                    else if(pi.PropertyType == typeof(string))
+                    {
+                        pi.SetValue(obj, d);
+                    }
+                    else if(pi.PropertyType == typeof(uint))
+                    {
+                        pi.SetValue(obj, uint.Parse(d));
+                    }
+                    else if(pi.PropertyType == typeof(byte))
+                    {
+                        pi.SetValue(obj, byte.Parse(d));
+                    }
+                    else
+                    {
+                        Console.WriteLine(pi.PropertyType.ToString()+" not support:"+d);
+                    }
+                }
+            }
+        }
 
         private byte[] GetRequestData()
         {
@@ -331,7 +341,7 @@ namespace ZyGames.Test
             return ret;
         }
 
-        protected void SetChildStep(string stepName,string parms,string childInfo)
+        protected void SetChildStep(string stepName , TaskSetting setting,Dictionary<string,string> parentData)
         {
             CaseStep caseStep = null;
             if (!string.IsNullOrEmpty(stepName))
@@ -339,11 +349,12 @@ namespace ZyGames.Test
                 caseStep = Create(_session.Setting.CaseStepTypeFormat, stepName,indentify);
                 if (caseStep == null) throw new Exception(string.Format(_session.Setting.CaseStepTypeFormat, stepName) + " isn't found.");
                 caseStep.Runtimes = 1;
-                caseStep.Init(_session);
+                caseStep.Init(_session,setting,parentData);
             }
             ChildStep        = caseStep;
         }
 
+        protected TaskSetting _setting;
         protected abstract void SetUrlElement();
 
         protected abstract bool DecodePacket(MessageStructure reader, MessageHead head);

@@ -54,15 +54,11 @@ namespace ZyGames.Quanmin.Test.Case
           req.Score = RandomUtils.GetRandom(1, 1000);
           req.UserID = -10;// RandomUtils.GetRandom(1, 1000);
           req.version = "1.08";
-          //System.Console.WriteLine("UserID: " + req.UserID);
+          System.Console.WriteLine(" setp urlelement 1000 ");
           req.Identify = req.UserName;
           if(isUseConfigData())
           {
-              req.UserName  = GetParamsData("UserName", req.UserName);
-              req.Score     = GetParamsData("Score", req.Score);
-              req.UserID    = GetParamsData("UserID",req.UserID);
-              req.version   = GetParamsData("version", req.version);
-              req.Identify  = GetParamsData("Identify", req.Identify);
+              setConfigData(req);
           }
           byte[] data = ProtoBufUtils.Serialize(req);
           netWriter.SetBodyData(data);
@@ -79,7 +75,8 @@ namespace ZyGames.Quanmin.Test.Case
              if(childStepId>0)
              {
                 System.Collections.Generic.Dictionary<string,string> dic = new System.Collections.Generic.Dictionary<string,string>();
-                //SetChildStep(childStepId.ToString(), createParms(childStepId.ToString(), dic),childStepInfo);
+                dic.Add("UserID",responsePack.UserID.ToString()) ;
+                SetChildStep(childStepId.ToString(),_setting,dic);
              }
              return true;
         }

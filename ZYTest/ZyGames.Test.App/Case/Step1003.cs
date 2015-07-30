@@ -48,9 +48,6 @@ namespace ZyGames.Quanmin.Test.Case
             req.index = 61;
             if(isUseConfigData())
             {
-                req.code  = GetParamsData("code", req.code);
-                req.type  = (byte)GetParamsData("type", (int)req.type);
-                req.index = GetParamsData("index", req.index);
             }
             byte[] data = ProtoBufUtils.Serialize(req);
             netWriter.SetBodyData(data);

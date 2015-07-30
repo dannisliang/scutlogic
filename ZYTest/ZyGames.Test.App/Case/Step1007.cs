@@ -68,8 +68,7 @@ namespace ZyGames.Quanmin.Test.Case
             req.dateType = 1;
             if(isUseConfigData())
             {
-                req.the3rdUserID = GetParamsData("the3rdUserID", req.the3rdUserID);
-                req.dateType = (byte)GetParamsData("dateType", (int)req.dateType);
+                setConfigData(req);
             }
             byte[] data = ProtoBufUtils.Serialize(req);
             netWriter.SetBodyData(data);
@@ -82,6 +81,13 @@ namespace ZyGames.Quanmin.Test.Case
             responseDataInfo = "request :" + Game.Utils.JsonHelper.prettyJson<Request1007Pack>(req) + "\n";
             responseDataInfo += "response:" + Game.Utils.JsonHelper.prettyJson<Response1007Pack>(responsePack) + "\n";
             DecodePacketInfo = responseDataInfo;
+            int childId = getChild(1007);
+            if(childId>0)
+            {
+                System.Collections.Generic.Dictionary<string, string> dic = new System.Collections.Generic.Dictionary<string, string>();
+                dic.Add("the3rdUserID", req.the3rdUserID.ToString());
+                SetChildStep(childId.ToString(), _setting, dic);
+            }
             return true;
         }
 

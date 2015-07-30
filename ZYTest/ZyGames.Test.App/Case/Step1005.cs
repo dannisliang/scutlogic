@@ -28,6 +28,7 @@ using ZyGames.Test;
 using GameRanking.Pack;
 using ZyGames.Framework.Common.Serialization;
 using ZyGames.Framework.Common.Configuration;
+using System.Collections.Generic;
 
 namespace ZyGames.Quanmin.Test.Case
 {
@@ -48,10 +49,7 @@ namespace ZyGames.Quanmin.Test.Case
             req.UserID = 1160518;
             if(isUseConfigData())
             {
-                req.token = GetParamsData("token",req.token);
-                req.typeUser = GetParamsData("typeUser",req.typeUser);
-                req.version = GetParamsData("version", req.version);
-                req.UserID = GetParamsData("UserID", req.UserID);
+                setConfigData(req);
             }
             byte[] data = ProtoBufUtils.Serialize(req);
             netWriter.SetBodyData(data);
@@ -67,7 +65,10 @@ namespace ZyGames.Quanmin.Test.Case
             int childStepId = getChild(1005);
             if (childStepId > 0)
             {
-                //SetChildStep(childStepId.ToString(), createParms(childStepId.ToString(), dic), childStepInfo);
+                Dictionary<string, string> dic = new Dictionary<string, string>();
+                dic.Add("the3rdUserID", responsePack.the3rdUserId.ToString());
+                dic.Add("strThe3rdUserID", dic["the3rdUserID"]);
+                SetChildStep(childStepId.ToString(), _setting,dic);
             }
             return true;
         }

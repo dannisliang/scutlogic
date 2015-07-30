@@ -48,7 +48,7 @@ namespace ZyGames.Quanmin.Test.Case
             req.Version = "1.09";
             if(isUseConfigData())
             {
-                req.Version = GetParamsData("Version", req.Version);
+                setConfigData(req);
             }
             byte[] data = ProtoBufUtils.Serialize(req);
             netWriter.SetBodyData(data);

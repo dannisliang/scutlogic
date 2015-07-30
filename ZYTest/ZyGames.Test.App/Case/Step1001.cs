@@ -48,10 +48,7 @@ namespace ZyGames.Quanmin.Test.Case
             System.Console.WriteLine("Step1001");
             if (isUseConfigData())
             {
-                req.PageIndex = GetParamsData("PageIndex", req.PageIndex);
-                req.PageSize = GetParamsData("PageSize", req.PageSize);
-                req.UserID = GetParamsData("UserID", req.UserID);
-                req.version = GetParamsData("version", req.version);
+                setConfigData(req);
             }
             byte[] data = ProtoBufUtils.Serialize(req);
             netWriter.SetBodyData(data);

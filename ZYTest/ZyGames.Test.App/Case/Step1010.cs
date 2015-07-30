@@ -45,17 +45,14 @@ namespace ZyGames.Quanmin.Test.Case
             readAuthory();
             req = new Request1010Pack();
             req.the3rdUserID = 1;
-            req.actionID = Request1010Pack.EnumOptType.use_enterNum;
+            req.actionID = (int)Request1010Pack.EnumOptType.use_enterNum;
             req.num = 1;
             req.strThe3rdUserID = "";
             req.typeUser = "YYS_CP360";
+            req.version = "1.09";
             if (isUseConfigData())
             {
-                req.the3rdUserID = GetParamsData("the3rdUserID", req.the3rdUserID);
-                req.actionID = (Request1010Pack.EnumOptType)GetParamsData("", (int)req.actionID);
-                req.num = GetParamsData("num", req.num);
-                req.strThe3rdUserID = GetParamsData("strThe3rdUserID", req.strThe3rdUserID);
-                req.typeUser = GetParamsData("typeUser", req.typeUser);
+                setConfigData(req);
             }
             byte[] data = ProtoBufUtils.Serialize(req);
             netWriter.SetBodyData(data);
@@ -84,7 +81,11 @@ namespace ZyGames.Quanmin.Test.Case
                 req.strThe3rdUserID = GetParamsData("strThe3rdUserID", req.strThe3rdUserID);
                 req.typeUser = GetParamsData("typeUser", req.typeUser);
                  */
-                //SetChildStep(childStepId.ToString(), createParms(childStepId.ToString(), dic), childStepInfo);
+                dic.Add("UserID", req.UserID.ToString());
+                dic.Add("index", responsePack.index.ToString());
+                dic.Add("the3rdUserID", req.the3rdUserID.ToString());
+                dic.Add("strThe3rdUserID", req.strThe3rdUserID);
+               SetChildStep(childStepId.ToString(), _setting,dic);
             }
             return true;
         }

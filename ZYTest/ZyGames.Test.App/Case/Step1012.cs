@@ -68,7 +68,7 @@ namespace ZyGames.Quanmin.Test.Case
             byte[] data = ProtoBufUtils.Serialize(req);
             if(isUseConfigData())
             {
-                req.the3rdUserID = GetParamsData("the3rdUserID",req.the3rdUserID);
+                setConfigData(req);
             }
             //System.Console.WriteLine(id + ":" + requestPack.the3rdUserID + ":" + KeyUInt2Int(requestPack.the3rdUserID));
             netWriter.SetBodyData(data);

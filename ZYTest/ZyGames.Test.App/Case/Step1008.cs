@@ -28,6 +28,7 @@ using ZyGames.Test;
 using GameRanking.Pack;
 using ZyGames.Framework.Common.Serialization;
 using ZyGames.Framework.Common.Configuration;
+using System.Collections.Generic;
 
 namespace ZyGames.Quanmin.Test.Case
 {
@@ -54,16 +55,7 @@ namespace ZyGames.Quanmin.Test.Case
             req.typeUser = "YYS_CP360";
             if (isUseConfigData())
             {
-                req.UserID = GetParamsData("UserID", req.UserID);
-                req.identify = GetParamsData("identify", req.identify);
-                req.version = GetParamsData("version", req.version);
-                req.the3rdUserID = GetParamsData("the3rdUserID", req.the3rdUserID);
-                req.happyPoint = GetParamsData("happyPoint", req.happyPoint);
-                req.Rate = GetParamsData("Rate", req.Rate);
-                req.index = GetParamsData("index", req.index);
-                req.strThe3rdUserID = GetParamsData("strThe3rdUserID", req.strThe3rdUserID);
-                req.typeUser = GetParamsData("typeUser", req.typeUser);
-                req.Distance = GetParamsData("Distance", req.Distance);
+                setConfigData(req);
             }
             byte[] data = ProtoBufUtils.Serialize(req);
             netWriter.SetBodyData(data);
@@ -76,6 +68,13 @@ namespace ZyGames.Quanmin.Test.Case
             responseDataInfo = "request :" + Game.Utils.JsonHelper.prettyJson<Request1008Pack>(req) + "\n";
             responseDataInfo += "response:" + Game.Utils.JsonHelper.prettyJson<Response1008Pack>(responsePack) + "\n";
             DecodePacketInfo = responseDataInfo;
+            int chidId = getChild(1008);
+            if(chidId>0)
+            {
+                Dictionary<string, string> dic = new Dictionary<string, string>();
+                dic.Add("the3rdUserID",req.the3rdUserID.ToString());
+                SetChildStep(chidId.ToString(), _setting, dic);
+            }
             return true;
         }
 

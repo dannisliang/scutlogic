@@ -79,18 +79,15 @@ namespace ZyGames.Test
             UserPwd = _testUserPwd;
             CaseStepList = new List<string>(_testSteps);
             Parms = new List<string>();
-            childInfo = "";
             StepParms = new Dictionary<string, Dictionary<string, string>>();
-            ChildStepParms = new Dictionary<string,Dictionary<string, string>>();
+            childStepDic = new Dictionary<int, int>();
         }
 
         public Dictionary<int, int> childStepDic;
         public Dictionary<string, Dictionary<string, string>> StepParms;
-        public Dictionary<string, Dictionary<string, string>> ChildStepParms;
 
         public string TaskName = "";
         public string TaskDes  = "";
-        public string childInfo {get;set;}
         public List<string> Parms { get; set; }
         public string CaseStepTypeFormat { get; set; }
 

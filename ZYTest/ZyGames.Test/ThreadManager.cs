@@ -91,7 +91,7 @@ namespace ZyGames.Test
                 if (caseStep != null)
                 {
                     caseStep.Runtimes = runtimes;
-                    caseStep.Init(session);
+                    caseStep.Init(session,setting);
                     caseList[i] = caseStep;
                     //Console.WriteLine("Task.Factory.StartNew:" + cnt);
                     taskList[i] = Task.Factory.StartNew(caseStep.StartRun);

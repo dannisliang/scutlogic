@@ -50,7 +50,7 @@ namespace ZyGames.Quanmin.Test.Case
             req.pwd = ZyGames.Framework.Common.Security.CryptoHelper.MD5_Encrypt(pwd);
             if(isUseConfigData())
             {
-                req.param = GetParamsData("param", req.param);
+                setConfigData(req);
             }
             byte[] data = ProtoBufUtils.Serialize(req);
             netWriter.SetBodyData(data);
@@ -74,7 +74,7 @@ namespace ZyGames.Quanmin.Test.Case
                           req.version = GetParamsData("version", req.version);
                           req.UserID = GetParamsData("UserID", req.UserID);
                  */
-                //SetChildStep(childStepId.ToString(), createParms(childStepId.ToString(), dic), childStepInfo);
+                SetChildStep(childStepId.ToString(),_setting,dic);
             }
             return true;
         }

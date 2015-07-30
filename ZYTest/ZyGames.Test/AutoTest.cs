@@ -89,7 +89,13 @@ namespace ZyGames.Test
 
         void parseChild(string val,autoTaskData atd)
         {
-            atd.setting.childInfo = val; 
+            string[] valSplits = val.Split('&');
+            for (int i = 0; i < valSplits.Length; ++i)
+            {
+                if (valSplits[i] == "") continue;
+                string[] words = valSplits[i].Split(':');
+                atd.setting.childStepDic.Add(int.Parse(words[0]), int.Parse(words[1]));
+            }
         }
 
         void parseCase(string val,autoTaskData atd)
@@ -112,14 +118,11 @@ namespace ZyGames.Test
                 string[] words = valSplits[i].Split(':');
                 data.Add(words[0], words[1]);
             }
-            if(line.Contains("ParmsChild"))
+            if(line.Contains("Parms"))
             {
                 string[] keyworld = key.Split('_');
-                int parentID = int.Parse(keyworld[1]);
-                int childID  = int.Parse(keyworld[2]);
-            }
-            else if(line.Contains("Parms"))
-            {
+                string id  = keyworld[1];
+                atd.setting.StepParms.Add(id,data);
             }
         }
         void ParseLine(string line,autoTaskData atd)
@@ -229,7 +232,7 @@ namespace ZyGames.Test
                 Console.Write("input task filename :");
                 fileName = Console.ReadLine();
             }
-            fileName = FilePath + fileName + ".txt";
+            fileName = FilePath + fileName + ".atd";
             doRun(fileName);
         }
         void clear()
@@ -257,7 +260,7 @@ namespace ZyGames.Test
                     {
                         case "meun": Menu(); break;
                         case "run": run(parm); break;
-                        case "run all": runAll(); break;
+                        case "runAll": runAll(); break;
                         case "clear": clear(); break;
                         case "exit": break;
                         case "q": break;

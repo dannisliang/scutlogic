@@ -48,11 +48,6 @@ namespace ZyGames.Quanmin.Test.Case
             req.actionID = 0;
             if (isUseConfigData())
             {
-                req.UserID = GetParamsData("UserID", req.UserID);
-                req.identify = GetParamsData("identify", req.identify);
-                req.version = GetParamsData("version", req.version);
-                req.status = GetParamsData("status", req.status);
-                req.actionID = (byte)GetParamsData("actionID", (int)req.actionID);
             }
             byte[] data = ProtoBufUtils.Serialize(req);
             netWriter.SetBodyData(data);
