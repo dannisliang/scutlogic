@@ -1,9 +1,0 @@
-[begin]
-taskName=1000
-taskDes=增加数据
-dely=1000
-ThreadNum=100
-RunTimes=1
-case=1000-1000
-Parms_1001=version:1.09
-[end]
