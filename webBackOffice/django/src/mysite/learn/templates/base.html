@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% load staticfiles %}
+    <img src="{% static "learn/aaa.jpg" %}" alt="My image"/>
+    <title>{% block title %}默认标题{% endblock %} - 自强学堂</title>
+</head>
+<body>
+ 
+
+{% block content %}
+<div>这里是默认内容，所有继承自这个模板的，如果不覆盖就显示这里的默认内容。</div>
+{% endblock %}
+  
+</body>
+</html>

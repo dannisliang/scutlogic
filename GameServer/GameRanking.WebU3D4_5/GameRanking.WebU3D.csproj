@@ -110,6 +110,7 @@
     <Compile Include="Script\CsScript\logic\RankingTotal.cs" />
     <Compile Include="Script\CsScript\logic\RealItemCntUpdate.cs" />
     <Compile Include="Script\CsScript\MainClass.cs" />
+    <Compile Include="Script\Model\ActivityModel.cs" />
     <Compile Include="Script\Model\Authority.cs" />
     <Compile Include="Script\Model\BlackList.cs" />
     <Compile Include="Script\Model\CompensationAllServer.cs" />

@@ -50,11 +50,11 @@ namespace ZyGames.Quanmin.Test.Case
         protected override void SetUrlElement()
         {
           req = new Request1000Pack();
-          req.UserName = "Computer_self" + indentify;
+          req.UserName = "Computer_" + indentify;
           req.Score = RandomUtils.GetRandom(1, 1000);
           req.UserID = -10;// RandomUtils.GetRandom(1, 1000);
           req.version = "1.08";
-          System.Console.WriteLine(" setp urlelement 1000 ");
+          //System.Console.WriteLine(" setp urlelement 1000 ");
           req.Identify = req.UserName;
           if(isUseConfigData())
           {

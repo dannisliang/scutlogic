@@ -70,7 +70,8 @@ namespace GameServer.CsScript.Action
             }
             else
             {
-                if(actionId!=2502)
+                if(actionId!=2502 && 
+                   actionId!=4000)
                 {
                     buffer = BufferUtils.MergeBytes(
                                         BufferUtils.AppendHeadBytes(headBytes),

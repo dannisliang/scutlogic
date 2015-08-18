@@ -72,6 +72,7 @@ namespace Game.Script
             new ShareCacheStruct<HistoryUserRanking>();
             new ShareCacheStruct<ExchangeCode>();
             new ShareCacheStruct<UserRankingTotal>();
+            new ShareCacheStruct<ActivityModel>();
             happyMapInit();
 
             GameConfigMgr.Instance().Start();

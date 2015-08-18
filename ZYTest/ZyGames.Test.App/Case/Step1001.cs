@@ -41,7 +41,7 @@ namespace ZyGames.Quanmin.Test.Case
         protected override void SetUrlElement()
         {
             req = new Request1001Pack();
-            req.PageIndex = 76367;// RandomUtils.GetRandom(1, 10000);
+            req.PageIndex = -1;// RandomUtils.GetRandom(1, 10000);
             req.PageSize  = 1;
             req.UserID = 111111;
             req.version = "1.09";

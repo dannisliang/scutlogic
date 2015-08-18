@@ -41,7 +41,6 @@ namespace ZyGames.Quanmin.Test.Case
         Request1003Pack req = null;
         protected override void SetUrlElement()
         {
-           
             req = new Request1003Pack();
             req.code = "UY2SXTNKY";
             req.type = 56;
