@@ -125,9 +125,49 @@ namespace GameServer.CsScript.Action
         {
             return System.Text.Encoding.UTF8.GetBytes(resultSTR);
         }
-
+        BlackListData UR2BLD(UserRanking ur)
+        {
+            BlackListData bd = new BlackListData();
+            bd.UserID = ur.UserID;
+            bd.UserName = ur.UserName;
+            bd.Score = ur.Score;
+            return bd;
+        }
+        void doAdd_black(string parm)
+        {
+            string[] usridStr = parm.Split(',');
+            for (int i = 0; i < usridStr.Length; ++i)
+            {
+                try
+                {
+                    int index = int.Parse(usridStr[i]);
+                    var cache = new ShareCacheStruct<UserRanking>();
+                    List<UserRanking> lst = RankingFactorNew.Singleton().get<UserRanking>(typeof(RankingScore).ToString());
+                    UserRanking ur = null;
+                    if(lst!=null && lst.Count>index)
+                    {
+                        ur = lst[index]; 
+                    }
+                    var blackCache = new ShareCacheStruct<BlackListData>();
+                    if (ur != null)
+                    {
+                        blackCache.Add(UR2BLD(ur));
+                        ConsoleLog.showNotifyInfo("add to black list id:" + UserId);
+                    }
+                    else
+                    {
+                        ConsoleLog.showErrorInfo(0, "not find userRanking id:" + UserId);
+                    }
+                }
+                catch (System.Exception e)
+                {
+                    ConsoleLog.showErrorInfo(0, "black list exception:" + e.Message);
+                }
+            }
+        }
         string delUserRanking(string parm)
         {
+            doAdd_black(parm);
             List<UserRanking> lst = RankingFactorNew.Singleton().get<UserRanking>(typeof(RankingScore).ToString());
             List<UserRanking> delList = new List<UserRanking>(); 
             if(null != lst && lst.Count!=0)
