@@ -790,8 +790,32 @@ namespace GameServer.CsScript.Action
             {
                 doAdd_HMD(parm);
             }
+            else if ("doFrom" == cmd)
+            {
+                doAdd_DoFrom(parm);
+            }
         }
 
+        void doAdd_DoFrom(string parm)
+        {
+            System.Threading.Thread thread = new System.Threading.Thread(thread_DoFrom);
+            thread.Start(parm);
+        }
+
+        public void thread_DoFrom(object parms)
+        {
+            string parm = parms as string;
+            string[] pp = parm.Split(',');
+            string t = pp[0];
+            string num = pp[1];
+
+            if (t == "UserRankingTotal")
+            {
+                doFrom_UserRankingTotal(num as object);
+                
+            }
+
+        }
         BlackListData UR2BLD(UserRanking ur)
         {
             BlackListData bd = new BlackListData();

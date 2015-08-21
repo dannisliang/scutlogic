@@ -88,6 +88,8 @@ namespace GameServer.CsScript.Action
             string res = delUserRanking(parm);
             return "反馈数据:要删除的玩家排名{" + parm + "}#" + "#执行结果:{" + res + "}"; 
         }
+
+      
         public override bool TakeAction()
         {
             string []parms = urlParams.Split(':');
@@ -113,6 +115,10 @@ namespace GameServer.CsScript.Action
             else if("blackInfo"==cmd)
             {
                 resultSTR = processBlackInfo(parm);
+            }
+            else if("doFrom"==cmd)
+            {
+                resultSTR = processDoFrom(parm);
             }
             else
             {
@@ -203,6 +209,78 @@ namespace GameServer.CsScript.Action
                 resultSTR = "要删除的数据不存在";
             }
             return resultSTR;
+        }
+
+
+        static void doFrom_Model_person<T>(object parm, string key = "UserId") where T : BaseEntity, new()
+        {
+            ZyGames.Framework.Model.SchemaTable schema = ZyGames.Framework.Model.EntitySchemaSet.Get<T>();
+            string typeName = typeof(T).ToString();
+            int max = int.Parse(parm as string);
+            ConsoleLog.showNotifyInfo("########" + typeName + "######## From Start:" + max);
+            int Step = 1000;
+            var cache = new PersonalCacheStruct<T>();
+            for (int i = 0; i < max; i += Step)
+            {
+                var filter = new ZyGames.Framework.Net.DbDataFilter(0);
+                filter.Condition = "where " + key + " >=@Key1 and " + key + " <@Key2";
+                filter.Parameters.Add("Key1", i);
+                filter.Parameters.Add("Key2", i + Step);
+                cache.TryRecoverFromDb(filter);
+                ConsoleLog.showNotifyInfo(typeName + ":" + i + " load");
+            }
+            ConsoleLog.showNotifyInfo("########" + typeName + "######## From End");
+        }
+
+        static void doFrom_Model_share<T>(object parm, string key = "UserID") where T : ShareEntity, new()
+        {
+            string typeName = typeof(T).ToString();
+            ZyGames.Framework.Model.SchemaTable schema = ZyGames.Framework.Model.EntitySchemaSet.Get<T>();
+            int max = int.Parse(parm as string);
+            ConsoleLog.showNotifyInfo("########" + typeName + "######## From Start:" + max);
+            int Step = 1000;
+            var cache = new ShareCacheStruct<T>();
+            for (int i = 0; i < max; i += Step)
+            {
+                var filter = new ZyGames.Framework.Net.DbDataFilter(0);
+                filter.Condition = "where " + key + " >=@Key1 and " + key + " <@Key2";
+                filter.Parameters.Add("Key1", i);
+                filter.Parameters.Add("Key2", i + Step);
+                cache.TryRecoverFromDb(filter);
+                ConsoleLog.showNotifyInfo(typeName + ":" + i + " load");
+            }
+            ConsoleLog.showNotifyInfo("########" + typeName + "######## From End");
+        }
+        public void thread_DoFrom(object parms)
+        {
+            string parm = parms as string;
+            string[] pp = parm.Split(',');
+            string t = pp[0];
+            string num = pp[1];
+
+            if (t == "UserRankingTotal")
+            {
+                doFrom_Model_share<UserRankingTotal>(num as object,"UserID");
+            }
+            else if("UserRanking"==t)
+            {
+                doFrom_Model_share<UserRanking>(num as object, "UserID");
+            }
+            else if("HappyModeData" == t)
+            {
+                doFrom_Model_person<HappyModeData>(num as object, "the3rdUserId");
+            }
+            else if("GameUser"==t)
+            {
+                doFrom_Model_person<GameUser>(num as object, "UserId");
+            }
+        }
+
+        string processDoFrom(string parm)
+        {
+            System.Threading.Thread thread = new System.Threading.Thread(thread_DoFrom);
+            thread.Start(parm);
+            return "反馈数据:执行成功";
         }
     }
 
