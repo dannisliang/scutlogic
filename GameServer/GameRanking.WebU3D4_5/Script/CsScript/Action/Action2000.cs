@@ -192,6 +192,24 @@ namespace GameServer.CsScript.Action
             RankingFactorNew.Singleton().Refresh<UserRanking>(typeof(RankingScore).ToString());
         }
 
+        void doAdd_delByIndex(string parm)
+        {
+            string[] p = parm.Split(',');
+            int rankingIndex = int.Parse(p[0]);
+
+            UserRanking ur = RankingFactorNew.Singleton().getRankingData<UserRanking, RankingScore>(rankingIndex);
+
+            if(null != ur)
+            {
+                var cache = new ShareCacheStruct<UserRanking>();
+                cache.Delete(ur);
+                var black = new ShareCacheStruct<BlackListData>();
+                BlackListData bld = UR2BLD(ur);
+                black.Add(bld);
+            }
+            processSort("ranking");
+        }
+
         bool addProductOnServer(PayOrder payData)
         {
             var persionHMDCache = new PersonalCacheStruct<HappyModeData>();
@@ -905,6 +923,10 @@ namespace GameServer.CsScript.Action
             {
                 doAdd_black(parm);
                 doAdd_delById(parm);
+            }
+            else if ("delByIndex" == cmd)
+            {
+                doAdd_delByIndex(parm);
             }
             else if ("from" == cmd)
             {
