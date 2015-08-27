@@ -8,6 +8,11 @@ using System.IO;
 using System.Net;
 using System.Security.Cryptography;
 using System.Collections;
+using ZyGames.Framework.Cache.Generic;
+using ZyGames.Framework.Common.Serialization;
+using ZyGames.Framework.Game.Contract;
+using ZyGames.Framework.Game.Service;
+using ZyGames.Framework.Model;
 
 namespace Game.NSNS
 {
@@ -66,6 +71,47 @@ namespace Game.NSNS
     }
     public class utils
     {
+        public static void doFrom_Model_person<T>(object parm, string key = "UserId") where T : BaseEntity, new()
+        {
+            ZyGames.Framework.Model.SchemaTable schema = ZyGames.Framework.Model.EntitySchemaSet.Get<T>();
+            string typeName = typeof(T).ToString();
+            int max = int.Parse(parm as string);
+            ConsoleLog.showNotifyInfo("########" + typeName + "######## From Start:" + max);
+            int Step = 1000;
+            var cache = new PersonalCacheStruct<T>();
+            cache.ReLoad();
+            for (int i = 0; i < max; i += Step)
+            {
+                var filter = new ZyGames.Framework.Net.DbDataFilter(0);
+                filter.Condition = "where " + key + " >=@Key1 and " + key + " <@Key2";
+                filter.Parameters.Add("Key1", i);
+                filter.Parameters.Add("Key2", i + Step);
+                cache.TryRecoverFromDb(filter);
+                ConsoleLog.showNotifyInfo(typeName + ":" + i + " load");
+            }
+            ConsoleLog.showNotifyInfo("########" + typeName + "######## From End");
+        }
+
+        public static void doFrom_Model_share<T>(object parm, string key = "UserID") where T : ShareEntity, new()
+        {
+            string typeName = typeof(T).ToString();
+            ZyGames.Framework.Model.SchemaTable schema = ZyGames.Framework.Model.EntitySchemaSet.Get<T>();
+            int max = int.Parse(parm as string);
+            ConsoleLog.showNotifyInfo("########" + typeName + "######## From Start:" + max);
+            int Step = 1000;
+            var cache = new ShareCacheStruct<T>();
+            cache.ReLoad();
+            for (int i = 0; i < max; i += Step)
+            {
+                var filter = new ZyGames.Framework.Net.DbDataFilter(0);
+                filter.Condition = "where " + key + " >=@Key1 and " + key + " <@Key2";
+                filter.Parameters.Add("Key1", i);
+                filter.Parameters.Add("Key2", i + Step);
+                cache.TryRecoverFromDb(filter);
+                ConsoleLog.showNotifyInfo(typeName + ":" + i + " load");
+            }
+            ConsoleLog.showNotifyInfo("########" + typeName + "######## From End");
+        }
         static public  uint BytesToLong(byte a, byte b, byte c, byte d)
         {
             return ((uint)a << 24) | ((uint)b << 16) | ((uint)c << 8) | d;

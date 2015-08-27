@@ -72,14 +72,14 @@ namespace Game.Script
             var urcache = new ShareCacheStruct<UserRanking>();
             float percent = GameConfigMgr.Instance().getInt("rankclear_perscent", 1) / 100.0f;
             int reduceScore = GameConfigMgr.Instance().getInt("rank_score_redice", 10000);
-            int reduceAfterScorre = GameConfigMgr.Instance().getInt("rank_clear_after", 500);
+            float reduceAfterScorre = GameConfigMgr.Instance().getfloat("rank_clear_after", 0.1f);
             urcache.Foreach((string str, UserRanking ur) =>
             {
                 if(ur.Score > reduceScore)
                 {
                     ur.ModifyLocked(() =>
                     {
-                        ur.Score = reduceAfterScorre;
+                        ur.Score = (int) (reduceAfterScorre*ur.Score);
                     });
                 }
                 return true;

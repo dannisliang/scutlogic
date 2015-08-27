@@ -36,7 +36,7 @@ namespace Game.Script
         {
             var cache = new ShareCacheStruct<ShareRealItemCnt>();
             List<int> itemIds = GameConfigMgr.Instance().getHappyDataKeys();
-            GameConfigHappyPoint.HappyData hd = null;
+            memoryRealInfoDataModel.HappyData hd = null;
             for(int i=0;i<itemIds.Count; ++i)
             {
                if( null ==  cache.FindKey(itemIds[i])) // first add
@@ -97,7 +97,7 @@ namespace Game.Script
 
         bool updateRealItemCnt(string s,ShareRealItemCnt sric)
         {
-            GameConfigHappyPoint.HappyData hd = GameConfigMgr.Instance().getHappyData(sric.itemID);
+            memoryRealInfoDataModel.HappyData hd = GameConfigMgr.Instance().getHappyData(sric.itemID);
             if(hd!=null)
             {
                 int MinuteForReflesh = hd.MinuteForReflesh;

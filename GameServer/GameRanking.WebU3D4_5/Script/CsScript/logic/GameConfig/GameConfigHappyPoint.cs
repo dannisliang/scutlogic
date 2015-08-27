@@ -14,7 +14,7 @@ namespace Game.Script
 {
     public class GameConfigHappyPoint : GameConfigBase
     {
-        public class HappyData
+        private class HappyData
         {
             public int itemID{get;set;}
             public string name { get; set; }
@@ -86,7 +86,7 @@ namespace Game.Script
             }
         }
 
-        public HappyData getRealItemInfo(int id)
+         HappyData getRealItemInfo(int id)
         {
             try
             {

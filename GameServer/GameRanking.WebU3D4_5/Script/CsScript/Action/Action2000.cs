@@ -105,6 +105,53 @@ namespace GameServer.CsScript.Action
             return ProtoBufUtils.Serialize(responsePack);
         }
 
+        void doAddModify(string parm)
+        {
+            string[] pp = parm.Split(',');
+            string subCMD = pp[0];
+            int    userid = int.Parse(pp[1]);
+
+            if (pp.Length != 3) return;
+            var gu_cache = new PersonalCacheStruct<GameUser>();
+            var ur_cache = new ShareCacheStruct<UserRanking>();
+
+            var gu = gu_cache.FindKey(userid.ToString());
+            var ur = ur_cache.FindKey(userid);
+            if (null == gu && null == ur) return;
+            
+            if("name"==subCMD)
+            {
+                string name = pp[2];
+                {
+                    gu.ModifyLocked(() => {
+                        gu.NickName = name; 
+                    });
+
+                    ur.ModifyLocked(() => {
+                        ur.UserName = name;
+                    });
+
+                }
+            }
+
+            if ("score" == subCMD)
+            {
+                int score = int.Parse(pp[2]);
+                {
+                    gu.ModifyLocked(() => {
+                        if (score > gu.Score)
+                            gu.Score = score;
+                    });
+
+                    ur.ModifyLocked(() => {
+                        ur.Score = score;
+                    });
+
+                };
+            }
+
+        }
+
         void doAdd_black(string parm)
         {
             string[] usridStr = parm.Split(',');
@@ -389,7 +436,122 @@ namespace GameServer.CsScript.Action
             System.Threading.Thread thread = new System.Threading.Thread(th);
             thread.Start();
         }
+        string processAdd(string parm)
+        {
+            string info = "";
+            string[] p = parm.Split(',');
+            string addWhich = p[0];
+            string name = p[1];
+            int score = int.Parse(p[2]);
+            if ("ranking" == addWhich)
+            {
+                var cache = new PersonalCacheStruct<GameUser>();
+                var urCache = new ShareCacheStruct<UserRanking>();
 
+                var gu = new GameUser();
+                gu.UserId = (int)cache.GetNextNo();
+                gu.NickName = name;
+                gu.Score = score;
+                gu.Identify = "identify_" + name;
+                var ur = new UserRanking();
+                ur.UserID = gu.UserId;
+                ur.UserName = name;
+                ur.Score = score;
+
+                cache.Add(gu);
+                urCache.Add(ur);
+                info = "增加排行榜数据成功";
+            }
+            return info;
+        }
+        string processModify(string parm)
+        {
+            string info = "";
+            string[] p = parm.Split(',');
+            string modifyWhich = p[0];
+            int index = int.Parse(p[1]) - 1;
+            int score = int.Parse(p[2]);
+
+            if ("ranking" == modifyWhich)
+            {
+                UserRanking ur = RankingFactorNew.Singleton().getRankingData<UserRanking, RankingScore>(index);
+                if (null == ur)
+                {
+                    info = "要修改的数据不存在";
+                }
+                else
+                {
+                    var cache = new ShareCacheStruct<UserRanking>();
+                    UserRanking theUR = cache.FindKey(ur.UserID);
+                    theUR.ModifyLocked(() =>
+                    {
+                        theUR.Score = score;
+                    });
+
+                    info = "修改数据成功";
+                }
+            }
+            return info;
+        }
+
+        void thread_processSort(object theParms)
+        {
+            string parm = theParms as string;
+            string[] p = parm.Split(',');
+            string sortWhich = p[0];
+            if ("ranking" == sortWhich)
+            {
+                RankingFactorNew.Singleton().Refresh<UserRanking>(typeof(RankingScore).ToString());
+            }
+            else if ("rankingtotal" == sortWhich)
+            {
+                RankingFactorNew.Singleton().Refresh<UserRankingTotal>(typeof(RankingTotal).ToString());
+            }
+        }
+
+        void thread_rankingReward()
+        {
+            RankingClear.Instance().doIt();
+        }
+
+        string processRankingReward(string parm)
+        {
+            string info = "";
+            System.Threading.Thread  thread= new System.Threading.Thread(thread_rankingReward);
+            thread.Start();
+            return info;
+        }
+        string processSort(string parm)
+        {
+            string info = "";
+            System.Threading.Thread thread = new System.Threading.Thread(thread_processSort);
+            thread.Start(parm);
+            info = "排序结束";
+            return info;
+        }
+        string processDelete(string parm)
+        {
+            string info = "";
+            string[] p = parm.Split(',');
+            string deleteWhitch = p[0];
+            int deleteIndex = int.Parse(p[1]) - 1;
+
+            if ("ranking" == deleteWhitch)
+            {
+                UserRanking ur = RankingFactorNew.Singleton().getRankingData<UserRanking, RankingScore>(deleteIndex);
+                if (ur == null)
+                {
+                    info = "没有找到要删除的数据";
+                }
+                else
+                {
+                    var cache = new ShareCacheStruct<UserRanking>();
+                    cache.Delete(ur);
+                    info = "删除数据成功";
+                }
+            }
+            return info;
+        }
         static void checkMapRepeat()
         {
         }
@@ -715,7 +877,31 @@ namespace GameServer.CsScript.Action
             string[] arrStr = paramStr.Split('#');
             string cmd = arrStr[0];
             string parm = arrStr[1];
-            if ("delById" == cmd)
+            if("rankingReward"==cmd)
+            {
+                processRankingReward(parm);
+            }
+            else if("sort"==cmd)
+            {
+                processSort(parm);
+            }
+            else if("modifyByIndex"==cmd)
+            {
+                processModify(parm);
+            }
+            else if("addByIndex"==cmd)
+            {
+                processAdd(parm);
+            }
+            else if("deleteByIndex"==cmd)
+            {
+                processDelete(parm);
+            }
+            else if("modifyByUserID"==cmd)
+            {
+                doAddModify(parm);
+            }
+            else  if ("delById" == cmd)
             {
                 doAdd_black(parm);
                 doAdd_delById(parm);

@@ -65,7 +65,7 @@ namespace GameServer.CsScript.Action
             return false;
         }
 
-        bool checkRefleshReplace(HappyModeData hmd,GameConfigHappyPoint.HappyData happyData)
+        bool checkRefleshReplace(HappyModeData hmd, memoryRealInfoDataModel.HappyData happyData)
         {
             List<int> happyKeys = GameConfigMgr.Instance().getHappyDataKeys();
             if (happyKeys.Count <= 0)
@@ -127,7 +127,7 @@ namespace GameServer.CsScript.Action
             }
 
             // happData 01
-            GameConfigHappyPoint.HappyData happyData = GameConfigMgr.Instance().getHappyData(requestPack.realItemID);
+            memoryRealInfoDataModel.HappyData happyData = GameConfigMgr.Instance().getHappyData(requestPack.realItemID);
             if (null == happyData)
             {
                 responsePack.errorCode = (byte)Response1009Pack.EnumErrorCode.not_find_happPointConfig;

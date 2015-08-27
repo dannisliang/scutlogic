@@ -334,13 +334,17 @@ namespace Game.Script
             List<ConfigData> newCD = new List<ConfigData>();
 
             // UI
-            GameConfigUI gcu = _configDic[(int)EnumConfigFileType.UI] as GameConfigUI;
-            gcu.getDate(newCD, version);
+            //GameConfigUI gcu = _configDic[(int)EnumConfigFileType.UI] as GameConfigUI;
+            //gcu.getDate(newCD, version);
+            NewGameConfig.Singleton().getConfigUIData(newCD, version);
+            
 
             // activity
-            GameConfigActivity gca = _configDic[(int)EnumConfigFileType.Activity] as GameConfigActivity;
-            gca.getDate(newCD, version);
+            //GameConfigActivity gca = _configDic[(int)EnumConfigFileType.Activity] as GameConfigActivity;
+            //gca.getDate(newCD, version);
+            NewGameConfig.Singleton().getActivityDate(newCD, version);
 
+                
             // openClose
             GameConfigOpenClose gcoc = _configDic[(int)EnumConfigFileType.OpenClose] as GameConfigOpenClose;
             gcoc.getDate(newCD, version, ip);
@@ -427,16 +431,24 @@ namespace Game.Script
             }
         }
 
-        public GameConfigHappyPoint.HappyData getHappyData(int realItemId)
+        //public memoryHappyModeDataModel.HappyData getHappyData(int realItemId)
+        //{
+        //    GameConfigHappyPoint config = _configDic[(int)EnumConfigFileType.RealItems] as GameConfigHappyPoint;
+         //   return config.getRealItemInfo(realItemId);
+       //  }
+
+        public memoryRealInfoDataModel.HappyData getHappyData(int realItemId)
         {
-            GameConfigHappyPoint config = _configDic[(int)EnumConfigFileType.RealItems] as GameConfigHappyPoint;
-            return config.getRealItemInfo(realItemId);
+            var cache = new RealInfoDataModelMemoryCache();
+            return cache.getRealItemInfo(realItemId);
         }
 
         public List<int> getHappyDataKeys()
         {
-            GameConfigHappyPoint config = _configDic[(int)EnumConfigFileType.RealItems] as GameConfigHappyPoint;
-            return config.getKeys();
+           // GameConfigHappyPoint config = _configDic[(int)EnumConfigFileType.RealItems] as GameConfigHappyPoint;
+           // return config.getKeys();
+            var cache = new RealInfoDataModelMemoryCache();
+            return cache.getKeys();
         }
         public string getProductInfo(string productID,string orderID)
         {

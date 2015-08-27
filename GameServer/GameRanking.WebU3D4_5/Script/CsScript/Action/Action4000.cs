@@ -120,6 +120,26 @@ namespace GameServer.CsScript.Action
             {
                 resultSTR = processDoFrom(parm);
             }
+            else if("updateConfig"==cmd)
+            {
+                resultSTR = processUpdateConfig(parm);
+            }
+            else if("userInfo"==cmd)
+            {
+                resultSTR = processUserInfo(parm);
+            }
+            else if("delete"==cmd)
+            {
+                resultSTR = processDelete(parm);
+            }
+            else if("add"==cmd)
+            {
+                resultSTR = processAdd(parm);
+            }
+            else if("modify"==cmd)
+            {
+                resultSTR = processModify(parm);
+            }
             else
             {
                 resultSTR = "你好GM not find cmd:"+cmd;
@@ -212,45 +232,7 @@ namespace GameServer.CsScript.Action
         }
 
 
-        static void doFrom_Model_person<T>(object parm, string key = "UserId") where T : BaseEntity, new()
-        {
-            ZyGames.Framework.Model.SchemaTable schema = ZyGames.Framework.Model.EntitySchemaSet.Get<T>();
-            string typeName = typeof(T).ToString();
-            int max = int.Parse(parm as string);
-            ConsoleLog.showNotifyInfo("########" + typeName + "######## From Start:" + max);
-            int Step = 1000;
-            var cache = new PersonalCacheStruct<T>();
-            for (int i = 0; i < max; i += Step)
-            {
-                var filter = new ZyGames.Framework.Net.DbDataFilter(0);
-                filter.Condition = "where " + key + " >=@Key1 and " + key + " <@Key2";
-                filter.Parameters.Add("Key1", i);
-                filter.Parameters.Add("Key2", i + Step);
-                cache.TryRecoverFromDb(filter);
-                ConsoleLog.showNotifyInfo(typeName + ":" + i + " load");
-            }
-            ConsoleLog.showNotifyInfo("########" + typeName + "######## From End");
-        }
-
-        static void doFrom_Model_share<T>(object parm, string key = "UserID") where T : ShareEntity, new()
-        {
-            string typeName = typeof(T).ToString();
-            ZyGames.Framework.Model.SchemaTable schema = ZyGames.Framework.Model.EntitySchemaSet.Get<T>();
-            int max = int.Parse(parm as string);
-            ConsoleLog.showNotifyInfo("########" + typeName + "######## From Start:" + max);
-            int Step = 1000;
-            var cache = new ShareCacheStruct<T>();
-            for (int i = 0; i < max; i += Step)
-            {
-                var filter = new ZyGames.Framework.Net.DbDataFilter(0);
-                filter.Condition = "where " + key + " >=@Key1 and " + key + " <@Key2";
-                filter.Parameters.Add("Key1", i);
-                filter.Parameters.Add("Key2", i + Step);
-                cache.TryRecoverFromDb(filter);
-                ConsoleLog.showNotifyInfo(typeName + ":" + i + " load");
-            }
-            ConsoleLog.showNotifyInfo("########" + typeName + "######## From End");
-        }
+       
         public void thread_DoFrom(object parms)
         {
             string parm = parms as string;
@@ -260,19 +242,19 @@ namespace GameServer.CsScript.Action
 
             if (t == "UserRankingTotal")
             {
-                doFrom_Model_share<UserRankingTotal>(num as object,"UserID");
+                utils.doFrom_Model_share<UserRankingTotal>(num as object,"UserID");
             }
             else if("UserRanking"==t)
             {
-                doFrom_Model_share<UserRanking>(num as object, "UserID");
+                utils.doFrom_Model_share<UserRanking>(num as object, "UserID");
             }
             else if("HappyModeData" == t)
             {
-                doFrom_Model_person<HappyModeData>(num as object, "the3rdUserId");
+                utils.doFrom_Model_person<HappyModeData>(num as object, "the3rdUserId");
             }
             else if("GameUser"==t)
             {
-                doFrom_Model_person<GameUser>(num as object, "UserId");
+                utils.doFrom_Model_person<GameUser>(num as object, "UserId");
             }
         }
 
@@ -281,6 +263,210 @@ namespace GameServer.CsScript.Action
             System.Threading.Thread thread = new System.Threading.Thread(thread_DoFrom);
             thread.Start(parm);
             return "反馈数据:执行成功";
+        }
+
+        string processAdd(string parm)
+        {
+            string info = "";
+            string[] p = parm.Split(',');
+            string addWhich = p[0];
+            string name = p[1];
+            int score = int.Parse(p[2]) ;
+            if("ranking"==addWhich)
+            {
+                var cache = new PersonalCacheStruct<GameUser>();
+                var urCache =new ShareCacheStruct<UserRanking>();
+                
+                var gu = new GameUser();
+                gu.UserId = (int)cache.GetNextNo();
+                gu.NickName = name;
+                gu.Score = score;
+                gu.Identify = "identify_"+name;
+                var ur = new UserRanking();
+                ur.UserID = gu.UserId;
+                ur.UserName = name;
+                ur.Score = score;
+
+                cache.Add(gu);
+                urCache.Add(ur);
+                info = "增加排行榜数据成功";
+            }
+            return info;
+        }
+        string processModify(string parm)
+        {
+            string info = "";
+            string[] p = info.Split(',');
+            string modifyWhich= p[0];
+            int index = int.Parse(p[1]);
+            int score = int.Parse(p[2]);
+            
+            if(""==modifyWhich)
+            {
+                UserRanking ur = RankingFactorNew.Singleton().getRankingData<UserRanking, RankingScore>(index);
+                if(null==ur)
+                {
+                    info = "要修改的数据不存在";
+                }
+                else
+                {
+                    var cache = new ShareCacheStruct<UserRanking>();
+                    UserRanking theUR = cache.FindKey(ur.UserID);
+                    theUR.ModifyLocked(() => {
+                        ur.Score = score;
+                     });
+
+                    info = "修改数据成功";
+                }
+            }
+            return info;
+        }
+
+        void thread_processSort(object theParms)
+        {
+            string parm = theParms as string;
+            string[] p = parm.Split(',');
+            string sortWhich = p[0];
+            if("ranking"==sortWhich)
+            {
+                RankingFactorNew.Singleton().Refresh<UserRanking>(typeof(RankingScore).ToString());
+            }
+            else if("rankingtotal"==sortWhich)
+            {
+                RankingFactorNew.Singleton().Refresh<UserRankingTotal>(typeof(RankingTotal).ToString());
+            }
+        }
+        string processSort(string parm)
+        {
+            string info = "";
+            System.Threading.Thread thread = new System.Threading.Thread(thread_processSort);
+            thread.Start(parm);
+            info = "排序结束";
+            return info;
+        }
+        string processDelete(string parm)
+        {
+            string info = "";
+            string[] p = parm.Split(',');
+            string deleteWhitch = p[0];
+            int deleteIndex = int.Parse(p[1]);
+
+            if("ranking"==deleteWhitch)
+            {
+                  UserRanking ur =   RankingFactorNew.Singleton().getRankingData<UserRanking, RankingScore>(deleteIndex);
+                  if(ur==null)
+                  {
+                      info = "没有找到要删除的数据";
+                  }
+                  else
+                  {
+                      var cache = new ShareCacheStruct<UserRanking>();
+                      cache.Delete(ur);
+                      info = "删除数据成功";
+                  }
+            }
+            return info;
+        }
+        string processUserInfo(string parm)
+        {
+            string[] p = parm.Split(',');
+            string subcmd = p[0];
+            string userid = p[1];
+
+            var gu_cache = new PersonalCacheStruct<GameUser>();
+            var ur_cache = new ShareCacheStruct<UserRanking>();
+            var urt_cache = new ShareCacheStruct<UserRankingTotal>();
+
+            var gu = gu_cache.FindKey(userid);
+            var ur = ur_cache.FindKey(userid);
+            var urt = urt_cache.FindKey(userid);
+
+            string info = "";
+            string name = "";
+            
+            if(gu!=null)
+            {
+                
+                if(subcmd=="get")
+                {
+                    info += "#{id:"+gu.UserId+",name:"+gu.NickName+",idf:"+gu.Identify+"}" ;
+                }
+                else if(subcmd=="set")
+                {
+                    gu.ModifyLocked(() => {
+                        gu.NickName = p[2];
+                    });
+                }
+            }
+            else
+            {
+                info += "未找到GameUser数据";
+            }
+
+            info += "\n";
+
+            if(null != ur)
+            {
+                if(subcmd=="get")
+                {
+
+                    info += "id:" + ur.UserID+ ",name:" + ur.UserName + ",Score:"+ur.Score+"}";
+                }
+                else if(subcmd=="set")
+                {
+                    ur.ModifyLocked(() => {
+                        ur.Score = int.Parse(p[3]);
+                        ur.UserName = p[2]; 
+                    });
+                }
+            }
+            else
+            {
+                info += "未找到UserRanking数据";
+            }
+
+            info += "\n";
+
+            if(null != urt)
+            {
+                if(subcmd=="get")
+                {
+                    info += "#{id:" + urt.UserID + ",total:" + urt.Total;
+                }
+                else if(subcmd=="set")
+                {
+                    urt.ModifyLocked(() => {
+
+                        urt.Total = int.Parse(p[4]);
+                    
+                    });
+
+                }
+            }
+            else
+            {
+                info += "未找到积分数据";
+            }
+
+            return info;
+        }
+        string processUpdateConfig(string parm)
+        {
+            string[] pp = parm.Split(',');
+            string cmd = pp[0];
+            string p = pp[1];
+
+            string result = "";
+            bool ret = NewGameConfig.Singleton().restore(cmd, p);
+            if (ret)
+            {
+                result = parm + ":" + "执行成功";
+            }
+            else
+            {
+                result = "未找到更新表：" + parm;
+            }
+            return "反馈数据:" + result;
         }
     }
 

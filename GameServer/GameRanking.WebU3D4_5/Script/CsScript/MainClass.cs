@@ -8,6 +8,7 @@ using ZyGames.Framework.Common.Log;
 using ZyGames.Framework.Cache.Generic;
 using GameServer.Model;
 using Game.NSNS;
+using System.Collections.Generic;
 
 namespace Game.Script
 {
@@ -72,8 +73,10 @@ namespace Game.Script
             new ShareCacheStruct<HistoryUserRanking>();
             new ShareCacheStruct<ExchangeCode>();
             new ShareCacheStruct<UserRankingTotal>();
-            new ShareCacheStruct<ActivityModel>();
+            NewGameConfig.Singleton().CreateDBTable();
             happyMapInit();
+            List<GameRanking.Pack.ConfigData> LST_d = new List<GameRanking.Pack.ConfigData>();
+            NewGameConfig.Singleton().getActivityDate(LST_d,"1.08");
 
             GameConfigMgr.Instance().Start();
 

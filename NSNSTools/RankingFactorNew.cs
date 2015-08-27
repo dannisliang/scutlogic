@@ -116,6 +116,8 @@ namespace Game.NSNS
     public class Ranking<T> :RankingBase where T : ShareEntity ,new()
     {
         protected List<T> _lst = null;
+        protected int limitIndex = 100000;
+        protected int delOneTime = 1000;
         protected  virtual int comp(T t1, T t2)
         {
             return -1;
@@ -194,7 +196,18 @@ namespace Game.NSNS
             }
         }
 
-        protected virtual void beforeDoRefresh() { }
+        protected virtual void beforeDoRefresh()
+        {
+            if (_lst.Count > limitIndex)
+            {
+                var cache = new ShareCacheStruct<T>();
+                for (int i = _lst.Count - 1; i > _lst.Count - delOneTime; i--)
+                {
+                    cache.Delete(_lst[i]);
+                }
+            }
+        }
+
         protected  override void doRefresh()
         {
             try
@@ -273,6 +286,17 @@ namespace Game.NSNS
                 _ins.Init();
             }
             return _ins;
+        }
+
+        // T:UserRanking,       ST:RankingScore
+        // T:UserRankingTotal,  ST:RankingTotal
+        public T getRankingData<T,ST>(int index) where T : ShareEntity,new()
+        {
+            List<T> d = get<T>(typeof(ST).ToString());
+            if (index < d.Count)
+                return d[index];
+            else
+                return null;
         }
 
         void Init()

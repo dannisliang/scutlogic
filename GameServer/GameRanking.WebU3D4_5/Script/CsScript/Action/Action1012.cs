@@ -121,7 +121,7 @@ namespace GameServer.CsScript.Action
 
             for (int i = 0; i < keys.Count; ++i)
             {
-                GameConfigHappyPoint.HappyData hd = GameConfigMgr.Instance().getHappyData(keys[i]);
+                memoryRealInfoDataModel.HappyData hd = GameConfigMgr.Instance().getHappyData(keys[i]);
                 ShareRealItemCnt sric = cache.FindKey(keys[i]);
                 if(null != hd && null !=sric)
                 {
