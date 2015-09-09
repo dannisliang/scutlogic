@@ -30,3 +30,5 @@ ZyGames.Framework.dll
 *.txt
 *.config
 *.suo
+#redis数据
+*.rdb
