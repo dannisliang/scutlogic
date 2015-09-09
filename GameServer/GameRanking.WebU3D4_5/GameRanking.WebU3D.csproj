@@ -91,6 +91,7 @@
     <Compile Include="Script\CsScript\Action\Action3000.cs" />
     <Compile Include="Script\CsScript\Action\Action3001.cs" />
     <Compile Include="Script\CsScript\Action\Action4000.cs" />
+    <Compile Include="Script\CsScript\Action\Action4001.cs" />
     <Compile Include="Script\CsScript\Action\Action80000.cs" />
     <Compile Include="Script\CsScript\Action\BaseAction.cs" />
     <Compile Include="Script\CsScript\logic\GameConfig\GameConfigHappyPoint.cs" />
@@ -101,6 +102,7 @@
     <Compile Include="Script\CsScript\logic\LoadBalance\LoadBalance.cs" />
     <Compile Include="Script\CsScript\logic\NewGameConfig\ActivityModelMemoryCache.cs" />
     <Compile Include="Script\CsScript\logic\NewGameConfig\ConfigUIMemoryCache.cs" />
+    <Compile Include="Script\CsScript\logic\NewGameConfig\paySwitchMemroyCache.cs" />
     <Compile Include="Script\CsScript\logic\NewGameConfig\RealInfoDataModelMemroyCache.cs" />
     <Compile Include="Script\CsScript\logic\NewGameConfig\NewGameConfig.cs" />
     <Compile Include="Script\CsScript\logic\RankingClear.cs" />
@@ -117,6 +119,7 @@
     <Compile Include="Script\Model\memory\memoryActivityModel.cs" />
     <Compile Include="Script\Model\memory\memoryConfigUIModel.cs" />
     <Compile Include="Script\Model\memory\memoryHappyDataModel.cs" />
+    <Compile Include="Script\Model\memory\memoryPaySwitchModel.cs" />
     <Compile Include="Script\Model\share\config\ActivityModel.cs" />
     <Compile Include="Script\Model\share\Authority.cs" />
     <Compile Include="Script\Model\share\BlackList.cs" />
@@ -124,6 +127,7 @@
     <Compile Include="Script\Model\personal\CustomMemoryStruct.cs" />
     <Compile Include="Script\Model\personal\DataLog.cs" />
     <Compile Include="Script\Model\share\config\ConfigUIModel.cs" />
+    <Compile Include="Script\Model\share\config\paySwitchModel.cs" />
     <Compile Include="Script\Model\share\ExchangeCode.cs" />
     <Compile Include="Script\Model\personal\GuestUser.cs" />
     <Compile Include="Script\Model\personal\HappyModeData.cs" />

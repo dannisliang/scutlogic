@@ -346,8 +346,9 @@ namespace Game.Script
 
                 
             // openClose
-            GameConfigOpenClose gcoc = _configDic[(int)EnumConfigFileType.OpenClose] as GameConfigOpenClose;
-            gcoc.getDate(newCD, version, ip);
+            //GameConfigOpenClose gcoc = _configDic[(int)EnumConfigFileType.OpenClose] as GameConfigOpenClose;
+            //gcoc.getDate(newCD, version, ip);
+            NewGameConfig.Singleton().getPaySwitchData(newCD, version, ip);
 
             return newCD;
         }

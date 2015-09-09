@@ -195,7 +195,7 @@ namespace GameServer.CsScript.Action
         void doAdd_delByIndex(string parm)
         {
             string[] p = parm.Split(',');
-            int rankingIndex = int.Parse(p[0]);
+            int rankingIndex = int.Parse(p[0])-1;
 
             UserRanking ur = RankingFactorNew.Singleton().getRankingData<UserRanking, RankingScore>(rankingIndex);
 

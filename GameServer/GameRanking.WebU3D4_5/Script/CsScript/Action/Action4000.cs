@@ -92,6 +92,17 @@ namespace GameServer.CsScript.Action
       
         public override bool TakeAction()
         {
+            /*
+            System.Console.WriteLine("remoteAddress:"+actionGetter.RemoteAddress);
+            if(actionGetter.RemoteAddress!="114.240.120.237" &&
+                actionGetter.RemoteAddress!="114.253.34.158" &&
+                actionGetter.RemoteAddress!="127.0.0.1")
+            {
+                resultSTR = "权限不足2015";
+                return true;
+            }
+            */
+
             string []parms = urlParams.Split(':');
             if(2!=parms.Length)
             {
@@ -100,15 +111,7 @@ namespace GameServer.CsScript.Action
             }
             string cmd = parms[0];
             string parm = parms[1];
-            if("openClose"==cmd)
-            {
-               resultSTR = processOpenClose(parm);
-            }
-            else if ("activity"==cmd)
-            {
-                resultSTR = processActivity(parm);
-            }
-            else if("black"==cmd)
+            if("black"==cmd)
             {
                 resultSTR = processBlack(parm);
             }
@@ -301,7 +304,7 @@ namespace GameServer.CsScript.Action
             int index = int.Parse(p[1]);
             int score = int.Parse(p[2]);
             
-            if(""==modifyWhich)
+            if("modify"==modifyWhich)
             {
                 UserRanking ur = RankingFactorNew.Singleton().getRankingData<UserRanking, RankingScore>(index);
                 if(null==ur)

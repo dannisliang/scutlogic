@@ -73,10 +73,13 @@ namespace Game.Script
             new ShareCacheStruct<ActivityModel>();
             new ShareCacheStruct<RealInfoDataModel>();
             new ShareCacheStruct<ConfigUIModel>();
+            new ShareCacheStruct<PaySwitchModel>();
 
 
             restore("activitymodel", "10000");
-
+            restore("happydatamodel", "10000");
+            restore("configuimodel", "10000");
+            restore("payswitchmodel", "10000"); ;
         }
 
         public bool restore(string tableName,string parms_num)
@@ -93,6 +96,10 @@ namespace Game.Script
             {
                 toMemoryConfigUIModel();
             }
+            else if ("configpayswitchmodel" == tableName)
+            {
+                toMemoryConfigPaySwitchModel();
+            }
             else 
             {
                 return false;
@@ -100,7 +107,11 @@ namespace Game.Script
 
             return true;
         }
-
+        public void toMemoryConfigPaySwitchModel()
+        {
+            CacheFactory.tryRemoveMemoryCache(typeof(memoryPaySwitchModel).ToString());
+            new PaySwitchMemoryCache();
+        }
         public void toMemoryConfigUIModel()
         {
             CacheFactory.tryRemoveMemoryCache(typeof(memoryConfigUIModel).ToString());
@@ -109,7 +120,7 @@ namespace Game.Script
         public void toMemoryHappyDataModel()
         {
             CacheFactory.tryRemoveMemoryCache(typeof(memoryRealInfoDataModel).ToString());
-            new memoryRealInfoDataModel();
+            new RealInfoDataModelMemoryCache();
 
         }
 
@@ -130,6 +141,12 @@ namespace Game.Script
                 return true;
             
             });
+        }
+
+        public void getPaySwitchData(List<ConfigData> outData,string version,string ip)
+        {
+            var cache = new PaySwitchMemoryCache();
+            cache.getDate(outData, version, ip);
         }
 
         public void getActivityDate(List<ConfigData> outData, string version)

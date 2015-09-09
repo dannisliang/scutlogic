@@ -61,6 +61,32 @@ namespace Game.Script
             ASType_NSNSDuiHuan_JiaRi_1 = 9,
             ASType_NSNSDuiHuan_ChaoHang_10000 = 10,
             ASType_NSNSDuiHuan_TuCao_10000 = 11,
+
+            ASType_NSNSDuiHuan_TeQuan2_5w = 12,
+            ASType_NSNSDuiHuan_TeQuan3_5w = 13,
+            ASType_NSNSDuiHuan_ShuangKuai2_5w = 14,
+            ASType_NSNSDuiHuan_ShuangKuai3_5w = 15,
+            ASType_NSNSDuiHuan_KuaiGan2_5w = 16,
+            ASType_NSNSDuiHuan_KuaiGan3_5w = 17,
+
+            ASType_NSNSDuiHuan_BuChang_Gold = 18,
+            ASType_NSNSDuiHuan_BuChang_ShuxingLevelMax = 19,
+            ASType_NSNSDuiHuan_BuChang_RoleLevelMax = 20,
+            ASType_NSNSDuiHuan_BuChang_Diamond6 = 21,
+            ASType_NSNSDuiHuan_BuChang_Diamond12 = 22,
+            ASType_NSNSDuiHuan_BuChang_Diamond18 = 23,
+            ASType_NSNSDuiHuan_BuChang_Diamond30 = 24,
+            ASType_NSNSDuiHuan_BuChang_Diamond60 = 25,
+            ASType_NSNSDuiHuan_BuChang_Diamond120 = 26,
+
+            ASType_NSNSDuiHuan_Unlock_Nvchongke = 27,
+            ASType_NSNSDuiHuan_Unlock_Dama = 28,
+            ASType_NSNSDuiHuan_Unlock_Lgn = 29,
+            ASType_NSNSDuiHuan_Unlock_Dabai = 30,
+            ASType_NSNSDuiHuan_Unlock_Xihanan = 31,
+            ASType_NSNSDuiHuan_Unlock_Newgirl = 32,
+            ASType_NSNSDuiHuan_Unlock_Tu = 33,
+
         }
         public override void init()
         {

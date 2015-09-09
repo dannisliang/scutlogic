@@ -21,6 +21,9 @@ namespace Game.YYS.Protocol
     }
 
     [ProtoContract]
+    [ProtoInclude(3000,typeof(Action3000Request))]
+    [ProtoInclude(4000,typeof(Action4000Request))]
+    [ProtoInclude(4001,typeof(Action4001Request))]
     public class RequestPackDataBase
     {
         [ProtoMember(201)]

@@ -45,6 +45,7 @@
     <Compile Include="Action3000Pack.cs" />
     <Compile Include="Action3001Pack.cs" />
     <Compile Include="Action4000Pack.cs" />
+    <Compile Include="Action4001Pack.cs" />
     <Compile Include="GameErrorCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequestPack.cs" />

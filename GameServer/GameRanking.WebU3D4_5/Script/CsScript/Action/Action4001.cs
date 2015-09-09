@@ -36,12 +36,12 @@ using System.Collections.Generic;
 
 namespace GameServer.CsScript.Action
 {
-    public class Action1002 : BaseAction
+    public class Action4001 : BaseAction
     {
         private Response1002Pack responsePack;
         private Request1002Pack requestPack;
-        public Action1002(ActionGetter actionGetter)
-            : base(1002, actionGetter)
+        public Action4001(ActionGetter actionGetter)
+            : base(4001, actionGetter)
         {
             responsePack = new Response1002Pack();
         }
@@ -57,21 +57,9 @@ namespace GameServer.CsScript.Action
             return false;
         }
 
-        void cbFunc(List<ConfigData> configLst)
-        {
-             //responsePack.ConfigStr = configStr;
-            List<ConfigData> d = configLst as List<ConfigData>;
-            responsePack.Datas = d;
-        }
-
         public override bool TakeAction()
         {
-            string version = requestPack.Version;
-            string ip      = actionGetter.Session.RemoteAddress;
-            {
-             //   ActionConfigMgr.Instance().getData(cbFunc, version,ip);
-                  GameConfigMgr.Instance().getData(cbFunc, version, ip);
-            }
+
             return true;
         }
         protected override byte[] BuildResponsePack()
