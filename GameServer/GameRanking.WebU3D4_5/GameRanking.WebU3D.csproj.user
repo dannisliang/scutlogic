@@ -5,4 +5,9 @@
     <StartProgram>C:\Users\tingjun\Documents\GitHub\ScutLogic\GameServer\GameRanking.WebU3D4_5\GameServer.exe</StartProgram>
     <StartWorkingDirectory>C:\Users\tingjun\Documents\GitHub\ScutLogic\GameServer\GameRanking.WebU3D4_5\</StartWorkingDirectory>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <StartAction>Program</StartAction>
+    <StartProgram>C:\Users\tingjun\Documents\GitHub\ScutLogic\GameServer\GameRanking.WebU3D4_5\GameServer.exe</StartProgram>
+    <StartWorkingDirectory>C:\Users\tingjun\Documents\GitHub\ScutLogic\GameServer\GameRanking.WebU3D4_5\</StartWorkingDirectory>
+  </PropertyGroup>
 </Project>

@@ -41,7 +41,7 @@ namespace GameServer.CsScript.Action
         private Response1002Pack responsePack;
         private Request1002Pack requestPack;
         public Action1002(ActionGetter actionGetter)
-            : base(1000, actionGetter)
+            : base(1002, actionGetter)
         {
             responsePack = new Response1002Pack();
         }

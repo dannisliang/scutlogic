@@ -27,6 +27,7 @@ namespace Game.Script
         {
             base.beforeDoRefresh();
             ConsoleLog.showNotifyInfo("beforeDoRefresh UserRankingTotal cnt:" + _lst.Count);
+
         }
 
         protected override void afterDoRefresh()

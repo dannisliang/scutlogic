@@ -19,19 +19,30 @@ namespace Game.Script
 {
     public class RankingScore  : Ranking<UserRanking>
     {
+        static public int limitScoreAdd { get; private set; }
+       
         public RankingScore():
             base()
         { }
 
         protected override void beforeDoRefresh()
         {
-
+            base.beforeDoRefresh();
             ConsoleLog.showNotifyInfo("beforeDoRefresh  UserRanking cnt:" + _lst.Count);
         }
         protected override void afterDoRefresh()
         {
             ConsoleLog.showNotifyInfo("afterDoRefresh UserRanking cnt:" + _lst.Count);
+            if(_lst.Count<limitIndex)
+            {
+                limitScoreAdd = 100;
+            }
+            else
+            {
+                limitScoreAdd = _lst[limitIndex].Score;
+            }
         }
+
         protected override int comp(UserRanking t1, UserRanking t2)
         {
             int result = t2.Score - t1.Score;

@@ -67,14 +67,14 @@ namespace Game.Script
                 }
                 if(data.Contains("BaiDu"))
                 {
-                    if(String.Compare(request.HttpMethod, "get", StringComparison.OrdinalIgnoreCase) == 0)
-                    {
-                        Console.WriteLine("BaiDu this is get method" + request.RemoteEndPoint);
-                    }
-                    if (String.Compare(request.HttpMethod, "post", StringComparison.OrdinalIgnoreCase) == 0)
-                    {
-                        Console.WriteLine("BaiDu this is post method" + request.RemoteEndPoint);
-                    }
+                    //if(String.Compare(request.HttpMethod, "get", StringComparison.OrdinalIgnoreCase) == 0)
+                    //{
+                    //    Console.WriteLine("BaiDu this is get method" + request.RemoteEndPoint);
+                    //}
+                    //if (String.Compare(request.HttpMethod, "post", StringComparison.OrdinalIgnoreCase) == 0)
+//                    {
+ //                       Console.WriteLine("BaiDu this is post method" + request.RemoteEndPoint);
+  //                  }
                     
                     
                     ActionId = 2502;
@@ -90,6 +90,18 @@ namespace Game.Script
                     return false;
                 }
                 package = new RequestPackage(MsgId, SessionId, ActionId, UserId) { Message = content };
+                return true;
+            }
+            else if(RawUrl.IndexOf("webBackOffice")>0)
+            {
+                 // web back-office
+                using (var br = new System.IO.BinaryReader(request.InputStream))
+                {
+                    int contentLenght = (int)request.ContentLength64;
+                    string content = System.Text.Encoding.UTF8.GetString(br.ReadBytes(contentLenght));
+                    package = new RequestPackage(0, "", 4000, 0) { Message = content };
+                    System.Console.WriteLine(content);
+                }
                 return true;
             }
             else // GameServer Logic

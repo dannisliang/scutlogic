@@ -8,9 +8,11 @@ using ZyGames.Framework.Common.Log;
 using ZyGames.Framework.Cache.Generic;
 using GameServer.Model;
 using Game.NSNS;
+using System.Collections.Generic;
 
 namespace Game.Script
 {
+
     public class MainClass : GameHttpHost
     {
         static int cnt = 0;
@@ -71,7 +73,10 @@ namespace Game.Script
             new ShareCacheStruct<HistoryUserRanking>();
             new ShareCacheStruct<ExchangeCode>();
             new ShareCacheStruct<UserRankingTotal>();
+            NewGameConfig.Singleton().CreateDBTable();
             happyMapInit();
+            List<GameRanking.Pack.ConfigData> LST_d = new List<GameRanking.Pack.ConfigData>();
+            NewGameConfig.Singleton().getActivityDate(LST_d,"1.08");
 
             GameConfigMgr.Instance().Start();
 
@@ -100,6 +105,17 @@ namespace Game.Script
         {
             base.OnRequested(actionGetter, response);
         }
-
+        public override void Stop()
+        {
+            OnServiceStop();
+            try
+            {
+                EntitySyncManger.Dispose();
+            }
+            catch
+            {
+            }
+            base.Stop();
+        }
     }
 }

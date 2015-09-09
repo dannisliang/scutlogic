@@ -26,7 +26,7 @@ namespace GameRanking.Pack
         // 0,enternum
         // 1,happyrelive
         [ProtoMember(105)]
-        public EnumOptType actionID { get; set; }
+        public int actionID { get; set; }
 
         // 默认1
         [ProtoMember(106)]

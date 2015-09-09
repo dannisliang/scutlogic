@@ -104,7 +104,7 @@ namespace GameServer.CsScript.Action
             var cacheRanking  = cache.FindKey(gu.UserId);
             if (cacheRanking != null)
             {
-                if(gu.Score>cacheRanking.Score)
+                if(gu.Score>cacheRanking.Score  )
                 {
                     cacheRanking.ModifyLocked(() =>
                     {
@@ -112,14 +112,17 @@ namespace GameServer.CsScript.Action
                     });
                 }
             }
-            else
+            else  
             {
-                // add
-                UserRanking ur = new UserRanking();
-                ur.UserID = gu.UserId;
-                ur.Score = gu.Score;
-                ur.UserName = gu.NickName;
-                cache.Add(ur);
+                // 只有>某个值的时候才加。保证10w数据即可。
+                if(gu.Score>=RankingScore.limitScoreAdd)
+                {
+                    UserRanking ur = new UserRanking();
+                    ur.UserID = gu.UserId;
+                    ur.Score = gu.Score;
+                    ur.UserName = gu.NickName;
+                    cache.Add(ur);
+                }
             }
         }
         private bool ProcessActionNew()
@@ -146,6 +149,7 @@ namespace GameServer.CsScript.Action
             gu.version   = version;
             gu.state     = checkDataError;
             gu.NickName  = requestPack.UserName;
+            gu.Identify  = Identify;
 
             bool checkDataOk = 0 == checkDataError;
             // update GameUser
@@ -165,6 +169,7 @@ namespace GameServer.CsScript.Action
             responsePack.ErrorCode = 0;
             responsePack.ErrorInfo = "save success";
             responsePack.ActionId = actionId;
+            responsePack.UserID = gu.UserId;
             return true;
         }
        

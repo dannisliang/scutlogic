@@ -8,6 +8,11 @@ using System.IO;
 using System.Net;
 using System.Security.Cryptography;
 using System.Collections;
+using ZyGames.Framework.Cache.Generic;
+using ZyGames.Framework.Common.Serialization;
+using ZyGames.Framework.Game.Contract;
+using ZyGames.Framework.Game.Service;
+using ZyGames.Framework.Model;
 
 namespace Game.NSNS
 {
@@ -66,6 +71,81 @@ namespace Game.NSNS
     }
     public class utils
     {
+        public static void doFrom_Model_person<T>(object parm, string key = "UserId") where T : BaseEntity, new()
+        {
+            ZyGames.Framework.Model.SchemaTable schema = ZyGames.Framework.Model.EntitySchemaSet.Get<T>();
+            string typeName = typeof(T).ToString();
+            int max = int.Parse(parm as string);
+            ConsoleLog.showNotifyInfo("########" + typeName + "######## From Start:" + max);
+            int Step = 1000;
+            var cache = new PersonalCacheStruct<T>();
+            cache.ReLoad();
+            for (int i = 0; i < max; i += Step)
+            {
+                var filter = new ZyGames.Framework.Net.DbDataFilter(0);
+                filter.Condition = "where " + key + " >=@Key1 and " + key + " <@Key2";
+                filter.Parameters.Add("Key1", i);
+                filter.Parameters.Add("Key2", i + Step);
+                cache.TryRecoverFromDb(filter);
+                ConsoleLog.showNotifyInfo(typeName + ":" + i + " load");
+            }
+            ConsoleLog.showNotifyInfo("########" + typeName + "######## From End");
+        }
+
+        public static void doFrom_Model_share<T>(object parm, string key = "UserID") where T : ShareEntity, new()
+        {
+            string typeName = typeof(T).ToString();
+            ZyGames.Framework.Model.SchemaTable schema = ZyGames.Framework.Model.EntitySchemaSet.Get<T>();
+            int max = int.Parse(parm as string);
+            ConsoleLog.showNotifyInfo("########" + typeName + "######## From Start:" + max);
+            int Step = 1000;
+            var cache = new ShareCacheStruct<T>();
+            cache.ReLoad();
+            for (int i = 0; i < max; i += Step)
+            {
+                var filter = new ZyGames.Framework.Net.DbDataFilter(0);
+                filter.Condition = "where " + key + " >=@Key1 and " + key + " <@Key2";
+                filter.Parameters.Add("Key1", i);
+                filter.Parameters.Add("Key2", i + Step);
+                cache.TryRecoverFromDb(filter);
+                ConsoleLog.showNotifyInfo(typeName + ":" + i + " load");
+            }
+            ConsoleLog.showNotifyInfo("########" + typeName + "######## From End");
+        }
+        static public  uint BytesToLong(byte a, byte b, byte c, byte d)
+        {
+            return ((uint)a << 24) | ((uint)b << 16) | ((uint)c << 8) | d;
+        }
+
+        static public uint getIpUnit(string s)
+        {
+            string[] ipbyte = s.Split('.');
+            if (ipbyte.Length != 4)
+            {
+
+            }
+            else
+            {
+                byte a, b, c, d;
+                a = byte.Parse(ipbyte[0]);
+                b = byte.Parse(ipbyte[1]);
+                c = byte.Parse(ipbyte[2]);
+                d = byte.Parse(ipbyte[3]);
+                return BytesToLong(a, b, c, d);
+            }
+            return 0;
+        }
+
+        static public string getIp(uint serverHost)
+        {
+            Byte a, b, c, d;
+            a = (byte)(serverHost & 0xff000000);
+            b = (byte)(serverHost & 0x00ff0000);
+            c = (byte)(serverHost & 0x0000ff00);
+            d = (byte)(serverHost & 0x000000ff);
+            string ip = a + "." + b + "." + c + "." + d;
+            return ip;
+        }
         static public uint KeyInt2Uint(int id)
         {
             if(id < 0)
@@ -129,6 +209,27 @@ namespace Game.NSNS
                 string szJson = Encoding.UTF8.GetString(stream.ToArray());
                 return szJson;
             }
+        }
+        public static string prettyJson<T>(T obj)
+        {
+            string json = GetJson<T>(obj);
+            if(json.Length>128)
+            {
+                if(json.Contains("},")||json.Contains("],"))
+                {
+                    json = json.Replace("},", "\n");
+                    json = json.Replace("],", "\n");
+                }
+                else
+                {
+                    json = json.Replace(",", "\n");
+                }
+                json=json.Replace("{", "");
+                json=json.Replace("}", "");
+                json = json.Replace("[", "");
+                json = json.Replace("]", "");
+            }
+            return json;
         }
         /// <summary>
         /// 获取Json的Model

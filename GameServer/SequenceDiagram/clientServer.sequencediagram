@@ -1,0 +1,238 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SequenceDesignerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm4="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm5="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" dslVersion="1.0.0.0" Id="a36a1cca-5136-45ed-b32d-b954ba9a1ffb" name="SequenceDiagram1" mode="DotNet" xmlns="http://schemas.microsoft.com/VisualStudio/TeamArchitect/SequenceDesigner">
+  <packagedElements>
+    <packageHasNamedElement>
+      <interaction Id="fa84caa6-7390-4ac3-96a8-b502ec0b88db" name="SequenceDiagram1" collapseFragmentsFlag="false" isActiveClass="false" isAbstract="false" isLeaf="false" isReentrant="false">
+        <ownedCommentsInternal>
+          <comment Id="63c51917-240a-44e7-85b0-c912e2936265">
+            <body>NOTIFY-001:
+login 是第一个发送的消息。
+游戏相关的数据，多需要在此消息之后,才能发送。
+服务器配置数据除外action1002</body>
+          </comment>
+          <comment Id="63cabf2f-e3d0-4641-8039-1c4e5e2425f0">
+            <body>NOTIFY-002:
+进入游戏判定，如果没有登录获取到userid，那么首先发送login，而后所有消息根据userid来判定是否可以发送.
+
+可是游戏又是单机的我了个擦擦啊.
+</body>
+          </comment>
+          <comment Id="509afa8e-af41-4784-85bf-5ad38c9932b2">
+            <body>NOTIFY-003:
+谁来确定这些流程.me,desigin and 
+make it come true.
+but i am not Professional on desigin this,i am professional on code.</body>
+          </comment>
+          <comment Id="6faf4191-5a02-4ea6-854a-83bc5689a52a">
+            <body>NOTIFY-004:
+可能引起的问题：
+1: 上传玩家数据,名称等有问题
+2: 和以前的消息冲突
+3：修改成本太大，只有一天时间，没把握修改在正确
+4：这......
+5: end 放到下个版本1.01中实现，和负载均衡同时上</body>
+          </comment>
+          <comment Id="5069e27c-5f2b-4d41-8673-b8d9b11d68be">
+            <body>NOTIFY-005:
+可能的逻辑
+1: 玩家登录成功,接下来的消息都发送ok
+2:玩家登录失败,在接下来发送消息的时候怎么处理呢？
+3: 别人的游戏是如何处理的？a:登录不成功，不许进入(网络游戏处理方式)
+b：在需要联网的游戏功能,有显著提示需要联网登录。(地铁跑酷)
+4：我们目前的游戏里面啥子都木有啊！这让....很难写逻辑。
+5：然策划~~~~就呵呵了。不吐槽了。
+</body>
+          </comment>
+          <comment Id="231b41e2-615b-456a-bd22-fd3837427316">
+            <body>NOTIFY-006:
+不就是联网，不联网的问题么。
+为什么这么纠结的。靠</body>
+          </comment>
+          <comment Id="f7d4c661-8245-43ed-812e-e929288eb2a1">
+            <body>NOTIFY-007：
+1: 玩关卡可以
+2: 玩网络相关的系统,需要提前提示联网登录，获取userid
+3：userid获取后联网系统开放
+4：:否则,游戏中处理这种，连不连，连不连，练不练的地方让人蛋疼。</body>
+          </comment>
+        </ownedCommentsInternal>
+        <fragments>
+          <behaviorExecutionSpecification Id="8e54b118-0412-4d5d-8cee-da7d0d37ffa4" name="BehaviorExecutionSpecification">
+            <coveredLifelines>
+              <lifelineMoniker Id="b00eb553-a02b-4e32-9791-81ac65ff572c" LastKnownName="server" />
+            </coveredLifelines>
+            <finish>
+              <executionOccurrenceSpecificationMoniker Id="3dfd08a3-ec41-4c2b-ba4d-bc205b037b29" LastKnownName="ExecutionOccurrenceSpecification" />
+            </finish>
+            <start>
+              <executionOccurrenceSpecificationMoniker Id="51f0e3d8-d40c-4d81-a869-c6b791d86f5f" LastKnownName="ExecutionOccurrenceSpecification" />
+            </start>
+            <nestedOccurrences>
+              <messageOccurrenceSpecificationMoniker Id="c228dcb5-0a70-4dca-add9-321cf6dae0d9" LastKnownName="MessageOccurrenceSpecification" />
+              <messageOccurrenceSpecificationMoniker Id="3e627577-384d-46cf-9d73-164c83e1323b" LastKnownName="MessageOccurrenceSpecification" />
+            </nestedOccurrences>
+          </behaviorExecutionSpecification>
+          <executionOccurrenceSpecification Id="51f0e3d8-d40c-4d81-a869-c6b791d86f5f" name="ExecutionOccurrenceSpecification">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker Id="0caf49ab-5797-4c2f-bf23-6ef3d9f3d059" LastKnownName="ExecutionEvent" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker Id="b00eb553-a02b-4e32-9791-81ac65ff572c" LastKnownName="server" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <messageOccurrenceSpecification Id="3914db97-d86d-4d10-9290-60ea6b1b1c89" name="MessageOccurrenceSpecification">
+            <covered>
+              <lifelineMoniker Id="89b04621-f366-4316-9a56-9e7c5d739da6" LastKnownName="client" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification Id="c228dcb5-0a70-4dca-add9-321cf6dae0d9" name="MessageOccurrenceSpecification">
+            <covered>
+              <lifelineMoniker Id="b00eb553-a02b-4e32-9791-81ac65ff572c" LastKnownName="server" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification Id="3e627577-384d-46cf-9d73-164c83e1323b" name="MessageOccurrenceSpecification">
+            <covered>
+              <lifelineMoniker Id="b00eb553-a02b-4e32-9791-81ac65ff572c" LastKnownName="server" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification Id="7b8c553d-72ce-47d3-99ab-9dd7fe47b054" name="MessageOccurrenceSpecification">
+            <covered>
+              <lifelineMoniker Id="89b04621-f366-4316-9a56-9e7c5d739da6" LastKnownName="client" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <executionOccurrenceSpecification Id="3dfd08a3-ec41-4c2b-ba4d-bc205b037b29" name="ExecutionOccurrenceSpecification">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker Id="22e50cdc-f3e8-4707-b4c3-2e260df673b0" LastKnownName="ExecutionEvent" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker Id="b00eb553-a02b-4e32-9791-81ac65ff572c" LastKnownName="server" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <behaviorExecutionSpecification Id="83f1009a-3574-4c47-a904-c5504ad84d9c" name="BehaviorExecutionSpecification">
+            <coveredLifelines>
+              <lifelineMoniker Id="b00eb553-a02b-4e32-9791-81ac65ff572c" LastKnownName="server" />
+            </coveredLifelines>
+            <finish>
+              <executionOccurrenceSpecificationMoniker Id="91ca7105-7e59-4818-995a-d56addb0d2b0" LastKnownName="ExecutionOccurrenceSpecification" />
+            </finish>
+            <start>
+              <executionOccurrenceSpecificationMoniker Id="1c739348-6085-444c-952a-f4a2799ba126" LastKnownName="ExecutionOccurrenceSpecification" />
+            </start>
+            <nestedOccurrences>
+              <messageOccurrenceSpecificationMoniker Id="e7adcbb7-4175-4d0f-9793-2f1d34b1cbe0" LastKnownName="MessageOccurrenceSpecification" />
+              <messageOccurrenceSpecificationMoniker Id="5f6eaf9d-3c78-4702-8e35-17d571b1e208" LastKnownName="MessageOccurrenceSpecification" />
+            </nestedOccurrences>
+          </behaviorExecutionSpecification>
+          <executionOccurrenceSpecification Id="1c739348-6085-444c-952a-f4a2799ba126" name="ExecutionOccurrenceSpecification">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker Id="a9d3dcae-6007-43e1-9c64-63edd6c321f4" LastKnownName="ExecutionEvent" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker Id="b00eb553-a02b-4e32-9791-81ac65ff572c" LastKnownName="server" />
+            </covered>
+          </executionOccurrenceSpecification>
+          <messageOccurrenceSpecification Id="94ac2c6a-bb72-4c16-ad09-f96fd7a0a725" name="MessageOccurrenceSpecification">
+            <covered>
+              <lifelineMoniker Id="89b04621-f366-4316-9a56-9e7c5d739da6" LastKnownName="client" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification Id="e7adcbb7-4175-4d0f-9793-2f1d34b1cbe0" name="MessageOccurrenceSpecification">
+            <covered>
+              <lifelineMoniker Id="b00eb553-a02b-4e32-9791-81ac65ff572c" LastKnownName="server" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification Id="5f6eaf9d-3c78-4702-8e35-17d571b1e208" name="MessageOccurrenceSpecification">
+            <covered>
+              <lifelineMoniker Id="b00eb553-a02b-4e32-9791-81ac65ff572c" LastKnownName="server" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <messageOccurrenceSpecification Id="402e1c73-d3a0-4d3f-80ee-2a59eaa48be1" name="MessageOccurrenceSpecification">
+            <covered>
+              <lifelineMoniker Id="89b04621-f366-4316-9a56-9e7c5d739da6" LastKnownName="client" />
+            </covered>
+          </messageOccurrenceSpecification>
+          <executionOccurrenceSpecification Id="91ca7105-7e59-4818-995a-d56addb0d2b0" name="ExecutionOccurrenceSpecification">
+            <event>
+              <executionOccurrenceSpecificationReferencesEvent>
+                <executionEventMoniker Id="3d33cf02-3efd-44f3-a3b6-c5adad5f3c72" LastKnownName="ExecutionEvent" />
+              </executionOccurrenceSpecificationReferencesEvent>
+            </event>
+            <covered>
+              <lifelineMoniker Id="b00eb553-a02b-4e32-9791-81ac65ff572c" LastKnownName="server" />
+            </covered>
+          </executionOccurrenceSpecification>
+        </fragments>
+        <lifelines>
+          <lifeline Id="89b04621-f366-4316-9a56-9e7c5d739da6" name="client" isActor="false" lifelineDisplayName="client">
+            <topLevelOccurrences>
+              <messageOccurrenceSpecificationMoniker Id="3914db97-d86d-4d10-9290-60ea6b1b1c89" LastKnownName="MessageOccurrenceSpecification" />
+              <messageOccurrenceSpecificationMoniker Id="7b8c553d-72ce-47d3-99ab-9dd7fe47b054" LastKnownName="MessageOccurrenceSpecification" />
+              <messageOccurrenceSpecificationMoniker Id="94ac2c6a-bb72-4c16-ad09-f96fd7a0a725" LastKnownName="MessageOccurrenceSpecification" />
+              <messageOccurrenceSpecificationMoniker Id="402e1c73-d3a0-4d3f-80ee-2a59eaa48be1" LastKnownName="MessageOccurrenceSpecification" />
+            </topLevelOccurrences>
+          </lifeline>
+          <lifeline Id="b00eb553-a02b-4e32-9791-81ac65ff572c" name="server" isActor="false" lifelineDisplayName="server">
+            <topLevelOccurrences>
+              <executionOccurrenceSpecificationMoniker Id="51f0e3d8-d40c-4d81-a869-c6b791d86f5f" LastKnownName="ExecutionOccurrenceSpecification" />
+              <executionOccurrenceSpecificationMoniker Id="3dfd08a3-ec41-4c2b-ba4d-bc205b037b29" LastKnownName="ExecutionOccurrenceSpecification" />
+              <executionOccurrenceSpecificationMoniker Id="1c739348-6085-444c-952a-f4a2799ba126" LastKnownName="ExecutionOccurrenceSpecification" />
+              <executionOccurrenceSpecificationMoniker Id="91ca7105-7e59-4818-995a-d56addb0d2b0" LastKnownName="ExecutionOccurrenceSpecification" />
+            </topLevelOccurrences>
+          </lifeline>
+        </lifelines>
+        <messages>
+          <message Id="1a43436c-939c-4318-8f9a-bb547fc0b54e" name="Action2001:login request" messageKind="Complete" messageSort="SynchCall" createSelfMessage="false">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker Id="3914db97-d86d-4d10-9290-60ea6b1b1c89" LastKnownName="MessageOccurrenceSpecification" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker Id="c228dcb5-0a70-4dca-add9-321cf6dae0d9" LastKnownName="MessageOccurrenceSpecification" />
+            </receiveEvent>
+          </message>
+          <message Id="85ba4cde-9f2f-4565-af1f-bd0470409075" name="login respone" messageKind="Complete" messageSort="Reply" createSelfMessage="false">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker Id="3e627577-384d-46cf-9d73-164c83e1323b" LastKnownName="MessageOccurrenceSpecification" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker Id="7b8c553d-72ce-47d3-99ab-9dd7fe47b054" LastKnownName="MessageOccurrenceSpecification" />
+            </receiveEvent>
+          </message>
+          <message Id="83405f6f-1858-440c-96bb-3d22275dc9d7" name="ActionXXX: request" messageKind="Complete" messageSort="SynchCall" createSelfMessage="false">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker Id="94ac2c6a-bb72-4c16-ad09-f96fd7a0a725" LastKnownName="MessageOccurrenceSpecification" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker Id="e7adcbb7-4175-4d0f-9793-2f1d34b1cbe0" LastKnownName="MessageOccurrenceSpecification" />
+            </receiveEvent>
+          </message>
+          <message Id="e21a943d-4653-47f9-8b39-2fdc484912ef" name="data response" messageKind="Complete" messageSort="Reply" createSelfMessage="false">
+            <sendEvent>
+              <messageOccurrenceSpecificationMoniker Id="5f6eaf9d-3c78-4702-8e35-17d571b1e208" LastKnownName="MessageOccurrenceSpecification" />
+            </sendEvent>
+            <receiveEvent>
+              <messageOccurrenceSpecificationMoniker Id="402e1c73-d3a0-4d3f-80ee-2a59eaa48be1" LastKnownName="MessageOccurrenceSpecification" />
+            </receiveEvent>
+          </message>
+        </messages>
+      </interaction>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent Id="0caf49ab-5797-4c2f-bf23-6ef3d9f3d059" name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent Id="22e50cdc-f3e8-4707-b4c3-2e260df673b0" name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent Id="a9d3dcae-6007-43e1-9c64-63edd6c321f4" name="ExecutionEvent" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <executionEvent Id="3d33cf02-3efd-44f3-a3b6-c5adad5f3c72" name="ExecutionEvent" />
+    </packageHasNamedElement>
+  </packagedElements>
+</SequenceDesignerModel>

@@ -105,6 +105,53 @@ namespace GameServer.CsScript.Action
             return ProtoBufUtils.Serialize(responsePack);
         }
 
+        void doAddModify(string parm)
+        {
+            string[] pp = parm.Split(',');
+            string subCMD = pp[0];
+            int    userid = int.Parse(pp[1]);
+
+            if (pp.Length != 3) return;
+            var gu_cache = new PersonalCacheStruct<GameUser>();
+            var ur_cache = new ShareCacheStruct<UserRanking>();
+
+            var gu = gu_cache.FindKey(userid.ToString());
+            var ur = ur_cache.FindKey(userid);
+            if (null == gu && null == ur) return;
+            
+            if("name"==subCMD)
+            {
+                string name = pp[2];
+                {
+                    gu.ModifyLocked(() => {
+                        gu.NickName = name; 
+                    });
+
+                    ur.ModifyLocked(() => {
+                        ur.UserName = name;
+                    });
+
+                }
+            }
+
+            if ("score" == subCMD)
+            {
+                int score = int.Parse(pp[2]);
+                {
+                    gu.ModifyLocked(() => {
+                        if (score > gu.Score)
+                            gu.Score = score;
+                    });
+
+                    ur.ModifyLocked(() => {
+                        ur.Score = score;
+                    });
+
+                };
+            }
+
+        }
+
         void doAdd_black(string parm)
         {
             string[] usridStr = parm.Split(',');
@@ -143,6 +190,24 @@ namespace GameServer.CsScript.Action
                 if (ur != null) urCache.Delete(ur); // delete form cache and redis.
             }
             RankingFactorNew.Singleton().Refresh<UserRanking>(typeof(RankingScore).ToString());
+        }
+
+        void doAdd_delByIndex(string parm)
+        {
+            string[] p = parm.Split(',');
+            int rankingIndex = int.Parse(p[0])-1;
+
+            UserRanking ur = RankingFactorNew.Singleton().getRankingData<UserRanking, RankingScore>(rankingIndex);
+
+            if(null != ur)
+            {
+                var cache = new ShareCacheStruct<UserRanking>();
+                cache.Delete(ur);
+                var black = new ShareCacheStruct<BlackListData>();
+                BlackListData bld = UR2BLD(ur);
+                black.Add(bld);
+            }
+            processSort("ranking");
         }
 
         bool addProductOnServer(PayOrder payData)
@@ -346,87 +411,7 @@ namespace GameServer.CsScript.Action
         {
             //doFrom_Model_person<HappyModeData>("200000", "the3rdUserId");
             //doFrom_Model_person<The3rdUserIDMap>("20000", "Index");
-            return;
-            var mapCache = new PersonalCacheStruct<The3rdUserIDMap>();
-            var mapValue = mapCache.FindKey("888");
-            mapCache.Delete(mapValue);
-            The3rdUserIDMap t = new The3rdUserIDMap();
-            t.Index = 888;
-            mapCache.Add(t);
-
-            var cache = new PersonalCacheStruct<HappyModeData>();
-            // load all
-            cache.LoadFrom(null);
-            int num = 0;
-            cache.Foreach((string s1, string s2, HappyModeData hmd) =>
-            {
-                num++;
-                return true;
-            });
-            ConsoleLog.showNotifyInfo("num of HappyModeData cache:" + num);
-
-            List<int> delID = new List<int>();
-            List<HappyModeData> cacheLst = new List<HappyModeData>();
-            cache.Foreach((string s1, string s2, HappyModeData hmd) =>
-            {
-                if (hmd.the3rdUserId > 2000 || hmd.the3rdUserId<0)
-                {
-                    var newhmd = copyHMD(hmd);
-                    if (addHappyDataMap(hmd, newhmd.the3rdUserId))
-                    {
-                        delID.Add(hmd.the3rdUserId);
-                        cacheLst.Add(newhmd);
-                    }
-                    else
-                    {
-                        ConsoleLog.showErrorInfo(0, "add map error:" + hmd.the3rdUserId);
-                    }
-                }
-                else
-                {
-                    delID.Add(hmd.the3rdUserId);
-                }
-                return true;
-            });
-
-            foreach (var v in delID)
-            {
-                var del = cache.FindKey(v.ToString());
-                if (null != del)
-                {
-                    cache.Delete(del);
-                    ConsoleLog.showErrorInfo(0, "doAdd_HappyDataFormat del:" + del.the3rdUserId);
-                }
-                else
-                {
-                    ConsoleLog.showErrorInfo(0, "doAdd_HappyDataFormat error:" + del.the3rdUserId);
-                    TraceLog.WriteError("doAdd_HappyDataFormat error:" + del.the3rdUserId);
-                }
-            }
-
-            foreach (var v in cacheLst)
-            {
-                cache.Add(v);
-                ConsoleLog.showNotifyInfo("doAdd_HappyDataFormat add:" + v.the3rdUserId);
-            }
-
-            // del PayUserInfoEx
-            var payUserCache = new PersonalCacheStruct<PayUserInfoEx>();
-            payUserCache.LoadFrom(null);
-            List<int> payLst = new List<int>();
-            payUserCache.Foreach((string s1, string s2, PayUserInfoEx pu) =>
-            {
-                payLst.Add(pu.UserId);
-                return true;
-            });
-
-            return;
-            foreach (var v in payLst)
-            {
-                var pu = payUserCache.FindKey(v.ToString());
-                if (null != pu)
-                    payUserCache.Delete(pu);
-            }
+           
         }
 
         void test()
@@ -468,6 +453,125 @@ namespace GameServer.CsScript.Action
         {
             System.Threading.Thread thread = new System.Threading.Thread(th);
             thread.Start();
+        }
+        string processAdd(string parm)
+        {
+            string info = "";
+            string[] p = parm.Split(',');
+            string addWhich = p[0];
+            string name = p[1];
+            int score = int.Parse(p[2]);
+            if ("ranking" == addWhich)
+            {
+                var cache = new PersonalCacheStruct<GameUser>();
+                var urCache = new ShareCacheStruct<UserRanking>();
+
+                var gu = new GameUser();
+                gu.UserId = (int)cache.GetNextNo();
+                gu.NickName = name;
+                gu.Score = score;
+                gu.Identify = "identify_" + name;
+                var ur = new UserRanking();
+                ur.UserID = gu.UserId;
+                ur.UserName = name;
+                ur.Score = score;
+
+                cache.Add(gu);
+                urCache.Add(ur);
+                info = "增加排行榜数据成功";
+            }
+            return info;
+        }
+        string processModify(string parm)
+        {
+            string info = "";
+            string[] p = parm.Split(',');
+            string modifyWhich = p[0];
+            int index = int.Parse(p[1]) - 1;
+            int score = int.Parse(p[2]);
+
+            if ("ranking" == modifyWhich)
+            {
+                UserRanking ur = RankingFactorNew.Singleton().getRankingData<UserRanking, RankingScore>(index);
+                if (null == ur)
+                {
+                    info = "要修改的数据不存在";
+                }
+                else
+                {
+                    var cache = new ShareCacheStruct<UserRanking>();
+                    UserRanking theUR = cache.FindKey(ur.UserID);
+                    theUR.ModifyLocked(() =>
+                    {
+                        theUR.Score = score;
+                    });
+
+                    info = "修改数据成功";
+                }
+            }
+            return info;
+        }
+
+        void thread_processSort(object theParms)
+        {
+            string parm = theParms as string;
+            string[] p = parm.Split(',');
+            string sortWhich = p[0];
+            if ("ranking" == sortWhich)
+            {
+                RankingFactorNew.Singleton().Refresh<UserRanking>(typeof(RankingScore).ToString());
+            }
+            else if ("rankingtotal" == sortWhich)
+            {
+                RankingFactorNew.Singleton().Refresh<UserRankingTotal>(typeof(RankingTotal).ToString());
+            }
+        }
+
+        void thread_rankingReward()
+        {
+            RankingClear.Instance().doIt();
+        }
+
+        string processRankingReward(string parm)
+        {
+            string info = "";
+            System.Threading.Thread  thread= new System.Threading.Thread(thread_rankingReward);
+            thread.Start();
+            return info;
+        }
+        string processSort(string parm)
+        {
+            string info = "";
+            System.Threading.Thread thread = new System.Threading.Thread(thread_processSort);
+            thread.Start(parm);
+            info = "排序结束";
+            return info;
+        }
+        string processDelete(string parm)
+        {
+            string info = "";
+            string[] p = parm.Split(',');
+            string deleteWhitch = p[0];
+            int deleteIndex = int.Parse(p[1]) - 1;
+
+            if ("ranking" == deleteWhitch)
+            {
+                UserRanking ur = RankingFactorNew.Singleton().getRankingData<UserRanking, RankingScore>(deleteIndex);
+                if (ur == null)
+                {
+                    info = "没有找到要删除的数据";
+                }
+                else
+                {
+                    var cache = new ShareCacheStruct<UserRanking>();
+                    cache.Delete(ur);
+                    info = "删除数据成功";
+                }
+            }
+            return info;
+        }
+        static void checkMapRepeat()
+        {
         }
 
         static void checkMap()
@@ -517,6 +621,101 @@ namespace GameServer.CsScript.Action
         {
             System.Threading.Thread thread = new System.Threading.Thread(checkMap);
             thread.Start();
+        }
+
+        void doAdd_HMD(string parm)
+        {
+            var happyCache = new PersonalCacheStruct<HappyModeData>();
+            var hmd = new HappyModeData();
+            hmd.the3rdUserId = int.Parse(parm);
+            int maxEnterNum = GameConfigMgr.Instance().getInt("happyPointMaxEnterNum", 3);
+            hmd.EnterNum = maxEnterNum;
+            happyCache.Add(hmd);
+        }
+        void doAdd_RemoveMap(string parm)
+        {
+            string[] strs = parm.Split(',');
+            string opt      = strs[0];
+            string type     = strs[1];
+            string the3rdID = strs[2];
+            string key = Action1005.getMapKey(type, the3rdID);
+
+            var cache = new PersonalCacheStruct<The3rdUserIDMap>();
+            var Da = cache.FindKey("888");
+            
+            if(opt=="del")
+            {
+                if(Da.the3rdMap.ContainsKey(key))
+                {
+                    Da.the3rdMap.Remove(key);
+                    ConsoleLog.showErrorInfo(0, "del map key:" + key);
+                }
+                else
+                {
+                    ConsoleLog.showErrorInfo(0, "del not find map key:" + key);
+                }
+            }
+            else if(opt=="add")
+            {
+                if (Da.the3rdMap.ContainsKey(key))
+                {
+                    ConsoleLog.showErrorInfo(0, "add map key had find:" + key);
+                }
+                else
+                {
+                    int happyID = int.Parse(strs[3]);
+                    Da.the3rdMap.Add(key, happyID);
+                    ConsoleLog.showErrorInfo(0, "add map key add :" + key);
+                }
+            }
+            else if(opt=="addNew")
+            {
+                if (Da.the3rdMap.ContainsKey(key))
+                {
+                    ConsoleLog.showErrorInfo(0, "addNew map key had find:" + key);
+                }
+                else
+                {
+                    int happyID = Action1005.getHappyIndex(type, the3rdID);
+                    Da.the3rdMap.Add(key, happyID);
+                    ConsoleLog.showErrorInfo(0, "addNew map key add :" + key+":"+the3rdID);
+                }
+            }
+           
+        }
+
+        void doAdd_HappyDataAddItem(string parm)
+        {
+            string[] stringS = parm.Split(',');
+            int UserID = int.Parse(stringS[0]);
+            int the3rdUserID = int.Parse(stringS[1]);
+            int itemId = int.Parse(stringS[2]);
+
+            var cache = new PersonalCacheStruct<HappyModeData>();
+            var hmd = cache.FindKey(stringS[1]);
+            if (null == hmd) return;
+
+            persionRealItemInfo rii = new persionRealItemInfo();
+            rii.Index = hmd.RealItemInfoLst.Count;
+            rii.UserId = UserID;
+            rii.the3rdUserId = the3rdUserID;
+            rii.Identify = "GM_ADD";
+            rii.happyPoint = hmd.HappyPoint;
+            rii.needHappyPoint = 0;
+            rii.realItemID = itemId;
+            hmd.RealItemInfoLst.Add(rii);
+
+            // save to db for ....
+            var shareRealItemCache = new ShareCacheStruct<shareRealItemInfo>();
+            shareRealItemInfo shareRII = new shareRealItemInfo();
+            shareRII.Index = (int)shareRealItemCache.GetNextNo();
+            shareRII.UserId = UserID;
+            shareRII.the3rdUserId = the3rdUserID;
+            shareRII.Identify = "GM_ADD";
+            shareRII.happyPoint = hmd.HappyPoint;
+            shareRII.needHappyPoint = 0;
+            shareRII.realItemID = itemId;
+            shareRealItemCache.Add(shareRII);
         }
         void doAdd_HappyDataMap(string parm)
         {
@@ -640,7 +839,7 @@ namespace GameServer.CsScript.Action
                 rj.name = pui.the3rdUsrName;
                 int id = Action1005.getHappyIndex(pui.typeUser, the3rdID.ToString());
                 pui.the3rdUsrID = (uint)id;
-                pui.InfoExt = (the3rdID + "," + "hello" + "," + GameConfigMgr.Instance().getString("360UrlCb", "http://www.youyisigame.com:8036/Service.aspx/Pay360") + "," + id); 
+                pui.InfoExt = JsonHelper.GetJson<Action1005.returnJson>(rj);
                 cache.Add(pui);
             }
         }
@@ -696,10 +895,38 @@ namespace GameServer.CsScript.Action
             string[] arrStr = paramStr.Split('#');
             string cmd = arrStr[0];
             string parm = arrStr[1];
-            if ("delById" == cmd)
+            if("rankingReward"==cmd)
+            {
+                processRankingReward(parm);
+            }
+            else if("sort"==cmd)
+            {
+                processSort(parm);
+            }
+            else if("modifyByIndex"==cmd)
+            {
+                processModify(parm);
+            }
+            else if("addByIndex"==cmd)
+            {
+                processAdd(parm);
+            }
+            else if("deleteByIndex"==cmd)
+            {
+                processDelete(parm);
+            }
+            else if("modifyByUserID"==cmd)
+            {
+                doAddModify(parm);
+            }
+            else  if ("delById" == cmd)
             {
                 doAdd_black(parm);
                 doAdd_delById(parm);
+            }
+            else if ("delByIndex" == cmd)
+            {
+                doAdd_delByIndex(parm);
             }
             else if ("from" == cmd)
             {
@@ -759,8 +986,44 @@ namespace GameServer.CsScript.Action
             {
                 doAdd_HappyDataMap(parm);
             }
+            else if ("happyDataAddItem" == cmd)
+            {
+                doAdd_HappyDataAddItem(parm);
+            }
+            else if("optMapKey"==cmd)
+            {
+                doAdd_RemoveMap(parm);
+            }
+            else if("addHMD"==cmd)
+            {
+                doAdd_HMD(parm);
+            }
+            else if ("doFrom" == cmd)
+            {
+                doAdd_DoFrom(parm);
+            }
         }
 
+        void doAdd_DoFrom(string parm)
+        {
+            System.Threading.Thread thread = new System.Threading.Thread(thread_DoFrom);
+            thread.Start(parm);
+        }
+
+        public void thread_DoFrom(object parms)
+        {
+            string parm = parms as string;
+            string[] pp = parm.Split(',');
+            string t = pp[0];
+            string num = pp[1];
+
+            if (t == "UserRankingTotal")
+            {
+                doFrom_UserRankingTotal(num as object);
+                
+            }
+
+        }
         BlackListData UR2BLD(UserRanking ur)
         {
             BlackListData bd = new BlackListData();

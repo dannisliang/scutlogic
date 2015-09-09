@@ -73,9 +73,9 @@ namespace GameServer.CsScript.Action
                 return true;
             }
 
-            Request1010Pack.EnumOptType opt = requestPack.actionID;
-            if (opt != Request1010Pack.EnumOptType.use_enterNum &&
-                opt != Request1010Pack.EnumOptType.use_happyRelive)
+            int opt = requestPack.actionID;
+            if (opt != (int)Request1010Pack.EnumOptType.use_enterNum &&
+                opt != (int)Request1010Pack.EnumOptType.use_happyRelive)
             {
                 responsePack.errorCode = (byte)Response1010Pack.EnumErrorCode.error_actionid;
                 return  true;
@@ -91,7 +91,7 @@ namespace GameServer.CsScript.Action
             }
 
             int actionIndexForHappy = -1;
-            if (opt == Request1010Pack.EnumOptType.use_enterNum)
+            if (opt == (int)Request1010Pack.EnumOptType.use_enterNum)
             {
                 if(hmd.EnterNum<=0)
                 {
@@ -110,7 +110,7 @@ namespace GameServer.CsScript.Action
                 });
             }
 
-            if (opt == Request1010Pack.EnumOptType.use_happyRelive)
+            if (opt == (int)Request1010Pack.EnumOptType.use_happyRelive)
             {
                 if(hmd.HappyReliveNum<=0)
                 {

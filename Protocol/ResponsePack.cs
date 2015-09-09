@@ -4,6 +4,10 @@ using ProtoBuf;
 namespace Game.YYS.Protocol
 {
     [ProtoContract]
+    [ProtoInclude(3000,typeof(Action3000Response))]
+    [ProtoInclude(3001,typeof(Action3001Response))]
+    [ProtoInclude(4000,typeof(Action4000Response))]
+    [ProtoInclude(4001,typeof(Action4001Response))]
     public class ResponsePackBase
     {
         [ProtoMember(1)]

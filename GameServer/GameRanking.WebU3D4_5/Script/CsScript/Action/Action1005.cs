@@ -109,7 +109,7 @@ namespace GameServer.CsScript.Action
             {
                 var happyCache = new PersonalCacheStruct<HappyModeData>();
                 var hmd = new HappyModeData();
-                hmd.the3rdUserId = (int)happyCache.GetNextNo();
+                hmd.the3rdUserId = (int)happyCache.GetNextNo() + 10000;
                 int maxEnterNum = GameConfigMgr.Instance().getInt("happyPointMaxEnterNum", 3);
                 hmd.EnterNum = maxEnterNum;
                 happyCache.Add(hmd);
