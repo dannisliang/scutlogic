@@ -408,6 +408,17 @@ namespace Game.Script
         {
             try
             {
+                var cache = new ActivityModelMemoryCache();
+                return cache.isActivity(version,activityId);
+            }
+            catch (Exception e)
+            {
+                ConsoleLog.showErrorInfo(0, "GameConfigMgr isOpen " + e.Message);
+                return false;
+            }
+/*
+            try
+            {
                 if(_rwLock.TryEnterReadLock(_readWaiteTime))
                 {
                     try
@@ -430,6 +441,7 @@ namespace Game.Script
                 ConsoleLog.showErrorInfo(0, "GameConfigMgr getData" + e.Message);
                 return false;
             }
+ */
         }
 
         //public memoryHappyModeDataModel.HappyData getHappyData(int realItemId)

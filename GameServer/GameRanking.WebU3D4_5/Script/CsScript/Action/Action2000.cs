@@ -162,10 +162,12 @@ namespace GameServer.CsScript.Action
                     int UserId = int.Parse(usridStr[i]);
                     var cache = new ShareCacheStruct<UserRanking>();
                     UserRanking ur = cache.FindKey(UserId);
+                    var personal = new PersonalCacheStruct<GameUser>();
+                    GameUser gu = personal.FindKey(UserId.ToString());
                     var blackCache = new ShareCacheStruct<BlackListData>();
-                    if (ur != null)
+                    if (ur != null && gu!=null)
                     {
-                        blackCache.Add(UR2BLD(ur));
+                        blackCache.AddOrUpdate(UR2BLD(gu));
                         ConsoleLog.showNotifyInfo("add to black list id:" + UserId);
                     }
                     else
@@ -198,14 +200,19 @@ namespace GameServer.CsScript.Action
             int rankingIndex = int.Parse(p[0])-1;
 
             UserRanking ur = RankingFactorNew.Singleton().getRankingData<UserRanking, RankingScore>(rankingIndex);
-
+            
             if(null != ur)
             {
+                
                 var cache = new ShareCacheStruct<UserRanking>();
                 cache.Delete(ur);
+                
+                var cachePersonal = new PersonalCacheStruct<GameUser>();
+                GameUser gu = cachePersonal.FindKey(ur.UserID.ToString()); 
+                 
                 var black = new ShareCacheStruct<BlackListData>();
-                BlackListData bld = UR2BLD(ur);
-                black.Add(bld);
+                BlackListData bld = UR2BLD(gu);
+                black.AddOrUpdate(bld);
             }
             processSort("ranking");
         }
@@ -1024,12 +1031,14 @@ namespace GameServer.CsScript.Action
             }
 
         }
-        BlackListData UR2BLD(UserRanking ur)
+        BlackListData UR2BLD(GameUser gu)
         {
             BlackListData bd = new BlackListData();
-            bd.UserID       = ur.UserID;
-            bd.UserName     = ur.UserName;
-            bd.Score        = ur.Score;
+            bd.UserID       = gu.UserId;
+            bd.UserName     = gu.NickName;
+            bd.Score        = gu.Score;
+            bd.Identify     = gu.Identify;
+            bd.CreateDate   = System.DateTime.Now;
             return bd;
         }
         Response1001Pack cbFunc(object obj)

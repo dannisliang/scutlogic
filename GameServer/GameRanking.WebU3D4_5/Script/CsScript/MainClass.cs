@@ -73,6 +73,7 @@ namespace Game.Script
             new ShareCacheStruct<HistoryUserRanking>();
             new ShareCacheStruct<ExchangeCode>();
             new ShareCacheStruct<UserRankingTotal>();
+          
             NewGameConfig.Singleton().CreateDBTable();
             happyMapInit();
             List<GameRanking.Pack.ConfigData> LST_d = new List<GameRanking.Pack.ConfigData>();
