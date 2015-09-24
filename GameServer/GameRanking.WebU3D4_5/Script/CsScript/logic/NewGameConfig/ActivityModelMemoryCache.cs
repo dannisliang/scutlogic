@@ -11,6 +11,19 @@ namespace Game.Script
 {
     public class ActivityModelMemoryCache : MemoryCacheStruct<memoryActivityModel>
     {
+        public bool isActivity(string version,int activityID)
+        {
+            bool isActivity = false;
+            this.Foreach((string s,memoryActivityModel d)=>{
+                if (d.version == version && d.activityid == activityID)
+                {
+                    isActivity = d.isOpen();
+                    return false;
+                }
+                return true;
+            });
+            return isActivity;
+        }
         protected override bool InitCache()
         {
             var dbProvider = DbConnectionProvider.FindFirst().Value;

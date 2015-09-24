@@ -385,14 +385,13 @@ namespace GameServer.CsScript.Action
             var urt = urt_cache.FindKey(userid);
 
             string info = "";
-            string name = "";
             
             if(gu!=null)
             {
                 
                 if(subcmd=="get")
                 {
-                    info += "#{id:"+gu.UserId+",name:"+gu.NickName+",idf:"+gu.Identify+"}" ;
+                    info += gu.UserId+","+gu.NickName+","+gu.Identify +",";
                 }
                 else if(subcmd=="set")
                 {
@@ -403,17 +402,16 @@ namespace GameServer.CsScript.Action
             }
             else
             {
-                info += "未找到GameUser数据";
+                info += "-1,None,None,";
             }
 
-            info += "\n";
 
             if(null != ur)
             {
                 if(subcmd=="get")
                 {
 
-                    info += "id:" + ur.UserID+ ",name:" + ur.UserName + ",Score:"+ur.Score+"}";
+                    info +=  ur.Score + ",";
                 }
                 else if(subcmd=="set")
                 {
@@ -425,16 +423,14 @@ namespace GameServer.CsScript.Action
             }
             else
             {
-                info += "未找到UserRanking数据";
+                info += "0,";
             }
-
-            info += "\n";
 
             if(null != urt)
             {
                 if(subcmd=="get")
                 {
-                    info += "#{id:" + urt.UserID + ",total:" + urt.Total;
+                    info += urt.Total;
                 }
                 else if(subcmd=="set")
                 {
@@ -448,9 +444,12 @@ namespace GameServer.CsScript.Action
             }
             else
             {
-                info += "未找到积分数据";
+                info += "0";
             }
-
+            if("set"==subcmd)
+            {
+                info = "set success";
+            }
             return info;
         }
         string processUpdateConfig(string parm)

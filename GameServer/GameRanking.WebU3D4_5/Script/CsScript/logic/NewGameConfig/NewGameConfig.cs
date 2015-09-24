@@ -75,7 +75,6 @@ namespace Game.Script
             new ShareCacheStruct<ConfigUIModel>();
             new ShareCacheStruct<PaySwitchModel>();
 
-
             restore("activitymodel", "10000");
             restore("happydatamodel", "10000");
             restore("configuimodel", "10000");
