@@ -315,7 +315,7 @@ namespace GameServer.CsScript.Action
                 theUserId = requestPack.UserID;
             }
           version = requestPack.version;
-          ConsoleLog.showErrorInfo(0, "acton1005:userid:"+requestPack.UserID+"#version:"+requestPack.version);
+          //ConsoleLog.showErrorInfo(0, "acton1005:userid:"+requestPack.UserID+"#version:"+requestPack.version);
 
           if (requestPack.typeUser == "YYS_CP360")
             {

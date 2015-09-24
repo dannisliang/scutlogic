@@ -350,7 +350,7 @@ namespace GameServer.CsScript.Action
             }
             else
             {
-                if(p.version == "1.09")
+                if(p.version != "1.08")
                 {
                     RankingFactorNew.Singleton().Loop<UserRanking>(typeof(RankingScore).ToString(), cbFuncDuang);
                 }
